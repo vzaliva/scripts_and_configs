@@ -12,7 +12,7 @@ ${HOME}/bin
 /opt/local/bin
 /opt/local/sbin
 ${HOME}/pebble-dev/PebbleSDK-3.0/bin
-/Users/lord/.cabal/bin"
+${HOME}/.cabal/bin"
 
 #${HOME}/coq/coq85/bin
 #Removed: /Applications/CoqIDE_8.5beta2.app/Contents/Resources/bin
