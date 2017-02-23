@@ -224,14 +224,18 @@
 (use-package tuareg
   :ensure t
   :config (add-to-list 'auto-mode-alist '("\\.ml\\'" . tuareg-mode)) ;Overwrite default mode for .ml which was SLIME
+  :init
+  (add-hook 'tuareg-mode-hook
+            (lambda ()
+              (ws-butler-mode)))
   )
 
 ;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
-;(require 'tramp)
-;(if (boundp 'aquamacs-version)
-;    (setq tramp-ssh-controlmaster-options "-o ControlPath=~/tmp -o ControlMaster=auto -o ControlPersist=no"))
+(require 'tramp)
+(if (boundp 'aquamacs-version)
+    (setq tramp-ssh-controlmaster-options "-o ControlPath=~/tmp -o ControlMaster=auto -o ControlPersist=no"))
 ;;; For tramp to find remote binaries in non-standard paths
-;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
 (cd "~/")
