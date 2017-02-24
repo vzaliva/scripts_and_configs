@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -f OMakefile ]; then
+   clear
+   omake $*
+else
+   clear
+   make
+fi
+
