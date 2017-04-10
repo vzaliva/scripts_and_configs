@@ -5,6 +5,6 @@ if [ -f OMakefile ]; then
    omake $*
 else
    if [ -t 1 ] ; then clear; fi
-   make
+   make $*
 fi
 
