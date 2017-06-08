@@ -221,6 +221,13 @@
 ;; For PLT scheme
 (use-package quack :ensure t) 
 
+(use-package bison-mode
+  :ensure t
+  :config (setq auto-mode-alist
+                (append '(("\\.mll$"     . bison-mode)
+                          ("\\.mly$"     . bison-mode)
+                          ) auto-mode-alist)))
+
 ;; For ML
 (use-package tuareg
   :ensure t
