@@ -162,11 +162,12 @@
 
 (autoload 'javascript-mode "javascript" nil t)
 
+(show-paren-mode t)
+
 (if (eq window-system 'ns)
     ;; --- Mac-specific stuff ---
-    (show-paren-mode t)
-  ;; Dropping files opens then in new frame, not inserts
-  (define-key global-map [ns-drag-file] 'ns-find-file)
+    ;; Dropping files opens then in new frame, not inserts
+    (define-key global-map [ns-drag-file] 'ns-find-file)
   )
 
 ;; Jumping to matching bracket
@@ -200,6 +201,7 @@
                   (ws-butler-mode)))
       (setq proof-splash-enable nil)
       (setq coq-prog-name "coqtop")
+      (setq coq-compile-before-require t)
       (use-package company-coq
         :ensure t
         :commands company-coq-mode)
@@ -251,14 +253,24 @@
 (unless (server-running-p) (server-start))
 
 
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 160 :width normal)))))
-
 (put 'scroll-left 'disabled t)
+
+;; Mark theme as "safe" to avoid startup warnings
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
+
