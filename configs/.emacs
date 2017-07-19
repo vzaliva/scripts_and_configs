@@ -28,7 +28,6 @@
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
 (use-package cc-mode :ensure t)
-(use-package php-mode :ensure t)
 (use-package tex-site
   :ensure auctex
   :mode ("\\.tex\\'" . LaTeX-mode)
@@ -139,7 +138,6 @@
                 ("\\.asm$"       . asm-mode)
                 ("\\.s$"         . asm-mode)
                 ("\\.py$"        . python-mode)
-                ("\\.php$"       . php-mode)
                 ("\\.[hg]s$"     . haskell-mode)
                 ("\\.hi$"        . haskell-mode)
                 ("\\.lsl$"       . lsl-mode)
@@ -253,51 +251,14 @@
 (unless (server-running-p) (server-start))
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(coq-compile-before-require t)
- '(custom-safe-themes
-   (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
- '(safe-local-variable-values
-   (quote
-    ((eval progn
-           (let
-               ((coq-root-directory
-                 (when buffer-file-name
-                   (locate-dominating-file buffer-file-name ".dir-locals.el")))
-                (coq-project-find-file
-                 (and
-                  (boundp
-                   (quote coq-project-find-file))
-                  coq-project-find-file)))
-             (set
-              (make-local-variable
-               (quote tags-file-name))
-              (concat coq-root-directory "TAGS"))
-             (setq camldebug-command-name
-                   (concat coq-root-directory "dev/ocamldebug-coq"))
-             (unless coq-project-find-file
-               (set
-                (make-local-variable
-                 (quote compile-command))
-                (concat "make -C " coq-root-directory))
-               (set
-                (make-local-variable
-                 (quote compilation-search-path))
-                (cons coq-root-directory nil)))
-             (when coq-project-find-file
-               (setq default-directory coq-root-directory)))))))
- '(show-paren-mode t))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 160 :width normal)))))
+
 (put 'scroll-left 'disabled t)
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
