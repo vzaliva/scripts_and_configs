@@ -245,6 +245,8 @@
 ;;; For tramp to find remote binaries in non-standard paths
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
+;; Remove antlr-mode as it opens .g SPIRAL files and I do not want this.
+(setq auto-mode-alist (remove (rassoc 'antlr-mode auto-mode-alist) auto-mode-alist))
 
 (tool-bar-mode -1)
 
