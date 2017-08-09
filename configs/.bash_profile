@@ -14,9 +14,6 @@ ${HOME}/bin
 ${HOME}/pebble-dev/PebbleSDK-3.0/bin
 ${HOME}/.cabal/bin"
 
-#${HOME}/coq/coq85/bin
-#Removed: /Applications/CoqIDE_8.5beta2.app/Contents/Resources/bin
-
 extramanpaths="${HOME}/man
 /usr/man
 /usr/local/man
@@ -73,23 +70,15 @@ alias al=alias
 alias h=history		
 alias x=exit
 alias l="ls -al"
+
 if [ ! -f ~/bin/m ]; then
     alias m="clear;make" 
 fi
+
 function svndiff()
 {
     svn diff --diff-cmd `which diff` -x "-uw" $1 | less
 }
-
-
-if which rlwrap >& /dev/null ; then
-    if which mit-scheme >& /dev/null ; then
-        alias scheme="rlwrap -p yellow mit-scheme"
-    fi
-    if which racket >& /dev/null ; then
-        alias racket="rlwrap -p yellow racket"
-    fi
-fi
 
 if which vim >& /dev/null ; then
     alias vi=vim
@@ -138,16 +127,18 @@ if [ -n "$ANDROID_HOME" ]; then
     add_path $ANDROID_HOME/platform-tools
 fi
 
-# CUDA
-
 if [ -d /usr/local/cuda ]; then
 	add_path /usr/local/cuda/bin
     export DYLD_LIBRARY_PATH=/usr/local/cuda/lib
 fi
 
-#setenv LANG ru_RU.koi8r
-#setenv LESSCHARSET koi8-r
+if [ -e /home/lord/.nix-profile/etc/profile.d/nix.sh ]; then
+    . /home/lord/.nix-profile/etc/profile.d/nix.sh
+fi 
 
+if [ -f ~/.opam/opam-init/init.sh ]; then
+  . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
+fi
 
 if [ "$TERM_PROGRAM" = "Apple_Terminal"  -o  "$TERM_PROGRAM" = "iTerm.app" ] ; then 
 	export TERM=xterm-256color
@@ -167,12 +158,6 @@ then
   fi
 fi
 
-
-# OPAM configuration
-if [ -f ~/.opam/opam-init/init.sh ]; then
-  . ~/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
-fi
-
 #colorized man pages
 man() {
     env \
@@ -186,7 +171,8 @@ man() {
             man "$@"
 }
 
+export GREP_OPTIONS="--exclude=\*~ --exclude=\*.svn\*"
+
 export PATH
 export MANPATH
-
 
