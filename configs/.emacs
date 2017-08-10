@@ -241,8 +241,13 @@
     (autoload 'merlin-mode "merlin" "Merlin mode" t)
     (add-hook 'tuareg-mode-hook 'merlin-mode)
     (add-hook 'caml-mode-hook 'merlin-mode)              
-    )
-  )
+    (use-package company
+      :ensure t
+      :init
+      (with-eval-after-load 'company
+        (add-to-list 'company-backends 'merlin-company-backend))
+      (add-hook 'merlin-mode-hook 'company-mode))
+    ))
 
 ;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
 (require 'tramp)
