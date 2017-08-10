@@ -229,13 +229,19 @@
                           ) auto-mode-alist)))
 
 ;; For ML
+
 (use-package tuareg
   :ensure t
   :config (add-to-list 'auto-mode-alist '("\\.ml\\'" . tuareg-mode)) ;Overwrite default mode for .ml which was SLIME
   :init
-  (add-hook 'tuareg-mode-hook
-            (lambda ()
-              (ws-butler-mode)))
+  (add-hook 'tuareg-mode-hook `ws-butler-mode)
+  (use-package merlin
+    :ensure t
+    :init
+    (autoload 'merlin-mode "merlin" "Merlin mode" t)
+    (add-hook 'tuareg-mode-hook 'merlin-mode)
+    (add-hook 'caml-mode-hook 'merlin-mode)              
+    )
   )
 
 ;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
