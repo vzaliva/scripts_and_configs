@@ -171,8 +171,6 @@ man() {
             man "$@"
 }
 
-export GREP_OPTIONS="--exclude=\*~ --exclude=\*.svn\*"
-
 export PATH
 export MANPATH
 
