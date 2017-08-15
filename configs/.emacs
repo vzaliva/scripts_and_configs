@@ -33,7 +33,6 @@
   :mode ("\\.tex\\'" . LaTeX-mode)
   :init (add-hook 'LaTeX-mode-hook 'flyspell-mode))
 
-
 (use-package iflipb
   :ensure t
   :init (progn
@@ -237,11 +236,11 @@
   (add-hook 'tuareg-mode-hook `ws-butler-mode)
   (use-package merlin
     :ensure t
+    :bind (:map merlin-mode-map ("M-." . merlin-locate))
     :init
     (autoload 'merlin-mode "merlin" "Merlin mode" t)
     (add-hook 'tuareg-mode-hook 'merlin-mode)
     (add-hook 'caml-mode-hook 'merlin-mode)
-    (bind-key "M-." 'merlin-locate)
     (use-package company
       :ensure t
       :init
