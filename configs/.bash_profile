@@ -70,6 +70,7 @@ alias al=alias
 alias h=history		
 alias x=exit
 alias l="ls -al"
+alias svngrep="grep --exclude=\*~ --exclude=\*.svn\*"
 
 if [ ! -f ~/bin/m ]; then
     alias m="clear;make" 
