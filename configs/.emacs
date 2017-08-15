@@ -240,7 +240,8 @@
     :init
     (autoload 'merlin-mode "merlin" "Merlin mode" t)
     (add-hook 'tuareg-mode-hook 'merlin-mode)
-    (add-hook 'caml-mode-hook 'merlin-mode)              
+    (add-hook 'caml-mode-hook 'merlin-mode)
+    (bind-key "M-." 'merlin-locate)
     (use-package company
       :ensure t
       :init
