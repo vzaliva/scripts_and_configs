@@ -69,7 +69,9 @@ umask 007
 alias al=alias
 alias h=history		
 alias x=exit
-alias l="ls -al"
+alias l="ls --color=auto -al"
+alias ltr="ls --color=auto -altr"
+alias ls='ls --color=auto'
 alias svngrep="grep --exclude=\*~ --exclude=\*.svn\*"
 
 if [ ! -f ~/bin/m ]; then
