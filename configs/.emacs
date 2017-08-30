@@ -12,6 +12,8 @@
 
 
 
+;; Prevent split window on startup
+(setq inhibit-startup-screen t)
 
 ;; Boostrap package management, with MELPA repository
 (require 'package)
