@@ -3,6 +3,9 @@
 if [ -f OMakefile ]; then
    if [ -t 1 ] ; then clear; fi
    omake $*
+elif [ -f jbuild ]; then
+   if [ -t 1 ] ; then clear; fi
+   jbuilder $*   
 else
    if [ -t 1 ] ; then clear; fi
    make $*
