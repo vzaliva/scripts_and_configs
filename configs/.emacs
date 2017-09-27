@@ -35,6 +35,10 @@
   :mode ("\\.tex\\'" . LaTeX-mode)
   :init (add-hook 'LaTeX-mode-hook 'flyspell-mode))
 
+(use-package magit
+  :ensure t
+  :init (global-set-key (kbd "C-x g") 'magit-status))
+  
 (use-package iflipb
   :ensure t
   :init (progn
