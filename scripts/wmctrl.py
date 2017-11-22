@@ -2,7 +2,7 @@
 
 # Assumptions:
 #  1. Compiz
-#  2. same workarea accross desktops
+#  2. same workspace area shape/size accross monitors
 
 # Single
 
@@ -96,6 +96,18 @@ def get_wm_info():
     return res
 
 
+def calc_viewport(ctx,display,monitor,wx,wy):
+    """
+    Calculate viewport for given workspace/monitor
+
+    :param ctx: current context, as returned by `get_wm_info`
+    :param display: usually 0
+    :param monitor: physical monitor (aka `output`) number
+    :param wx: workspace column number
+    :param wy: workspace row number
+    :return: viewport config (x,y,w,h)
+    """
+    return (0,0,1,1)
 
 
 import pprint
