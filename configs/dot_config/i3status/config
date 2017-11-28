@@ -11,6 +11,7 @@ general {
         interval = 5
 }
 
+order += "volume master"
 order += "ipv6"
 order += "path_exists VPN"
 order += "wireless _first_"
@@ -19,6 +20,14 @@ order += "battery 0"
 order += "battery 1"
 order += "load"
 order += "tztime local"
+
+volume master {
+         format = "♪: %volume"
+         format_muted = "♪: muted (%volume)"
+         device = "default"
+         mixer = "Master"
+         mixer_idx = 0
+}
 
 wireless _first_ {
         format_up = "W: (%quality at %essid)"
