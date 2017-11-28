@@ -156,6 +156,8 @@ bar {
         tray_output primary
 }
 
+bindsym $mod+x move workspace to output right
+
 exec_always "setxkbmap -layout us,ru -variant ,mac"
 exec_always "setxkbmap -option 'grp:alt_space_toggle'"
 
