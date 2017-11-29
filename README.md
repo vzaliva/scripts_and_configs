@@ -1,3 +1,3 @@
-# Vadim Zaliva misc. scripts_and_configs
+# Misc. scripts and config files to customize my Unix environment 
 
 
