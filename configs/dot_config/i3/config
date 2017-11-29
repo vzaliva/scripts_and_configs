@@ -159,8 +159,9 @@ bar {
 
 bindsym $mod+x move workspace to output right
 
-exec_always "setxkbmap -layout us,ru -variant ,mac"
-exec_always "setxkbmap -option 'grp:alt_space_toggle'"
+# Using both Alt+SPACE and CAPS as keyboard switchers. In some apps, e.g. Slack
+# Alt+SPACE opens menu!
+exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:caps_toggle' -option 'grp:alt_space_toggle'"
 
 set $sink 0
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +5%
