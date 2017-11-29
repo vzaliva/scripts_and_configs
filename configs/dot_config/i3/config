@@ -191,6 +191,8 @@ exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
 
 # No window tite needed for some programs 
 for_window [class="^(?i)google-chrome"] border pixel 1
+for_window [class="^(?i)emacs"] border pixel 1
+for_window [class="^(?i)slack"] border pixel 1
 
 # Lock screen via Ctrl+Alt+L
 bindsym $mod+Control+l exec i3lock -t -d -f -e
