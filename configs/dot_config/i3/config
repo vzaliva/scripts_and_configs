@@ -170,3 +170,7 @@ exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
 exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
 
+#for_window [class="Google Chrome"] border pixel 0
+
+# Lock screen via Ctrl+Alt+L
+bindsym Mod1+Control+l exec i3lock -t -d -f -e
