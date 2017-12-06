@@ -181,6 +181,10 @@ man() {
             man "$@"
 }
 
+if [ -x "$(command -v ag)" ]; then
+  alias ag='\ag --pager="less -XFR"'
+fi
+
 export PATH
 export MANPATH
 
