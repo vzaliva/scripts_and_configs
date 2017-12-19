@@ -158,6 +158,7 @@ bar {
 }
 
 bindsym $mod+x move workspace to output right
+bindsym $mod+u move workspace to output up
 
 # Using both Alt+SPACE and CAPS as keyboard switchers. In some apps, e.g. Slack
 # Alt+SPACE opens menu!
