@@ -38,7 +38,11 @@
 (use-package magit
   :ensure t
   :init (global-set-key (kbd "C-x g") 'magit-status))
-  
+
+(use-package helm-ag
+  :ensure t
+  :init (global-set-key (kbd "C-<XF86Search>") 'helm-ag))
+
 (use-package iflipb
   :ensure t
   :init (progn
