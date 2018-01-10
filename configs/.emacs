@@ -38,10 +38,14 @@
 (use-package magit
   :ensure t
   :init (global-set-key (kbd "C-x g") 'magit-status))
-
+  
 (use-package helm-ag
   :ensure t
-  :init (global-set-key (kbd "C-<XF86Search>") 'helm-ag))
+  :init
+  (progn
+    (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
+    (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file)
+    ))
 
 (use-package iflipb
   :ensure t
@@ -292,7 +296,36 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))))
+    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(safe-local-variable-values
+   (quote
+    ((eval progn
+           (let
+               ((coq-root-directory
+                 (when buffer-file-name
+                   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+                (coq-project-find-file
+                 (and
+                  (boundp
+                   (quote coq-project-find-file))
+                  coq-project-find-file)))
+             (set
+              (make-local-variable
+               (quote tags-file-name))
+              (concat coq-root-directory "TAGS"))
+             (setq camldebug-command-name
+                   (concat coq-root-directory "dev/ocamldebug-coq"))
+             (unless coq-project-find-file
+               (set
+                (make-local-variable
+                 (quote compile-command))
+                (concat "make -C " coq-root-directory))
+               (set
+                (make-local-variable
+                 (quote compilation-search-path))
+                (cons coq-root-directory nil)))
+             (when coq-project-find-file
+               (setq default-directory coq-root-directory))))))))
 
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
