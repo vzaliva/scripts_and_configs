@@ -1,3 +1,4 @@
 #!/bin/sh
-xrandr --output HDMI1 --auto --right-of eDP1 --rotate left
+xrandr > /dev/null
+xrandr --output HDMI-1 --auto --right-of eDP-1 --rotate left
 
