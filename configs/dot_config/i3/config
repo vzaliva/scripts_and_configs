@@ -202,7 +202,7 @@ for_window [class="^(?i)slack"] border none
 for_window [instance="mendeleydesktop" title="^Mendeley Desktop$"] floating disable
 
 # Lock screen via Ctrl+Alt+L
-bindsym $mod+Control+l exec i3lock -t -d -f -e
+bindsym $mod+Control+l exec i3lock -t -d -f -e --color=000000
 
 # Screenshots (adopted from https://www.reddit.com/r/i3wm/comments/65vis5/screenshot_commands_from_my_i3_config/ )
 # Require `xclip`, `scrot`, and 'play' (from sox)
