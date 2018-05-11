@@ -11,6 +11,9 @@
       )
 
 
+;;(add-to-list 'load-path "~//lisp/latex-preview-pane")
+;;(require 'latex-preview-pane)
+
 
 ;; Prevent split window on startup
 (setq inhibit-startup-screen t)
@@ -111,7 +114,7 @@
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
 (setq remote-shell-program "ssh")
-(delete-selection-mode t)
+(delete-selection-mode 1)
 
 ;; Keys
 (global-set-key [f7]   'grep-find)
@@ -263,6 +266,9 @@
       (add-hook 'merlin-mode-hook 'company-mode))
     ))
 
+;; Make PDFs displayed in latex-preview-pane-mode look nices
+;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
+
 ;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
 (require 'tramp)
 (if (boundp 'aquamacs-version)
@@ -297,9 +303,28 @@
  '(custom-safe-themes
    (quote
     ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+ '(doc-view-resolution 300)
+ '(latex-preview-pane-use-frame t)
+ '(package-selected-packages
+   (quote
+    (ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
  '(safe-local-variable-values
    (quote
-    ((eval progn
+    ((eval let
+           ((default-directory
+              (locate-dominating-file buffer-file-name ".dir-locals.el")))
+           (setq-local coq-prog-args
+                       (\`
+                        ("-coqlib"
+                         (\,
+                          (expand-file-name ".."))
+                         "-R"
+                         (\,
+                          (expand-file-name "."))
+                         "Coq")))
+           (setq-local coq-prog-name
+                       (expand-file-name "../bin/coqtop")))
+     (eval progn
            (let
                ((coq-root-directory
                  (when buffer-file-name
