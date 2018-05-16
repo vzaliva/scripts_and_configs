@@ -172,6 +172,7 @@
     (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
     ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
     (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+    (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
     ))
 
 (autoload 'python-mode "python-mode" "Python editing mode." t)
