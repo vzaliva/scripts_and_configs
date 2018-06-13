@@ -175,8 +175,6 @@
     (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
     ))
 
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-
 (autoload 'javascript-mode "javascript" nil t)
 
 (show-paren-mode t)
@@ -235,9 +233,6 @@
 ;  :config (require `slime-asdf)
   )
 
-;; For PLT scheme
-(use-package quack :ensure t) 
-
 (use-package bison-mode
   :ensure t
   :config (setq auto-mode-alist
@@ -292,7 +287,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "unknown" :slant normal :weight normal :height 140 :width normal)))))
+ '(default ((t (:family "DejaVu Sans" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal)))))
 (put 'scroll-left 'disabled t)
 
 ;; Mark theme as "safe" to avoid startup warnings
@@ -351,8 +346,13 @@
                  (quote compilation-search-path))
                 (cons coq-root-directory nil)))
              (when coq-project-find-file
-               (setq default-directory coq-root-directory))))))))
+               (setq default-directory coq-root-directory)))))))
+ '(show-paren-mode t)
+ '(tool-bar-mode nil))
 
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
 
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line

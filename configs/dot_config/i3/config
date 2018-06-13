@@ -14,11 +14,9 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
-
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+font pango:DejaVu Sans Mono 12
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -37,7 +35,8 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec dmenu_run -fn "Droid Sans Mono-12"
+
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -162,7 +161,7 @@ bindsym $mod+u move workspace to output up
 
 # Using both Alt+SPACE and CAPS as keyboard switchers. In some apps, e.g. Slack
 # Alt+SPACE opens menu!
-exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:caps_toggle' -option 'grp:alt_space_toggle'"
+exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:alt_space_toggle' -option ctrl:nocaps"
 
 set $sink 0
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +5%
@@ -170,21 +169,22 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $sink -5
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute $sink toggle
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute 1 toggle
 
-# Sreen brightness controls (Ubuntu 16 only)
-#bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
-#bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
-
-# Screen brightness controls with notification (works on Ubuntu 18)
-bindsym XF86MonBrightnessUp exec light -A 2 # increase screen brightness
-bindsym XF86MonBrightnessDown exec light -U 2 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
 
 # Search as dmenu
-bindsym XF86Search exec dmenu_run
+bindsym XF86Search exec dmenu_run -fn "Droid Sans Mono-12"
 bindsym XF86Explorer exec nautilus --no-desktop /home/lord/Dropbox
 
 # Unused keys
-bindsym XF86LaunchA exec ";" # F11
-bindsym XF86Tools exec ";" # F9
+bindsym XF86LaunchA exec ";" 
+bindsym XF86Tools exec ";"
+
+### Media Player ###
+bindsym XF86AudioPlay exec ";"
+bindsym XF86AudioPause exec ";"
+bindsym XF86AudioPrev exec ";"
+bindsym XF86AudioNext exec ";"
 
 # F7: press when display config changed
 # For connected but disabled outputs, this will enable them using their first preferred mode.
@@ -216,5 +216,16 @@ bindsym --release Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~
 # OSX-like area selection screenshots
 bindsym --release Shift+Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
 
+# Touchpad config
+set $touchpad DELL07E6:00 06CB:76AF Touchpad
+exec --no-startup-id xinput set-prop "$touchpad" "libinput Tapping Enabled" 1
+exec --no-startup-id xinput set-prop "$touchpad" "libinput Natural Scrolling Enabled" 1
+exec --no-startup-id xinput set-prop "$touchpad" "libinput Disable While Typing Enabled" 1
+exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Palm Detection" 1
+exec --no-startup-id xinput set-prop "$touchpad" "Device Accel Velocity Scaling" 24
+exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Edge Scrolling" 0 0 0
+
+# DPI
+exec_always --no-startup-id xrandr --dpi 180
 
 
