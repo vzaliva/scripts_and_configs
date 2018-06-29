@@ -1,0 +1,18 @@
+# file /etc/systemd/system/wakelock.service
+# To enable:  systemctl enable wakelock 
+
+[Unit]
+Description=Lock the screen on resume from suspend
+Before=sleep.target
+Before=suspend.target
+
+[Service]
+User=lord
+Type=forking
+Environment=DISPLAY=:0
+ExecStart=/home/lord/bin/i3exit.sh lock
+
+[Install]
+WantedBy=sleep.target
+WantedBy=suspend.target
+

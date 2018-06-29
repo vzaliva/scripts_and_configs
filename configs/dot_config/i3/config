@@ -159,9 +159,9 @@ bar {
 bindsym $mod+x move workspace to output right
 bindsym $mod+u move workspace to output up
 
-# Using both Alt+SPACE and CAPS as keyboard switchers. In some apps, e.g. Slack
-# Alt+SPACE opens menu!
 exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:alt_space_toggle' -option ctrl:nocaps"
+
+exec --no-startup-id xautolock -time 9 -locker '~/bin/i3exit.sh lock' &
 
 set $sink 0
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +5%
@@ -175,6 +175,9 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightne
 # Search as dmenu
 bindsym XF86Search exec dmenu_run -fn "Droid Sans Mono-12"
 bindsym XF86Explorer exec nautilus --no-desktop /home/lord/Dropbox
+
+# sleep
+bindsym XF86Sleep               exec --no-startup-id ~/bin/i3exit.sh suspend
 
 # Unused keys
 bindsym XF86LaunchA exec ";" 
