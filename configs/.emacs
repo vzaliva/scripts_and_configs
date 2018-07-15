@@ -14,7 +14,6 @@
 ;;(add-to-list 'load-path "~//lisp/latex-preview-pane")
 ;;(require 'latex-preview-pane)
 
-
 ;; Prevent split window on startup
 (setq inhibit-startup-screen t)
 
@@ -288,7 +287,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal)))))
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal)))))
 (put 'scroll-left 'disabled t)
 
 ;; Mark theme as "safe" to avoid startup warnings
@@ -302,6 +301,7 @@
     ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
+ '(line-number-mode 1)
  '(package-selected-packages
    (quote
     (org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
@@ -349,7 +349,11 @@
              (when coq-project-find-file
                (setq default-directory coq-root-directory)))))))
  '(show-paren-mode t)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(transient-mark-mode 1))
+
+;; Save minibuffer history between launches
+(savehist-mode 1)
 
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
