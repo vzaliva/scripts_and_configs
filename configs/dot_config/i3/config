@@ -197,6 +197,7 @@ bindsym XF86Display exec xrandr --auto
 exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
 exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
+exec --no-startup-id touchpad-indicator              	    # Touchpad indicator
 
 # No window tite needed for some programs 
 for_window [class="^(?i)google-chrome"] border none
@@ -220,13 +221,13 @@ bindsym --release Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~
 bindsym --release Shift+Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
 
 # Touchpad config
-set $touchpad DELL07E6:00 06CB:76AF Touchpad
-exec --no-startup-id xinput set-prop "$touchpad" "libinput Tapping Enabled" 1
-exec --no-startup-id xinput set-prop "$touchpad" "libinput Natural Scrolling Enabled" 1
-exec --no-startup-id xinput set-prop "$touchpad" "libinput Disable While Typing Enabled" 1
-exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Palm Detection" 1
-exec --no-startup-id xinput set-prop "$touchpad" "Device Accel Velocity Scaling" 24
-exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Edge Scrolling" 0 0 0
+#set $touchpad DELL07E6:00 06CB:76AF Touchpad
+#exec --no-startup-id xinput set-prop "$touchpad" "libinput Tapping Enabled" 1
+#exec --no-startup-id xinput set-prop "$touchpad" "libinput Natural Scrolling Enabled" 1
+#exec --no-startup-id xinput set-prop "$touchpad" "libinput Disable While Typing Enabled" 1
+#exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Palm Detection" 1
+#exec --no-startup-id xinput set-prop "$touchpad" "Device Accel Velocity Scaling" 24
+#exec --no-startup-id xinput set-prop "$touchpad" "Synaptics Edge Scrolling" 0 0 0
 
 # DPI
 exec_always --no-startup-id xrandr --dpi 180
