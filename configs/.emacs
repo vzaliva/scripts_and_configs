@@ -355,6 +355,9 @@
 ;; Save minibuffer history between launches
 (savehist-mode 1)
 
+;; Replace on yank
+(delete-selection-mode 1)
+
 (load-theme 'solarized-dark)
 (setq x-underline-at-descent-line t)
 
