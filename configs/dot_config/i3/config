@@ -153,7 +153,8 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         status_command i3status
-        tray_output primary
+        output primary
+	tray_output primary
 }
 
 bindsym $mod+x move workspace to output right
