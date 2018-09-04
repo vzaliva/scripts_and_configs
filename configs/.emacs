@@ -202,28 +202,24 @@
 (if (file-exists-p "~/lisp/mathematica.el")
     (load-file "~/lisp/mathematica.el"))
 
-;; Proof general is not on MELPA, so we try to load it
-;; from local directory, if available
-(if (file-exists-p "~/lisp/ProofGeneral/generic/proof-site.el")
-    (use-package proof-site
-      :load-path ("~/lisp/ProofGeneral/coq" "~/lisp/ProofGeneral/generic")
-      :mode ("\\.v\\'" . coq-mode)
-      :config (add-hook 'coq-mode-hook #'company-coq-mode)
-      :init
-      (add-hook 'coq-mode-hook
-                (lambda ()
-                  (company-coq-initialize)
-                  (ws-butler-mode)))
-      (setq proof-splash-enable nil)
-      (setq coq-prog-name "coqtop")
-      (setq coq-compile-before-require t)
-      (use-package company-coq
-        :ensure t
-        :commands company-coq-mode)
-      (use-package coq-commenter
-        :ensure t
-        :config (add-hook 'coq-mode-hook 'coq-commenter-mode))
-      ))
+(use-package proof-general
+  :mode ("\\.v\\'" . coq-mode)
+  :config (add-hook 'coq-mode-hook #'company-coq-mode)
+  :init
+  (add-hook 'coq-mode-hook
+            (lambda ()
+              (company-coq-initialize)
+              (ws-butler-mode)))
+  (setq proof-splash-enable nil)
+  (setq coq-prog-name "coqtop")
+  (setq coq-compile-before-require t)
+  (use-package company-coq
+    :ensure t
+    :commands company-coq-mode)
+  (use-package coq-commenter
+    :ensure t
+    :config (add-hook 'coq-mode-hook 'coq-commenter-mode))
+  )
 
 ;; SLIME
 (setq inferior-lisp-program "ccl64")
@@ -304,7 +300,7 @@
  '(line-number-mode 1)
  '(package-selected-packages
    (quote
-    (org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
+    (proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
