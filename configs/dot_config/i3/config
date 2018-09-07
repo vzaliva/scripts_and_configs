@@ -216,10 +216,10 @@ bindsym $mod+Control+l exec i3lock -t -d -f -e --color=000000
 set $shutter /usr/share/sounds/freedesktop/stereo/camera-shutter.oga
 
 # Multi-screen screenshots with scrot
-bindsym --release Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # All screens
+bindsym --release Shift-Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # All screens
 
 # OSX-like area selection screenshots
-bindsym --release Shift+Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
+bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
 
 # Touchpad config
 #set $touchpad DELL07E6:00 06CB:76AF Touchpad
