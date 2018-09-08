@@ -36,7 +36,12 @@
 (use-package tex-site
   :ensure auctex
   :mode ("\\.tex\\'" . LaTeX-mode)
-  :init (add-hook 'LaTeX-mode-hook 'flyspell-mode))
+  :init
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode))
+
+(use-package latex-extra
+  :ensure t
+  :hook (LaTeX-mode . latex-extra-mode))
 
 (use-package magit
   :ensure t
@@ -300,7 +305,7 @@
  '(line-number-mode 1)
  '(package-selected-packages
    (quote
-    (proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
+    (latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
