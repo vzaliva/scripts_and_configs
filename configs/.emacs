@@ -7,9 +7,13 @@
             (cons "/opt/local/share/mercurial/contrib"
                   (cons (expand-file-name "~/lisp")
                         (cons "/usr/share/emacs/site-lisp/"
-                              load-path))))
-      )
+                              load-path)))))
 
+;; LLVM mode, if present
+(if (file-exists-p "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
+    (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el"))
+
+(require 'llvm-mode)
 
 ;;(add-to-list 'load-path "~//lisp/latex-preview-pane")
 ;;(require 'latex-preview-pane)
@@ -305,7 +309,7 @@
  '(line-number-mode 1)
  '(package-selected-packages
    (quote
-    (latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
+    (academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
