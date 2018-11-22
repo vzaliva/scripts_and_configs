@@ -12,7 +12,8 @@ ${HOME}/bin
 /opt/local/bin
 /opt/local/sbin
 ${HOME}/pebble-dev/PebbleSDK-3.0/bin
-${HOME}/.cabal/bin"
+${HOME}/.cabal/bin
+/usr/local/Cellar/llvm/7.0.0/bin/"
 
 extramanpaths="${HOME}/man
 /usr/man
