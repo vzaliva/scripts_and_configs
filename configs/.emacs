@@ -9,7 +9,7 @@
                         (cons "/usr/share/emacs/site-lisp/"
                               load-path)))))
 
-;; LLVM mode, if present
+;; Load LLVM mode, if present
 (if (file-exists-p "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
     (progn
       (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
@@ -307,6 +307,7 @@
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
+ '(merlin-locate-in-new-window (quote never))
  '(package-selected-packages
    (quote
     (academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
