@@ -11,9 +11,9 @@
 
 ;; LLVM mode, if present
 (if (file-exists-p "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
-    (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el"))
-
-(require 'llvm-mode)
+    (progn
+      (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
+      (require 'llvm-mode)))
 
 ;;(add-to-list 'load-path "~//lisp/latex-preview-pane")
 ;;(require 'latex-preview-pane)
