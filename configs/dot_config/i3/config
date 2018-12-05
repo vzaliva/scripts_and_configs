@@ -223,8 +223,14 @@ bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -
 
 exec_always --no-startup-id xrandr --dpi 180
 
-# Do not detect touch on right side of touchpad (900 out of 1168)
+# Do not detect touch on right side of touchpad (use 1000 out of 1168)
 # as I accidentally keep hitting it with my right hand when typing
-exec_always --no-startup-id synclient AreaRightEdge=900
-exec_always --no-startup-id synclient PalmDetect=1
+exec_always --no-startup-id synclient AreaRightEdge=1000
+exec_always --no-startup-id synclient PalmDetect=0
+
+# pdfpc to show notes on separate screen
+for_window [ title="^pdfpc - present" ] border none floating enable
+# alternative solution for PDFPC
+# for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
+
 
