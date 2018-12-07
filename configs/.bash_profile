@@ -6,6 +6,7 @@
 extrapaths="/usr/local/bin
 /usr/local/bin/X11
 ${HOME}/bin
+${HOME}/.local/bin
 /Applications/Aquamacs.app/Contents/MacOS/bin
 /Applications/MacPorts/Emacs.app/Contents/MacOS/bin
 /Applications/Graphviz.app/Contents/MacOS
