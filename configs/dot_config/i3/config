@@ -82,6 +82,8 @@ bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
 bindsym $mod+Shift+space floating toggle
+# toggle window border
+bindsym $mod+b border toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
@@ -229,7 +231,7 @@ exec_always --no-startup-id synclient AreaRightEdge=1000
 exec_always --no-startup-id synclient PalmDetect=0
 
 # pdfpc to show notes on separate screen
-for_window [ title="^pdfpc - present" ] border none floating enable
+for_window [ title="^pdfpc - present" ] border none floating disable
 # alternative solution for PDFPC
 # for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
 
