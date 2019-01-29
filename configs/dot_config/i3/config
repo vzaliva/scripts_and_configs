@@ -164,7 +164,7 @@ bindsym $mod+u move workspace to output up
 
 exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:alt_space_toggle' -option ctrl:nocaps"
 
-exec --no-startup-id xautolock -time 9 -locker '~/bin/i3exit.sh lock' &
+exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
 
 set $sink 0
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +5%
@@ -222,6 +222,8 @@ bindsym --release Shift-Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdi
 
 # OSX-like area selection screenshots
 bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
+
+bindsym $mod+p exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots' && play -q $shutter
 
 exec_always --no-startup-id xrandr --dpi 180
 
