@@ -267,6 +267,10 @@
       (add-hook 'merlin-mode-hook 'company-mode))
     ))
 
+(use-package org-bullets
+  :ensure t
+  :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
 
@@ -310,7 +314,7 @@
  '(merlin-locate-in-new-window (quote never))
  '(package-selected-packages
    (quote
-    (academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
+    (org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
