@@ -200,7 +200,7 @@ bindsym XF86Display exec xrandr --auto
 exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
 exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
-exec --no-startup-id touchpad-indicator              	    # Touchpad indicator
+#exec --no-startup-id touchpad-indicator              	    # Touchpad indicator
 
 # No window tite needed for some programs 
 for_window [class="^(?i)google-chrome"] border none
@@ -230,10 +230,11 @@ exec_always --no-startup-id xrandr --dpi 180
 # Do not detect touch on right side of touchpad (use 1000 out of 1168)
 # as I accidentally keep hitting it with my right hand when typing
 exec_always --no-startup-id synclient AreaRightEdge=1000
-exec_always --no-startup-id synclient PalmDetect=0
+exec_always --no-startup-id synclient PalmDetect=1
 
 # pdfpc to show notes on separate screen
 for_window [ title="^pdfpc - present" ] border none floating disable
+for_window [ title="^Pympress Content" ] border none floating disable
 # alternative solution for PDFPC
 # for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
 
