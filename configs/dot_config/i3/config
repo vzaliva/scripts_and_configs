@@ -231,6 +231,7 @@ exec_always --no-startup-id xrandr --dpi 180
 # as I accidentally keep hitting it with my right hand when typing
 exec_always --no-startup-id synclient AreaRightEdge=1000
 exec_always --no-startup-id synclient PalmDetect=1
+exec_always --no-startup-id synclient AreaTopEdge=130  
 
 # pdfpc to show notes on separate screen
 for_window [ title="^pdfpc - present" ] border none floating disable
