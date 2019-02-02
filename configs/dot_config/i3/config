@@ -164,6 +164,8 @@ bindsym $mod+u move workspace to output up
 
 exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:alt_space_toggle' -option ctrl:nocaps"
 
+bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option grp:alt_space_toggle -option ctrl:nocaps' 'setxkbmap -layout us,ua -option grp:alt_space_toggle -option ctrl:nocaps'"
+
 exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
 
 set $sink 0
