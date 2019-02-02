@@ -267,6 +267,11 @@
       (add-hook 'merlin-mode-hook 'company-mode))
     ))
 
+
+(use-package org
+  :ensure org-plus-contrib
+  :init (setq org-log-done 'time))
+
 (use-package org-bullets
   :ensure t
   :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
