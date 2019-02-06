@@ -10,7 +10,7 @@ do
     LG=$(xkblayout-state print "%s" | tr -d '\n\r')
     IFS=', ' read -r -a LAYOUT <<< $(setxkbmap -query | awk '/layout/{print $2}')
     lastidx=$( expr ${#LAYOUT[@]} - 1 )
-    res="[{ \"full_text\": \"LANG:\", \"separator\":false, \"separator_block_width\": 6 }"
+    res="[{ \"full_text\": \"🖮:\", \"separator\":false, \"separator_block_width\": 6 }"
     for index in "${!LAYOUT[@]}"
     do
         i="${LAYOUT[index]}"

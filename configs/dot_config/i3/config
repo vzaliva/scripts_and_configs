@@ -162,9 +162,15 @@ bar {
 bindsym $mod+x move workspace to output right
 bindsym $mod+u move workspace to output up
 
-exec_always "setxkbmap -layout us,ru -variant ,mac -option 'grp:alt_space_toggle' -option ctrl:nocaps"
-
-bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option grp:alt_space_toggle -option ctrl:nocaps' 'setxkbmap -layout us,ua -option grp:alt_space_toggle -option ctrl:nocaps' ; pkill -x --signal=SIGUSR1 i3status"
+# the following require `xkb-switch`
+# Install from source: https://github.com/ierton/xkb-switch
+# or via `apt`.
+# Instead of using "-option 'grp:alt_space_toggle'" for -option 'grp:alt_space_toggle'
+# We implement switching via i3 shortcut, so we can instantly update indicator for
+# i3status bar
+bindsym Mod1+space exec "xkb-switch -n; pkill -x --signal=SIGUSR1 i3status"
+exec_always "setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps"
+bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps' 'setxkbmap -layout us,ua -option ctrl:nocaps' ; pkill -x --signal=SIGUSR1 i3status"
 
 exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
 
