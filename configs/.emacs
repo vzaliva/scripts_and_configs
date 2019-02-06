@@ -269,7 +269,7 @@
 
 
 (use-package org
-  :ensure org-plus-contrib
+  :ensure t
   :init (setq org-log-done 'time))
 
 (use-package org-bullets
