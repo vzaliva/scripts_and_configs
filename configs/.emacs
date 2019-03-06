@@ -11,13 +11,15 @@
 
 ;; Load LLVM mode, if present
 (if (file-exists-p "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
-    (progn
+    (lambda ()
       (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
       (require 'llvm-mode)))
 
-;;(add-to-list 'load-path "~//lisp/latex-preview-pane")
-;;(require 'latex-preview-pane)
-
+;;(if (file-exists-p "~/.cask/cask.el")
+;;    (progn
+;;      (require 'cask "~/.cask/cask.el")
+;;      (cask-initialize)))
+      
 ;; Prevent split window on startup
 (setq inhibit-startup-screen t)
 
@@ -54,18 +56,16 @@
 (use-package helm-ag
   :ensure t
   :init
-  (progn
-    (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
-    (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file)
-    ))
+  (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
+  (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file))
 
 (use-package iflipb
   :ensure t
-  :init (progn
-          (global-set-key (kbd "<C-tab>") 'iflipb-next-buffer)
-          (global-set-key
-           (if (featurep 'xemacs) (kbd "<C-iso-left-tab>") (kbd "<C-S-iso-lefttab>"))
-           'iflipb-previous-buffer)))
+  :init 
+  (global-set-key (kbd "<C-tab>") 'iflipb-next-buffer)
+  (global-set-key
+   (if (featurep 'xemacs) (kbd "<C-iso-left-tab>") (kbd "<C-S-iso-lefttab>"))
+   'iflipb-previous-buffer))
 
 
 (require 'font-lock)
@@ -175,14 +175,13 @@
   :ensure t
   :mode "\\.hs\\'"
   :config
-  (progn
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-    (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-    ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-    (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-    (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile)
-    ))
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+  ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
+
 
 (autoload 'javascript-mode "javascript" nil t)
 
@@ -216,12 +215,13 @@
   :config (add-hook 'coq-mode-hook #'company-coq-mode)
   :init
   (add-hook 'coq-mode-hook
-            (lambda ()
+            (progn
               (company-coq-initialize)
               (ws-butler-mode)))
   (setq proof-splash-enable nil)
   (setq coq-prog-name "coqtop")
   (setq coq-compile-before-require t)
+  ;;(require 'company-coq "/home/lord/lisp/company-coq/company-coq.el")
   (use-package company-coq
     :ensure t
     :commands company-coq-mode)
@@ -267,14 +267,22 @@
       (add-hook 'merlin-mode-hook 'company-mode))
     ))
 
-
 (use-package org
   :ensure t
-  :init (setq org-log-done 'time))
-
-(use-package org-bullets
-  :ensure t
-  :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  :init
+  (setq org-log-done 'time)
+  (add-hook 'orgtbl-mode-hook
+            (lambda ()
+              (setq org-table-separator-space " ")))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (setq org-table-separator-space " ")))
+  (use-package org-bullets
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  :config
+  (setq org-table-separator-space " "))
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
@@ -317,9 +325,12 @@
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
  '(merlin-locate-in-new-window (quote never))
+ '(org-agenda-files
+   (quote
+    ("~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org")))
  '(package-selected-packages
    (quote
-    (org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter company-coq bison-mode auctex)))
+    (company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
@@ -373,7 +384,11 @@
 ;; Replace on yank
 (delete-selection-mode 1)
 
+;; Forces fixed-width font in org-mode
+(setq solarized-use-variable-pitch nil
+      solarized-scale-org-headlines nil)
 (load-theme 'solarized-dark)
+
 (setq x-underline-at-descent-line t)
 
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
