@@ -215,7 +215,7 @@
   :config (add-hook 'coq-mode-hook #'company-coq-mode)
   :init
   (add-hook 'coq-mode-hook
-            (progn
+            (lambda ()
               (company-coq-initialize)
               (ws-butler-mode)))
   (setq proof-splash-enable nil)
