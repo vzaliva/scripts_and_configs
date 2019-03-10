@@ -273,16 +273,16 @@
   (setq org-log-done 'time)
   (add-hook 'orgtbl-mode-hook
             (lambda ()
-              (setq org-table-separator-space " ")))
+              (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1)))))
   (add-hook 'org-mode-hook
             (lambda ()
-              (setq org-table-separator-space " ")))
+              (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1)))))
   (use-package org-bullets
     :ensure t
     :init
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   :config
-  (setq org-table-separator-space " "))
+  (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1))))
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
