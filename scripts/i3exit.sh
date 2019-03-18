@@ -4,6 +4,7 @@
 ############################################################
 
 function lock {
+    xkb-switch -s us
     i3lock --ignore-empty-password --show-failed-attempts 
 }
 
