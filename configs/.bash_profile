@@ -3,7 +3,8 @@
 # History:
 # 2014-01-08: Translated from .cshrc which I was using for 20+ years. With kind help from Vlad Karpinsky
 
-extrapaths="/usr/local/bin
+extrapaths="/usr/local/sbin
+/usr/local/bin
 /usr/local/bin/X11
 ${HOME}/bin
 ${HOME}/.local/bin
