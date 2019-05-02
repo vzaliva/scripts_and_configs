@@ -3,9 +3,9 @@
 if [ -f OMakefile ]; then
    if [ -t 1 ] ; then clear; fi
    omake $*
-elif [ -f jbuild ]; then
+elif [ -f jbuild ] || [ -f dune ] ; then
    if [ -t 1 ] ; then clear; fi
-   jbuilder $*   
+   dune $*   
 else
 # from https://stackoverflow.com/questions/6481005/how-to-obtain-the-number-of-cpus-cores-in-linux-from-the-command-line
     physicalCpuCount=$([ $(uname) = 'Darwin' ] && 
