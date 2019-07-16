@@ -226,12 +226,11 @@ bindsym $mod+Control+l exec "xkb-switch -s us ; i3lock -t -d -f -e --color=00000
 set $shutter /usr/share/sounds/freedesktop/stereo/camera-shutter.oga
 
 # Multi-screen screenshots with scrot
-bindsym --release Shift-Print exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # All screens
-
 # OSX-like area selection screenshots
-bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
+bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv -f $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
 
-bindsym $mod+p exec scrot 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv $f ~/Pictures/screenshots' && play -q $shutter
+# for some reason F8 is mapped to Mod+P
+bindsym $mod+p exec nautilus --no-desktop /home/lord/Dropbox
 
 exec_always --no-startup-id xrandr --dpi 180
 
