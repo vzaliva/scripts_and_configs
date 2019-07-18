@@ -271,18 +271,17 @@
   :ensure t
   :init
   (setq org-log-done 'time)
-  (add-hook 'orgtbl-mode-hook
-            (lambda ()
-              (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1)))))
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1)))))
   (use-package org-bullets
     :ensure t
     :init
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-  :config
-  (setq org-table-separator-space (propertize " " 'display '(space :relative-width 1))))
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (progn
+                  (org-bullets-mode 1)
+                  (if (image-type-available-p 'imagemagick)
+                      (setq org-image-actual-width 500))
+                  ))
+    )))
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
@@ -321,7 +320,7 @@
  '(browse-url-browser-function (quote browse-url-chrome))
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
@@ -329,9 +328,10 @@
  '(org-agenda-files
    (quote
     ("~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org")))
+ '(org-export-backends (quote (ascii beamer html latex md odt)))
  '(package-selected-packages
    (quote
-    (company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
+    (cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
