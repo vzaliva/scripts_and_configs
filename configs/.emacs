@@ -59,6 +59,11 @@
   (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
   (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file))
 
+(use-package imenu-anywhere
+  :ensure t
+  :init
+  (global-set-key (kbd "C-.") 'imenu-anywhere))
+
 (use-package iflipb
   :ensure t
   :init 
@@ -217,11 +222,12 @@
   (add-hook 'coq-mode-hook
             (lambda ()
               (company-coq-initialize)
-              (ws-butler-mode)))
+              (ws-butler-mode)
+              (helm-mode)))
+  (add-hook 'my-mode-hook 'imenu-add-menubar-index)
   (setq proof-splash-enable nil)
   (setq coq-prog-name "coqtop")
   (setq coq-compile-before-require t)
-  ;;(require 'company-coq "/home/lord/lisp/company-coq/company-coq.el")
   (use-package company-coq
     :ensure t
     :commands company-coq-mode)
@@ -331,7 +337,7 @@
  '(org-export-backends (quote (ascii beamer html latex md odt)))
  '(package-selected-packages
    (quote
-    (cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
+    (imenu-anywhere centaur-tabs tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
@@ -375,6 +381,7 @@
                 (cons coq-root-directory nil)))
              (when coq-project-find-file
                (setq default-directory coq-root-directory)))))))
+ '(send-mail-function (quote mailclient-send-it))
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode 1))
