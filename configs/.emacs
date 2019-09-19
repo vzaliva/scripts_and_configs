@@ -45,7 +45,17 @@
   :config
   (add-hook 'helm-find-files-after-init-hook
             (lambda ()
-              (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)))
+              (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)
+
+              ; temporary hack for https://github.com/emacs-helm/helm/issues/2201
+              (defun is-git-ignored (file)
+                (zerop (call-process "git" nil nil nil "check-ignore" "-q" file)))
+              (setq helm-ff-skip-boring-files t)
+              (defun helm-ff-boring-file-p (file)
+                (and (not (string-match "\\.$" file))
+                     (or (string-match  helm-ff--boring-regexp file)
+                         (is-git-ignored file))))
+              ))
   (setq helm-split-window-in-side-p t))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
@@ -348,7 +358,7 @@
  '(org-export-backends (quote (ascii beamer html latex md odt)))
  '(package-selected-packages
    (quote
-    (imenu-anywhere centaur-tabs tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
+    (helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere centaur-tabs tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
