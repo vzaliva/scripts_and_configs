@@ -41,9 +41,11 @@
   :ensure t
   :bind (("M-x" . helm-M-x)
          ("C-x C-f" . helm-find-files)
-         ("C-SPC" . helm-dabbrev)
          ("C-x b" . helm-buffers-list))
   :config
+  (add-hook 'helm-find-files-after-init-hook
+            (lambda ()
+              (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)))
   (setq helm-split-window-in-side-p t))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
