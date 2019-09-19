@@ -35,7 +35,16 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Load some packages I use
+;; Load some handy packages 
+
+(use-package helm
+  :ensure t
+  :bind (("M-x" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("C-SPC" . helm-dabbrev)
+         ("C-x b" . helm-buffers-list))
+  :config
+  (setq helm-split-window-in-side-p t))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
 (use-package cc-mode :ensure t)
