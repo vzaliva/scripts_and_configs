@@ -46,16 +46,7 @@
   (add-hook 'helm-find-files-after-init-hook
             (lambda ()
               (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)
-
-              ; temporary hack for https://github.com/emacs-helm/helm/issues/2201
-              (defun is-git-ignored (file)
-                (zerop (call-process "git" nil nil nil "check-ignore" "-q" file)))
-              (setq helm-ff-skip-boring-files t)
-              (defun helm-ff-boring-file-p (file)
-                (and (not (string-match "\\.$" file))
-                     (or (string-match  helm-ff--boring-regexp file)
-                         (is-git-ignored file))))
-              ))
+              (setq helm-ff-skip-git-ignored-files t)))
   (setq helm-split-window-in-side-p t))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
