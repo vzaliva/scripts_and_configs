@@ -242,10 +242,7 @@
   (setq coq-compile-before-require t)
   (use-package company-coq
     :ensure t
-    :commands company-coq-mode)
-  (use-package coq-commenter
-    :ensure t
-    :config (add-hook 'coq-mode-hook 'coq-commenter-mode))
+    :commands company-coq-mode)  
   )
 
 ;; SLIME
@@ -349,7 +346,7 @@
  '(org-export-backends (quote (ascii beamer html latex md odt)))
  '(package-selected-packages
    (quote
-    (helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere centaur-tabs tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
+    (gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere centaur-tabs tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
