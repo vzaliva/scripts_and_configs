@@ -290,15 +290,16 @@
   (setq org-log-done 'time)
   (use-package org-bullets
     :ensure t
-    :init
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (progn
-                  (org-bullets-mode 1)
-                  (if (image-type-available-p 'imagemagick)
-                      (setq org-image-actual-width 500))
-                  ))
-    )))
+    :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (progn
+                (setq org-hide-emphasis-markers t)
+                (if (image-type-available-p 'imagemagick)
+                    (setq org-image-actual-width 500))
+                ))
+            )
+  )
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
