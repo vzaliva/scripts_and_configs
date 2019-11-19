@@ -413,3 +413,5 @@
 
 (if (file-exists-p "~/.emacs.d/opam-user-setup.el")
     (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+
+(desktop-save-mode 1)
