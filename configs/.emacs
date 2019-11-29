@@ -320,6 +320,35 @@
 (load "server")
 (unless (server-running-p) (server-start))
 
+;; Save minibuffer history between launches
+(savehist-mode 1)
+
+;; Replace on yank
+(delete-selection-mode 1)
+
+;; Forces fixed-width font in org-mode
+(setq solarized-use-variable-pitch nil
+      solarized-scale-org-headlines nil)
+(load-theme 'solarized-dark)
+
+(setq x-underline-at-descent-line t)
+
+(if (file-exists-p "~/.emacs.d/opam-user-setup.el")
+    (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+
+(desktop-save-mode 1)
+
+(put 'scroll-left 'disabled t)
+
+(if (file-exists-p "~/lisp/zoom-frm.el")
+    ;; also requires frame-cmds.el, frame-fns.el 
+    (progn
+      (require 'zoom-frm)
+      (define-key ctl-x-map [(control ?+)] 'zoom-in/out)
+      (define-key ctl-x-map [(control ?-)] 'zoom-in/out)
+      (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
+      (define-key ctl-x-map [(control ?0)] 'zoom-in/out)
+      ))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -327,7 +356,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal)))))
-(put 'scroll-left 'disabled t)
 
 ;; Mark theme as "safe" to avoid startup warnings
 (custom-set-variables
@@ -397,21 +425,3 @@
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode 1))
-
-;; Save minibuffer history between launches
-(savehist-mode 1)
-
-;; Replace on yank
-(delete-selection-mode 1)
-
-;; Forces fixed-width font in org-mode
-(setq solarized-use-variable-pitch nil
-      solarized-scale-org-headlines nil)
-(load-theme 'solarized-dark)
-
-(setq x-underline-at-descent-line t)
-
-(if (file-exists-p "~/.emacs.d/opam-user-setup.el")
-    (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
-
-(desktop-save-mode 1)
