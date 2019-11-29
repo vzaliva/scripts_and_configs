@@ -340,15 +340,25 @@
 
 (put 'scroll-left 'disabled t)
 
-(if (file-exists-p "~/lisp/zoom-frm.el")
-    ;; also requires frame-cmds.el, frame-fns.el 
-    (progn
-      (require 'zoom-frm)
+;; Inspired by https://www.emacswiki.org/emacs/BookmarkPlus#BulkDownloadCompileLoad 
+(defun fetch-and-load-elisp (pkg-name pkg-files base-url base-dir)
+  (let ((pkg-dir (concat (file-name-as-directory base-dir) (symbol-name pkg-name))))
+    (require 'url)
+    (add-to-list 'load-path pkg-dir)
+    (make-directory pkg-dir t)
+    (mapcar (lambda (arg)
+              (let ((local-file (concat (file-name-as-directory pkg-dir) arg)))
+                (unless (file-exists-p local-file)
+                  (url-copy-file (concat base-url arg) local-file t))))
+            pkg-files)
+    (byte-recompile-directory pkg-dir 0)
+    (require pkg-name)))
+
+(if (fetch-and-load-elisp 'zoom-frm '("frame-cmds.el" "frame-fns.el" "zoom-frm.el") "https://www.emacswiki.org/emacs/download/" "~/lisp/")
       (define-key ctl-x-map [(control ?+)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?-)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
-      (define-key ctl-x-map [(control ?0)] 'zoom-in/out)
-      ))
+      (define-key ctl-x-map [(control ?0)] 'zoom-in/out))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
