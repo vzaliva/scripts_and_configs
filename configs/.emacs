@@ -354,7 +354,7 @@
     (byte-recompile-directory pkg-dir 0)
     (require pkg-name)))
 
-(if (fetch-and-load-elisp 'zoom-frm '("frame-cmds.el" "frame-fns.el" "zoom-frm.el") "https://www.emacswiki.org/emacs/download/" "~/lisp/")
+(when (fetch-and-load-elisp 'zoom-frm '("frame-cmds.el" "frame-fns.el" "zoom-frm.el") "https://www.emacswiki.org/emacs/download/" "~/lisp/")
       (define-key ctl-x-map [(control ?+)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?-)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
