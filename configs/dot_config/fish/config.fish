@@ -1,6 +1,7 @@
 alias x exit
 alias al alias
 alias ll "ls -al"
+alias e "emacsclient -n"
 
 set fish_greeting
 
