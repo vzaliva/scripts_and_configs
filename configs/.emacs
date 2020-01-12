@@ -231,7 +231,6 @@
 
 (use-package proof-general
   :mode ("\\.v\\'" . coq-mode)
-  :config (add-hook 'coq-mode-hook #'company-coq-mode)
   :init
   (add-hook 'coq-mode-hook
             (lambda ()
@@ -356,6 +355,7 @@
                             :forward-token #'coq-smie-forward-token
                             :backward-token #'coq-smie-backward-token)  
                 )))
+  (add-hook 'coq-mode-hook #'company-coq-mode)  
   (add-hook 'my-mode-hook 'imenu-add-menubar-index)
   (setq proof-splash-enable nil)
   (setq coq-prog-name "coqtop")
