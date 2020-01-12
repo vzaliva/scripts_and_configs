@@ -235,9 +235,127 @@
   :init
   (add-hook 'coq-mode-hook
             (lambda ()
+              (pg-monad-hack)
               (company-coq-initialize)
               (ws-butler-mode)
               (helm-mode)))
+  (add-hook 'coq-mode-hook
+            (lambda ()
+              (require 'smie)
+              (let ((g (smie-prec2->grammar                      
+                        (smie-bnf->prec2
+                         '((exp
+                            (exp ":= def" exp)
+                            (exp ":=" exp) (exp ":= inductive" exp)
+                            (exp "||" exp) (exp "|" exp) (exp "=>" exp)
+                            (exp "xxx provedby" exp) (exp "as morphism" exp)
+                            (exp "with signature" exp)
+                            ("match" matchexp "with match" exp "end") ;expssss
+                            ("let" assigns "in let" exp) ;("eval in" assigns "in eval" exp) disabled
+                            ("fun" exp "=> fun" exp) ("if" exp "then" exp "else" exp)
+                            ("quantif exists" exp ", quantif" exp)
+                            ("forall" exp ", quantif" exp)
+;;;
+                            ("(" exp ")") ("{|" exps "|}") ("{" exps "}")
+                            (exp "; tactic" exp) (exp "in tactic" exp) (exp "as" exp)
+                            (exp ";;" exp)
+                            (exp "by" exp) (exp "with" exp) (exp "|-" exp)
+                            (exp ":" exp) (exp ":<" exp) (exp "," exp)
+                            (exp "->" exp) (exp "<->" exp) (exp "&" exp)
+                            (exp "<-" exp)       
+                            (exp "/\\" exp) (exp "\\/" exp)
+                            (exp "==" exp) (exp "=" exp) (exp "<>" exp) (exp "<=" exp)
+                            (exp "<" exp) (exp ">=" exp) (exp ">" exp)
+                            (exp "=?" exp) (exp "<=?" exp) (exp "<?" exp)
+                            (exp "^" exp)
+                            (exp "+" exp) (exp "-" exp)
+                            (exp "*" exp)
+                            (exp ": ltacconstr" exp)(exp ". selector" exp))
+                           ;; Having "return" here rather than as a separate rule in `exp' causes
+                           ;; it to be indented at a different level than "with".
+                           (matchexp (exp) (exp "as match" exp) (exp "in match" exp)
+                                     (exp "return" exp) )
+                           (exps (affectrec) (exps "; record" exps))
+                           (affectrec (exp ":= record" exp))
+                           (assigns  (exp ":= let" exp))     ;(assigns "; record" assigns)
+
+                           (moduledef (moduledecl ":= module" exp))
+                           (moduledecl (exp) (exp ":" moduleconstraint)
+                                       (exp "<:" moduleconstraint))
+                           (moduleconstraint
+                            (exp) (exp ":= with module" exp)
+                            (moduleconstraint "with module" "module nodecl" moduleconstraint))
+
+                           ;; To deal with indentation inside module declaration and inside
+                           ;; proofs, we rely on the lexer. The lexer detects "." terminator of
+                           ;; goal starter and returns the ". proofstart" and ". moduelstart"
+                           ;; tokens.
+                           (bloc ("{ subproof" commands "} subproof")
+                                 (". proofstart" commands  "Proof End")
+                                 (". modulestart" commands  "end module" exp)
+                                 (moduledecl) (moduledef)
+                                 (exp))
+
+                           (commands (commands "." commands)
+                                     (commands "- bullet" commands)
+                                     (commands "+ bullet" commands)
+                                     (commands "* bullet" commands)
+                                     (commands "-- bullet" commands)
+                                     (commands "++ bullet" commands)
+                                     (commands "** bullet" commands)
+                                     (commands "--- bullet" commands)
+                                     (commands "+++ bullet" commands)
+                                     (commands "*** bullet" commands)
+                                     (commands "---- bullet" commands)
+                                     (commands "++++ bullet" commands)
+                                     (commands "**** bullet" commands)
+                                     ;; "with" of mutual definition should act like "."
+                                     ;; same for "where" (introduction of a notation
+                                     ;; after a inductive or fixpoint)
+                                     (commands "with inductive" commands)
+                                     (commands "with fixpoint" commands)
+                                     (commands "where" commands)
+                                     (bloc)))
+
+
+                         ;; Resolve the "trailing expression ambiguity" as in "else x -> b".
+                         ;; each line orders tokens by increasing priority
+                         ;; | C x => fun a => b | C2 x => ...
+                         ;;'((assoc "=>") (assoc "|")  (assoc "|-" "=> fun")) ; (assoc ", quantif")
+                         '((assoc "- bullet") (assoc "+ bullet") (assoc "* bullet")
+                           (assoc "-- bullet") (assoc "++ bullet") (assoc "** bullet")
+                           (assoc "--- bullet") (assoc "+++ bullet") (assoc "*** bullet")
+                           (assoc "---- bullet") (assoc "++++ bullet") (assoc "**** bullet")
+                           (assoc ".")
+                           (assoc "with inductive" "with fixpoint" "where"))
+                         '((assoc ":= def" ":= inductive")
+                           (assoc "|") (assoc "=>")
+                           (assoc ":=")	(assoc "xxx provedby")
+                           (assoc "as morphism") (assoc "with signature") (assoc "with match")
+                           (assoc "in let")
+                           (assoc "in eval") (assoc "=> fun") (assoc "then") (assoc ", quantif")
+                           (assoc "|| tactic") ;; FIXME: detecting "+ tactic" and "|| tactic" seems impossible
+                           (assoc "; tactic") (assoc "in tactic") (assoc "as" "by") (assoc "with")
+                           (assoc ";;")
+                           (assoc "|-") (assoc ":" ":<") (assoc ",")
+                           (assoc "else")
+                           (assoc "->") (assoc "<->")
+                           (assoc "<-")      
+                           (assoc "&") (assoc "/\\") (assoc "\\/")
+                           (assoc "==") (assoc "=") (assoc "<" ">" "<=" ">=" "<>")
+                           (assoc "=?") (assoc "<=?") (assoc "<?") (assoc "^")
+                           (assoc "||") ;; FIXME: detecting "+ tactic" and "|| tactic" seems impossible
+                           (assoc "+") (assoc "-") (assoc "*")
+                           (assoc ": ltacconstr") (assoc ". selector"))
+                         '((assoc ":" ":<")  (assoc "<"))
+                         '((assoc ". modulestart" "." ". proofstart") (assoc "Module def")
+                           (assoc "with module" "module nodecl") (assoc ":= module")
+                           (assoc ":= with module")  (assoc ":" ":<"))
+                         '((assoc ":= def") (assoc "; record") (assoc ":= record"))))))
+                (smie-setup g #'coq-smie-rules
+                            :forward-token #'coq-smie-forward-token
+                            :backward-token #'coq-smie-backward-token)  
+                )))
   (add-hook 'my-mode-hook 'imenu-add-menubar-index)
   (setq proof-splash-enable nil)
   (setq coq-prog-name "coqtop")
