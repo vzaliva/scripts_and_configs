@@ -2,6 +2,8 @@
 ;; $Id: .emacs,v 1.12 1999/09/27 23:11:43 lord Exp lord $
 ;;---------------------------------------------------------------
 
+;(setq package-check-signature nil)
+
 (setq load-path
       (cons "/opt/local//share/emacs/site-lisp"
             (cons "/opt/local/share/mercurial/contrib"
@@ -367,7 +369,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 140 :width normal)))))
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 80 :width normal)))))
 
 ;; Mark theme as "safe" to avoid startup warnings
 (custom-set-variables
