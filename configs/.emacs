@@ -49,7 +49,8 @@
             (lambda ()
               (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)
               (setq helm-ff-skip-git-ignored-files t)))
-  (setq helm-split-window-in-side-p t))
+  (setq helm-split-window-in-side-p t)
+  (use-package helm-ls-git :ensure t))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
 (use-package cc-mode :ensure t)
