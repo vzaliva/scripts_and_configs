@@ -232,7 +232,7 @@
 
 (use-package proof-general
   :mode ("\\.v\\'" . coq-mode)
-  :init (setq coq-smie-user-tokens '(("<-" . "&")(";;" . "->")))
+  :init
   (add-hook 'coq-mode-hook
             (lambda ()
               (pg-monad-hack)
