@@ -295,6 +295,7 @@
   (add-hook 'org-mode-hook
             (lambda ()
               (progn
+                (define-key org-mode-map [(control tab)] nil) ; release C-tab
                 (setq org-hide-emphasis-markers t)
                 (if (image-type-available-p 'imagemagick)
                     (setq org-image-actual-width 500))
