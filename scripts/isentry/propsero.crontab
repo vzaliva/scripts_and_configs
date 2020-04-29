@@ -1,0 +1,8 @@
+# use /bin/sh to run commands, overriding the default set by cron
+SHELL=/bin/sh
+MAILTO=lord
+#
+# run five minutes after midnight, every day
+5 0 * * *       $HOME/Dropbox/tmp/iSentry/autoclean.sh >> $HOME/tmp/isentry-autoclean.out 2>&1
+
+
