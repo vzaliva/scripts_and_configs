@@ -298,7 +298,9 @@
 (use-package org
   :ensure t
   :init
-  (setq org-log-done 'time)
+  (progn
+    (setq org-log-done 'time)
+    (setq org-directory "~/Dropbox/Notes"))
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -310,9 +312,26 @@
                 (setq org-hide-emphasis-markers t)
                 (if (image-type-available-p 'imagemagick)
                     (setq org-image-actual-width 500))
-                ))
-            )
-  )
+                
+                ;; Capture templates for links to pages having [ and ]
+                ;; characters in their page titles - notably ArXiv
+                ;; From https://github.com/sprig/org-capture-extension
+                (defun transform-square-brackets-to-round-ones(string-to-transform)
+                  "Transforms [ into ( and ] into ), other chars left unchanged."
+                  (concat 
+                   (mapcar #'(lambda (c) (if (equal c ?[) ?\( (if (equal c ?]) ?\) c))) string-to-transform)))
+                (setq org-capture-templates `(
+                                              ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+                                               "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")	
+                                              ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+                                               "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+                                              ))
+
+                ))))
+
+;; TODO: move inside "use-package org" section above
+(require 'org-protocol)
+
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
