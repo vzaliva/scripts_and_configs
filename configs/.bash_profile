@@ -98,9 +98,9 @@ if which vim >& /dev/null ; then
     alias vi=vim
 fi
 
-if which emacs >& /dev/null ; then
-    export VISUAL=emacs
-    export EDITOR=emacs
+if which emacsclient >& /dev/null ; then
+    export VISUAL=emacsclient 
+    export EDITOR=emacsclient
 else
     export VISUAL=vi
     export EDITOR=vi
@@ -239,3 +239,5 @@ fi
 export PATH
 export MANPATH
 
+
+export PATH="$HOME/.cargo/bin:$PATH"
