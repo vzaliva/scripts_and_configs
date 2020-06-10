@@ -300,7 +300,7 @@
   :init
   (progn
     (setq org-log-done 'time)
-    (setq org-directory "~/Dropbox/Notes"))
+    (setq org-directory "~/Dropbox/Notes/"))
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -321,10 +321,12 @@
                   (concat 
                    (mapcar #'(lambda (c) (if (equal c ?[) ?\( (if (equal c ?]) ?\) c))) string-to-transform)))
                 (setq org-capture-templates `(
-                                              ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                               "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")	
                                               ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
                                                "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+                                              
+                                              ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+                                               "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+                                              
                                               ))
 
                 ))))
