@@ -421,7 +421,7 @@
  '(org-export-backends (quote (ascii beamer html latex md odt)))
  '(package-selected-packages
    (quote
-    (helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
+    (yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex)))
  '(safe-local-variable-values
    (quote
     ((eval let
@@ -469,3 +469,10 @@
  '(show-paren-mode t)
  '(tool-bar-mode nil)
  '(transient-mark-mode 1))
+
+;; Start in org-agenda window
+(setq initial-buffer-choice (lambda ()
+                              (org-agenda)
+                              (delete-other-windows)
+                              (get-buffer "*Org Agenda*")
+                              ))
