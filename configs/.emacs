@@ -472,7 +472,7 @@
 
 ;; Start in org-agenda window
 (setq initial-buffer-choice (lambda ()
-                              (org-agenda)
+                              (org-agenda nil "t")
                               (delete-other-windows)
                               (get-buffer "*Org Agenda*")
                               ))
