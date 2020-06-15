@@ -247,4 +247,7 @@ for_window [ title="^Pympress Content" ] border none floating disable
 # alternative solution for PDFPC
 # for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
 
+# Assign some apps to dedicated workspaces
+assign [class="Emacs"]   2
+assign [class="Signal"]   5
 
