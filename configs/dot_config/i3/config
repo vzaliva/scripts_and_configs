@@ -251,3 +251,7 @@ for_window [ title="^Pympress Content" ] border none floating disable
 assign [class="Emacs"]   2
 assign [class="Signal"]   5
 
+# autostart redshift ( https://www.matthiggins.dev/install-redshift-with-i3/ )
+#exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+exec --no-startup-id redshift-gtk
+
