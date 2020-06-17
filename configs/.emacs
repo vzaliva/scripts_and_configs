@@ -335,6 +335,7 @@
 (require 'org-protocol)
 
 ;; Emacs iPython notebook
+;; Requires `pip3 install notebook`
 (use-package ein
   :config
   ;; Execute ein source blocks in org-mode
