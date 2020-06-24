@@ -1,0 +1,4 @@
+#!/bin/sh
+# Using https://github.com/chubin/wttr.in
+curl wttr.in/$1\?m 
+
