@@ -8,12 +8,10 @@ extrapaths="/usr/local/sbin
 /usr/local/bin/X11
 ${HOME}/bin
 ${HOME}/.local/bin
-/Applications/Aquamacs.app/Contents/MacOS/bin
 /Applications/MacPorts/Emacs.app/Contents/MacOS/bin
 /Applications/Graphviz.app/Contents/MacOS
 /opt/local/bin
 /opt/local/sbin
-${HOME}/pebble-dev/PebbleSDK-3.0/bin
 ${HOME}/.cabal/bin
 ${HOME}/.cask/bin
 /usr/local/Cellar/llvm/7.0.0/bin/"
