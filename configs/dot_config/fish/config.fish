@@ -23,3 +23,8 @@ end
 # OPAM configuration
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
+
+set -g theme_display_date no
+
+function fish_right_prompt; end
+
