@@ -241,23 +241,24 @@
     (load-file "~/lisp/mathematica.el"))
 
 (use-package proof-general
-  :mode ("\\.v\\'" . coq-mode)
-  :init (setq coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
   :ensure t
-  (add-hook 'coq-mode-hook
-            (lambda ()
-              (company-coq-initialize)
-              (ws-butler-mode)
-              (helm-mode)))
-  (add-hook 'coq-mode-hook #'company-coq-mode)
-  (add-hook 'my-mode-hook 'imenu-add-menubar-index)
-  (setq proof-splash-enable nil)
-  (setq coq-prog-name "coqtop")
-  (setq coq-compile-before-require t)
-  (use-package company-coq
-    :ensure t
-    :commands company-coq-mode)  
-  )
+  :mode ("\\.v\\'" . coq-mode)
+  :init (progn
+          (setq coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
+          (setq proof-splash-enable nil)
+          (setq coq-prog-name "coqtop")
+          (setq coq-compile-before-require t)
+          (add-hook 'coq-mode-hook
+                    (lambda ()
+                      (ws-butler-mode)
+                      (helm-mode))))
+  ;;(add-hook 'my-mode-hook 'imenu-add-menubar-index)
+)
+
+(use-package company-coq
+  :ensure t
+  :commands company-coq-mode
+  :init (add-hook  'coq-mode-hook  #'company-coq-mode))
 
 ;; SLIME
 (setq inferior-lisp-program "ccl64")
@@ -320,7 +321,7 @@
                 (defun transform-square-brackets-to-round-ones(string-to-transform)
                   "Transforms [ into ( and ] into ), other chars left unchanged."
                   (concat 
-                   (mapcar #'(lambda (c) (if (equal c ?[) ?\( (if (equal c ?]) ?\) c))) string-to-transform)))
+                   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
                 (setq org-capture-templates `(
                                               ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
                                                "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
