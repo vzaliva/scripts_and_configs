@@ -62,13 +62,28 @@
   :ensure t  
   :bind (:map flyspell-mode-map ("C-;" . 'helm-flyspell-correct)))
 
+(use-package imenu-anywhere
+  :ensure t
+  :ensure helm
+  :init
+  (global-set-key (kbd "C-.") 'helm-imenu-anywhere))
+
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
 (use-package cc-mode :ensure t)
 (use-package tex-site
   :ensure auctex
+  :ensure helm
+  :ensure imenu-anywhere
   :mode ("\\.tex\\'" . LaTeX-mode)
-  :init
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode))
+  :config
+  (add-hook 'LaTeX-mode-hook
+            (lambda ()
+              (flyspell-mode)
+	      (helm-mode)
+              (imenu-add-menubar-index)
+              (define-key LaTeX-mode-map (kbd "C-c C-,")
+                'helm-imenu-anywhere))))
+
 
 (use-package latex-extra
   :ensure t
@@ -84,11 +99,6 @@
   (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
   (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file))
 
-(use-package imenu-anywhere
-  :ensure t
-  :init
-  (global-set-key (kbd "C-.") 'imenu-anywhere))
-
 (use-package iflipb
   :ensure t
   :init 
@@ -96,7 +106,6 @@
   (global-set-key
    (if (featurep 'xemacs) (kbd "<C-iso-left-tab>") (kbd "<C-S-iso-lefttab>"))
    'iflipb-previous-buffer))
-
 
 (require 'font-lock)
 (use-package ws-butler :ensure t)
@@ -243,15 +252,15 @@
 (use-package proof-general
   :ensure t
   :mode ("\\.v\\'" . coq-mode)
-  :init (progn
-          (setq coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
-          (setq proof-splash-enable nil)
-          (setq coq-prog-name "coqtop")
-          (setq coq-compile-before-require t)
-          (add-hook 'coq-mode-hook
-                    (lambda ()
-                      (ws-butler-mode)
-                      (helm-mode))))
+  :init 
+  (setq coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
+  (setq proof-splash-enable nil)
+  (setq coq-prog-name "coqtop")
+  (setq coq-compile-before-require t)
+  (add-hook 'coq-mode-hook
+            (lambda ()
+              (ws-butler-mode)
+              (helm-mode)))
   ;;(add-hook 'my-mode-hook 'imenu-add-menubar-index)
 )
 
@@ -300,9 +309,8 @@
 (use-package org
   :ensure t
   :init
-  (progn
-    (setq org-log-done 'time)
-    (setq org-directory "~/Dropbox/Notes/"))
+  (setq org-log-done 'time)
+  (setq org-directory "~/Dropbox/Notes/")
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
