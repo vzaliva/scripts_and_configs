@@ -212,6 +212,7 @@ exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
 #exec --no-startup-id touchpad-indicator              	    # Touchpad indicator
 
 # No window tite needed for some programs 
+for_window [class="^(?i)firefox"] border none
 for_window [class="^(?i)google-chrome"] border none
 for_window [class="^(?i)emacs"] border none
 for_window [class="^(?i)rambox"] border none
