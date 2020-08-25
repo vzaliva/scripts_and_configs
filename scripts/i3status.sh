@@ -8,6 +8,9 @@
 # Suggested crontab entry:
 # */5 * * * * curl -s wttr.in/?format=3\&m > ~/.weather.cache
 
+# For Purple air updates:
+# */5 * * * * ~/bin/purple-avg.py > /dev/null
+
 i3status | while :
 do
     read line
@@ -16,7 +19,7 @@ do
     LG=$(xkblayout-state print "%s" | tr -d '\n\r')
     IFS=', ' read -r -a LAYOUT <<< $(setxkbmap -query | awk '/layout/{print $2}')
     lastidx=$( expr ${#LAYOUT[@]} - 1 )
-    P=`~/bin/purple-avg.py`
+    P=$(cat ~/.purple-avg.cache | tail -n 1)
     res="{ \"full_text\": \"🖮:\", \"separator\":false, \"separator_block_width\": 6 }"
     for index in "${!LAYOUT[@]}"
     do
