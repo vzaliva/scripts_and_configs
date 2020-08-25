@@ -16,6 +16,7 @@ do
     LG=$(xkblayout-state print "%s" | tr -d '\n\r')
     IFS=', ' read -r -a LAYOUT <<< $(setxkbmap -query | awk '/layout/{print $2}')
     lastidx=$( expr ${#LAYOUT[@]} - 1 )
+    P=`~/bin/purple-avg.py`
     res="{ \"full_text\": \"🖮:\", \"separator\":false, \"separator_block_width\": 6 }"
     for index in "${!LAYOUT[@]}"
     do
@@ -34,6 +35,7 @@ do
         fi
         res="$res,{ \"full_text\": \"$i\"$c$e}"
     done
-    wres="{ \"full_text\": \"$W\", \"color\":\"#4C5F4F\", \"separator\":false, \"separator_block_width\": 80 }"
-    echo "${line/[/[$wres,$res,}" || exit 1
+    wres="{ \"full_text\": \"$W\", \"color\":\"#4C5F4F\", \"separator\":true, \"separator_block_width\": 20 }"
+    ares="{ \"full_text\": \"🌫: $P\", \"color\":\"#ffbf00\", \"separator\":true, \"separator_block_width\": 20 }"
+    echo "${line/[/[$wres,$ares,$res,}" || exit 1
 done
