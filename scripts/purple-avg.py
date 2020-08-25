@@ -44,6 +44,7 @@ def main():
         # sanity check, some sensors return 0.0 (instant)
         # this is hacky, need to do proper statistical
         # filtering of outliers based on distribution
+        # TODO: use 'AGE' field to filter stale data
         if raw>5.0:
             v = LRAPA(raw)
             t = t+v
