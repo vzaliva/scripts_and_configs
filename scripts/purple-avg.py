@@ -27,7 +27,7 @@ def main():
         xts = 0.0
 
     if ts-xts < RL:
-        print("%.1f" % xv)
+        print("%.0f" % xv)
         exit(0)
                 
     t = 0.0
@@ -49,7 +49,7 @@ def main():
         f.write(str(a))
         f.write("\n")
         
-    print("%.1f" % a)
+    print("%.0f" % a)
 
 main()
     
