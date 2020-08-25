@@ -46,6 +46,8 @@ def main():
         # filtering of outliers based on distribution
         # TODO: use 'AGE' field to filter stale data
         if raw>5.0:
+            # need to actually calculate AQI. This is just PM2.5 concenration
+            # https://www3.epa.gov/airnow/aqi-technical-assistance-document-sept2018.pdf
             v = LRAPA(raw)
             t = t+v
             n = n+1
