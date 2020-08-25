@@ -3,6 +3,7 @@
 import requests
 import time
 import os
+import json
 
 # List of sensor IDs (collected from map)
 # around my location in Saratoga, CA
@@ -37,9 +38,13 @@ def main():
         u = "https://www.purpleair.com/json?show=%d"%i
         r = requests.get(u)
         j = r.json()
-        raw = float(j['results'][0]['PM2_5Value'])
-        # sanity check, some sensors return 0.0
-        if raw>1.0:
+        # using 10-min average
+        stats = json.loads(j['results'][0]['Stats'])
+        raw = float(stats['v1'])
+        # sanity check, some sensors return 0.0 (instant)
+        # this is hacky, need to do proper statistical
+        # filtering of outliers based on distribution
+        if raw>5.0:
             v = LRAPA(raw)
             t = t+v
             n = n+1
