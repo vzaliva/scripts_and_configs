@@ -13,6 +13,24 @@ SENSORS=[38547,60735,21449,20609,4299,18299]
 def LRAPA(x):
     return 0.5*x-0.66
 
+# Calculate AQI for PM2.5.
+# https://www3.epa.gov/airnow/aqi-technical-assistance-document-sept2018.pdf
+
+breakpoints=[(0.0  , 12.0,  0,   50),
+             (12.1 , 35.4,  51,  100),
+             (35.5 , 55.4,  101, 150),
+             (55.5 , 150.4, 151, 200),
+             (150.5, 250.4, 201, 300),
+             (250.5, 350.4, 301, 400),
+             (350.5, 500.4, 401, 500)]
+
+def AQI(pm25):
+    Cp = round(pm25,1)
+    for (Blo,Bhi,Ilo,Ihi) in breakpoints:
+        if Cp>=Blo and Cp<=Bhi:
+            return ((float(Ihi)-float(Ilo))/(Bhi-Blo))*(Cp-Blo)+float(Ilo)
+    return 501 #  "Beyond the AQI"
+
 # Rate limit - do not request more than once in 10 minutes
 RL=60*10
 TSFILE=os.path.expanduser("~/.purple-avg.cache")
@@ -46,13 +64,11 @@ def main():
         # filtering of outliers based on distribution
         # TODO: use 'AGE' field to filter stale data
         if raw>5.0:
-            # need to actually calculate AQI. This is just PM2.5 concenration
-            # https://www3.epa.gov/airnow/aqi-technical-assistance-document-sept2018.pdf
             v = LRAPA(raw)
             t = t+v
             n = n+1
 
-    a = round(t/n)
+    a = round(AQI(t/n))
     
     # update timestamp
     with open(TSFILE, "w") as f:
