@@ -414,6 +414,10 @@
       (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?0)] 'zoom-in/out))
 
+(setq browse-url-browser-function 'browse-url-firefox
+      browse-url-new-window-flag  t
+      browse-url-firefox-new-window-is-tab t)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -427,7 +431,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(browse-url-browser-function 'browse-url-chrome)
  '(custom-safe-themes
    '("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "5dbdb4a71a0e834318ae868143bb4329be492dd04bdf8b398fb103ba1b8c681a" "f8b886e3fce3b23ba517bd4ff29dd2c874c70b13d0fbdd1b3441be1d63f782eb" "5cd4770f787ad997ca9243662728031766736fc12f310b822a93de3c51d81878" "a68670dce845d18af9ec87716b4d4c2ea071271eccc80242be4d232c58b3cca2" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(doc-view-resolution 300)
