@@ -5,9 +5,11 @@ import time
 import os
 import json
 
+# Max ditance in Km from my location
+RADIUS = 5
+
 # List of sensor IDs (collected from map)
 # around my location in Saratoga, CA
-
 SENSORS=[{"id": 60735, "distance": 2.257297198870022},
          {"id": 20527, "distance": 1.8239682865311586},
          {"id": 44279, "distance": 4.62075329916058},
@@ -84,8 +86,9 @@ def main():
         # this is hacky, need to do proper statistical
         # filtering of outliers based on distribution
         # TODO: use 'AGE' field to filter stale data
-        if raw>5.0:
-            d = i['distance']
+        d = i['distance']
+        if raw>5.0 and d<RADIUS:
+            d = RADIUS-d # proximity weight
             dt = dt + d
             v = LRAPA(raw)
             t = t + (v*d)
