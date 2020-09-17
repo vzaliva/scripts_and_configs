@@ -87,7 +87,7 @@ def main():
         # filtering of outliers based on distribution
         # TODO: use 'AGE' field to filter stale data
         d = i['distance']
-        if raw>5.0 and d<RADIUS:
+        if raw>1.0 and d<RADIUS:
             d = RADIUS-d # proximity weight
             dt = dt + d
             v = LRAPA(raw)
