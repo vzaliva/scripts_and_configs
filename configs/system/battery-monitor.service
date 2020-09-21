@@ -1,0 +1,19 @@
+# Source: https://kodfabrik.com/journal/low-battery-monitor-for-linux-i3
+# File /etc/systemd/system/battery-monitor.service
+# Start:
+# sudo systemctl enable battery-monitor
+# sudo systemctl start battery-monitor
+
+[Unit]
+Description=Battery Monitor
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /home/lord/localbin/battery-monitor.sh
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.Xauthority
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+User=lord
+
+[Install]
+WantedBy=multi-user.target

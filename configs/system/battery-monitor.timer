@@ -1,0 +1,11 @@
+# Source: https://kodfabrik.com/journal/low-battery-monitor-for-linux-i3
+# File: etc/systemd/system/battery-monitor.timer
+# Enable
+# sudo systemctl enable battery-monitor.timer
+# sudo systemctl start battery-monitor.timer# 
+
+[Timer]
+OnUnitInactiveSec=10
+
+[Install]
+WantedBy=timers.target
