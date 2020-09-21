@@ -1,7 +1,8 @@
 #!/bin/bash
 
+# Original: https://kodfabrik.com/journal/low-battery-monitor-for-linux-i3
 # Source: https://git.felinn.org/snippets/1
-# Requires: https://github.com/vlevit/notify-send.sh
+# Requires: https://github.com/vlevit/~/bin/notify-send.sh
 
 battery_level=`acpi -b | cut -d ' ' -f 4 | grep -o '[0-9]*'`
 battery_state=$(acpi | grep 'Battery' | sed 's/Battery\s[0-9]*: //' | sed 's/, [0-9][0-9]*\%.*//')
@@ -21,7 +22,7 @@ echo "$battery_state" >> /tmp/.battery
 checkBatteryLevel() {
     if [ $battery_state != "Discharging" ] || [ "${battery_level}" == "${previous_battery_level}" ]; then
         if [ -f /tmp/.critbatlvl ] && [ "$battery_state" != "Discharging" ]; then
-            notify-send.sh -s 99
+            ~/bin/notify-send.sh -s 99
             rm -f /tmp/.critbatlvl
         fi
         exit
@@ -30,7 +31,7 @@ checkBatteryLevel() {
     if [ $battery_level -le 3 ]; then
         systemctl suspend
     elif [ $battery_level -le 5 ]; then
-        notify-send.sh "Low Battery" "Your computer will suspend soon unless plugged into a power outlet." -u critical -r 99 -R /tmp/.critbatlvl
+        ~/bin/notify-send.sh "Low Battery" "Your computer will suspend soon unless plugged into a power outlet." -u critical -r 99 -R /tmp/.critbatlvl
     elif [ $battery_level -le 10 ]; then
         notify-send "Low Battery" "${battery_level}% (${battery_remaining}) of battery remaining." -u normal
     fi
