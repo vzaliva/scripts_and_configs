@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Source: https://git.felinn.org/snippets/1
+# Requires: https://github.com/vlevit/notify-send.sh
+
 battery_level=`acpi -b | cut -d ' ' -f 4 | grep -o '[0-9]*'`
 battery_state=$(acpi | grep 'Battery' | sed 's/Battery\s[0-9]*: //' | sed 's/, [0-9][0-9]*\%.*//')
 battery_remaining=$(acpi | grep -oh '[0-9:]* remaining' | sed 's/:\w\w remaining$/ Minutes/'  | sed 's/00://' | sed 's/:/h /')
