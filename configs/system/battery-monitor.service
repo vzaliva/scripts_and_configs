@@ -9,7 +9,7 @@ Description=Battery Monitor
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /home/lord/localbin/battery-monitor.sh
+ExecStart=/bin/bash /home/lord/bin/battery-monitor.sh
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=%h/.Xauthority
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
