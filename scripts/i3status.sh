@@ -9,7 +9,7 @@
 # */5 * * * * curl -s wttr.in/?format=3\&m > ~/.weather.cache
 
 # For Purple air updates:
-# */5 * * * * ~/bin/purple-avg.py > /dev/null
+# */5 * * * * ~/bin/purple.py > /dev/null
 
 i3status | while :
 do
