@@ -8,29 +8,8 @@ import json
 # Max ditance in Km from my location
 RADIUS = 5
 
-# List of sensor IDs (collected from map)
-# around my location in Saratoga, CA
-SENSORS=[{"id": 60735, "distance": 2.257297198870022},
-         {"id": 20527, "distance": 1.8239682865311586},
-         {"id": 44279, "distance": 4.62075329916058},
-         {"id": 56247, "distance": 2.8376153149891783},
-         {"id": 35865, "distance": 3.2308737834589127},
-         {"id": 60067, "distance": 4.076598582024505},
-         {"id": 60069, "distance": 3.2609348136271965},
-         {"id": 18299, "distance": 2.550106833233925},
-         {"id": 54459, "distance": 4.788853289853395},
-         {"id": 54535, "distance": 4.044601652815528},
-         {"id": 19627, "distance": 3.848998375631747},
-         {"id": 61597, "distance": 2.0742910655994704},
-         {"id": 60011, "distance": 4.617712394228733},
-         {"id": 19425, "distance": 3.4749061430139965},
-         {"id": 20609, "distance": 3.2091593993558054},
-         {"id": 44911, "distance": 1.485555668250782},
-         {"id": 58961, "distance": 2.076424414263944},
-         {"id": 4299, "distance": 2.448843044047881},
-         {"id": 21449, "distance": 1.5192171030891888},
-         {"id": 38547, "distance": 0.8724871926876482},
-         {"id": 61759, "distance": 3.9470412308559744}]
+with open(".purple-sensors.list") as f: 
+   SENSORS = json.load(f) 
 
 # LRAPA correction https://www.lrapa.org/DocumentCenter/View/4147/PurpleAir-Correction-Summary
 def LRAPA(x):
