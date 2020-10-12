@@ -8,7 +8,9 @@ import json
 # Max ditance in Km from my location
 RADIUS = 5
 
-with open(".purple-sensors.list") as f: 
+LISTFILE = os.path.expanduser("~/.purple-sensors.list") 
+
+with open(LISTFILE) as f: 
    SENSORS = json.load(f) 
 
 # LRAPA correction https://www.lrapa.org/DocumentCenter/View/4147/PurpleAir-Correction-Summary
