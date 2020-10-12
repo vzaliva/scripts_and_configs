@@ -9,8 +9,8 @@ from math import radians, sin, cos
 import click
 
 # Filter sensor data by this interval (sanity check)
-PM_25_UPPER_LIMIT = 500 # inclusive
-PM_25_LOWER_LIMIT = 1 # exclusive
+PM_25_UPPER_LIMIT = 500 # exclusive
+PM_25_LOWER_LIMIT = 1 # inclusive
 
 # Coordinates of place near which we want to find sensors
 # To find coordinates of a place:
