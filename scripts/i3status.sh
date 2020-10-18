@@ -15,7 +15,6 @@ i3status | while :
 do
     read line
 
-    W=$(cat ~/.weather.cache | tail -n 1)
     LG=$(xkblayout-state print "%s" | tr -d '\n\r')
     IFS=', ' read -r -a LAYOUT <<< $(setxkbmap -query | awk '/layout/{print $2}')
     lastidx=$( expr ${#LAYOUT[@]} - 1 )
@@ -38,7 +37,6 @@ do
         fi
         res="$res,{ \"full_text\": \"$i\"$c$e}"
     done
-    wres="{ \"full_text\": \"$W\", \"color\":\"#4C5F4F\", \"separator\":true, \"separator_block_width\": 20 }"
     ares="{ \"full_text\": \"🌫: $P\", \"color\":\"#ffbf00\", \"separator\":true, \"separator_block_width\": 20 }"
-    echo "${line/[/[$wres,$ares,$res,}" || exit 1
+    echo "${line/[/[$ares,$res,}" || exit 1
 done
