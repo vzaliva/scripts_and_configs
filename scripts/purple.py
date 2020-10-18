@@ -85,6 +85,7 @@ def get_update_server_list(verbose, sensors_list_ttl, sensors_list_cache_file):
 
 @click.command()
 @click.option('--verbose', is_flag=True)
+@click.option('--dry-run', is_flag=True, help='Do not read or update cache files')
 @click.option('--radius', default=5.0, help='Radius in miles')
 @click.option('--lat', default=37.256886, help='Lattitude in radians')
 @click.option('--lon', default=-122.039156, help='Lattitude in radians')
@@ -95,14 +96,14 @@ def get_update_server_list(verbose, sensors_list_ttl, sensors_list_cache_file):
 @click.option('--results-cache-file', default=os.path.expanduser("~/.purple-avg.cache"), help='results cache file location')
 @click.option('--max-age', default=10, help='filer out sensors not reporting data given number of minutes')
 
-def purple(verbose,
+def purple(verbose, dry_run,
            radius, lat, lon,
            max_sensors, sensors_list_ttl, sensors_list_cache_file,
            results_ttl, results_cache_file,
            max_age
            ):
-    mylat = radians(37.256886)
-    mylon = radians(-122.039156)
+    mylat = radians(lat)
+    mylon = radians(lon)
     
     if verbose:
         print("Coordinates: %f,%f" % (lat,lon))
@@ -129,13 +130,16 @@ def purple(verbose,
     ts = time.time()
 
     #TODO: write location to cache file and invalidate it if it changes
-    try:
-        xts = os.path.getmtime(results_cache_file)
-        with open(results_cache_file, "r") as f:
-            xv = float(f.readline().strip())
-    except:
-        print("Error reading cached value")
+    if dry_run:
         xts = 0.0
+    else:
+        try:
+            xts = os.path.getmtime(results_cache_file)
+            with open(results_cache_file, "r") as f:
+                xv = float(f.readline().strip())
+        except:
+            print("Error reading cached value")
+            xts = 0.0
 
     if ts-xts < results_ttl:
         if verbose:
@@ -194,9 +198,10 @@ def purple(verbose,
     a = round(AQI(t/dt))
     
     # update timestamp
-    with open(results_cache_file, "w") as f:
-        f.write(str(a))
-        f.write("\n")
+    if not dry_run:
+        with open(results_cache_file, "w") as f:
+            f.write(str(a))
+            f.write("\n")
         
     print("%.0f" % a)
             
