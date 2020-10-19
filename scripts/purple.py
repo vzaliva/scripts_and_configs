@@ -8,9 +8,12 @@ import math
 from math import radians, sin, cos
 import click
 
+import numpy as np
+from sklearn.ensemble import IsolationForest
+
 # Filter sensor data by this interval (sanity check)
 PM_25_UPPER_LIMIT = 500 # exclusive
-PM_25_LOWER_LIMIT = 1 # inclusive
+PM_25_LOWER_LIMIT = 0 # inclusive
 
 # Coordinates of place near which we want to find sensors
 # To find coordinates of a place:
@@ -147,10 +150,10 @@ def purple(verbose, dry_run,
         print("%.0f" % xv)
         exit(0)
 
-    t  = 0.0
-    dt = 0.0
+    data = []
     for i in sensors:
-        u = "https://www.purpleair.com/json?show=%d"% i['id']
+        sid = i['id']
+        u = "https://www.purpleair.com/json?show=%d"% sid
         r = requests.get(u)
         j = r.json()
 
@@ -162,39 +165,42 @@ def purple(verbose, dry_run,
         raw1 = float(b['pm2_5_cf_1'])
         # humidity only stored for channel a
         humidity = float(a['humidity'])
+
+        # proximity weight
+        d = radius - i['distance']
         
         age0 = j['results'][0]['AGE']
         age1 = j['results'][1]['AGE']
 
-        # oh, Python....
-        if age0 > max_age:
-            if age1 > max_age:
-                if verbose:
-                    print("Skipping sensor %d because both channels are stale" % i['id'])
-                continue
-            else:
-                if verbose:
-                    print("Skipping stale channel A of sensor %d" % i['id'])
-                raw = raw1
-        else:
-            if age1 > max_age:
-                if verbose:
-                    print("Skipping stale channel B of sensor %d" % i['id'])
-                raw = raw0
-            else:
-                raw = (raw0+raw1)/2 # averaging channels
-        
-        d = i['distance']
-        
-        # sanity check, some sensors return 0.0 (instant)
-        # TODO: this is hacky, need to do proper statistical
-        # filtering of outliers based on distribution
-        if raw>=PM_25_LOWER_LIMIT and raw<PM_25_UPPER_LIMIT and d<radius:
-            d = radius-d # proximity weight
-            dt = dt + d
-            v = EPA(raw, humidity)
-            t = t + (v*d)
+        # adding both channels as independent sensors
+        if age0 < max_age and raw0>=PM_25_LOWER_LIMIT and raw0<PM_25_UPPER_LIMIT and d>=0:
+            data.append((raw0,d,humidity))
+        if age1 < max_age and raw1>=PM_25_LOWER_LIMIT and raw1<PM_25_UPPER_LIMIT and d>=0:
+            data.append((raw1,d,humidity))
 
+    data = np.array(data)
+    v = data[:,0].reshape(-1, 1)
+    iso = IsolationForest(contamination=0.01)
+    yhat = iso.fit_predict(v)
+    mask = yhat != -1
+    noutliers = len(mask) - sum(mask)
+    if verbose and noutliers>0:
+        data = data[mask]
+        print("Dropping %d outlier(s)" % noutliers)
+        #omask = yhat == -1
+        #print(v[omask])
+
+    t  = 0.0
+    dt = 0.0
+
+    # x[0] - PM
+    # x[1] - distance
+    # x[2] - humidity
+    for x in data:
+        dt = dt + x[1]
+        v = EPA(x[0], x[2])
+        t = t + (v*x[1])
+        
     a = round(AQI(t/dt))
     
     # update timestamp
