@@ -21,3 +21,7 @@ esac
 
 echo "Updating OPAM packages"
 opam update && opam upgrade
+
+echo "Updating Rust"
+rustup update
+
