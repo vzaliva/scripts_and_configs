@@ -56,7 +56,13 @@
               (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)
               (setq helm-ff-skip-git-ignored-files t)))
   (setq helm-split-window-in-side-p t)
-  (use-package helm-ls-git :ensure t))
+  (use-package helm-ls-git :ensure t)
+  (use-package helm-swoop
+    :ensure t
+    :bind (("M-i" . helm-swoop)
+           ("M-I" . 'helm-swoop-back-to-last-point))
+    )
+  )
 
 (use-package helm-flyspell
   :ensure t  
@@ -97,7 +103,10 @@
   :ensure t
   :init
   (global-set-key (kbd "C-<XF86Search>") 'helm-ag)
-  (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file))
+  (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file)
+  (global-set-key (kbd "<f7>") 'helm-ag)
+  (global-set-key (kbd "C-<f7>") 'helm-ag-this-file))
+  
 
 (use-package iflipb
   :ensure t
@@ -441,7 +450,7 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval let
            ((default-directory
