@@ -27,6 +27,8 @@ end
 # OPAM configuration
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
+# fix manpath after OPAM
+set -g MANPATH (manpath -g):$MANPATH
 
 set -g theme_display_date no
 
