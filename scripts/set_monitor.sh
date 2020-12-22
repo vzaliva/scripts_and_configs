@@ -11,4 +11,4 @@ else
     # No secondary
     xrandr --auto
 fi
-    
+pacmd set-default-sink 4    
