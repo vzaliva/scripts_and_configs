@@ -11,8 +11,11 @@ ssh-copy-id -i ~/.ssh/id_rsa $R
 ssh $R "mkdir bin src etc lib tmp"
 
 # some useful scripts
-scp bin/upd.sh $R/bin/
-scp .emacs .bash_profile .tmux.conf $R:~/
+scp ~/bin/upd.sh ~/bin/copy-stuff.sh $R:~/bin/
+
+# some config files
+scp ~/.emacs ~/.bash_profile ~/.tmux.conf $R:~/
+scp -p ~/.ssh/config $R:~/.ssh/
 
 # fish stuff
 ssh $R "curl -L https://get.oh-my.fish | fish"
