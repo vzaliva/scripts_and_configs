@@ -174,7 +174,7 @@
 (delete-selection-mode 1)
 
 ;; Keys
-(global-set-key [f7]   'grep-find)
+;(global-set-key [f7]   'grep-find)
 (global-set-key [f8]   'next-error)
 ;;(global-set-key [f9]   'tramp-compile)
 (global-set-key [f9]   'compile)
@@ -219,17 +219,39 @@
                 ) auto-mode-alist))
 
 
+;; Require 'stylish-haskell' installed
 (use-package haskell-mode
   :ensure t
   :mode "\\.hs\\'"
-  :config
+  :init
   (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-  ;;(add-hook 'haskell-mode-hook 'turn-on-haskell-simple-indent)
-  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
-
+  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  :bind (:map haskell-mode-map
+              ("C-c C-l" . 'haskell-process-load-or-reload)
+              ("C-c C-c" . 'haskell-compile)  
+              ("C-c C-a C-a"   . hoogle)
+              ("C-c s"   . haskell-mode-stylish-buffer)
+              )
+  :config (message "Loaded haskell-mode")
+  (setq haskell-process-type 'stack-ghci)
+  (setq haskell-stylish-on-save t)
+  (setq haskell-hoogle-url "https://www.stackage.org/lts/hoogle?q=%s")
+  ;;(setq haskell-mode-stylish-haskell-path "brittany")
+  )
+  
+(use-package dante
+  :ensure t
+  :defer t
+  :after haskell-mode
+  :commands 'dante-mode
+  :init
+  (add-hook 'haskell-mode-hook 'flycheck-mode)
+  ;; OR for flymake support:
+  ;;(add-hook 'haskell-mode-hook 'flymake-mode)
+  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  )
 
 (autoload 'javascript-mode "javascript" nil t)
 
@@ -424,7 +446,7 @@
       (define-key ctl-x-map [(control ?0)] 'zoom-in/out))
 
 (setq browse-url-browser-function 'browse-url-firefox
-      browse-url-new-window-flag  t
+      browse-url-new-window-flag  nil
       browse-url-firefox-new-window-is-tab t)
 
 (custom-set-faces
