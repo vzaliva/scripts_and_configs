@@ -211,13 +211,8 @@ for_window [instance="mendeleydesktop" title="^Mendeley Desktop$"] floating disa
 # Lock screen via Ctrl+Alt+L
 bindsym $mod+Control+l exec "xkb-switch -s us ; i3lock -t -d -f -e --color=000000"
 
-# Screenshots (adopted from https://www.reddit.com/r/i3wm/comments/65vis5/screenshot_commands_from_my_i3_config/ )
-# Require `xclip`, `scrot`, and 'play' (from sox)
-# Shutter file location:
-set $shutter /usr/share/sounds/freedesktop/stereo/camera-shutter.oga
-# Multi-screen screenshots with scrot
-# OSX-like area selection screenshots
-bindsym --release Print exec scrot -s 'screenshot_%Y%m%d_%H%M%S.png' -e 'mkdir -p ~/Pictures/screenshots && mv -f $f ~/Pictures/screenshots && xclip -selection clipboard -t image/png -i ~/Pictures/screenshots/`ls -1 -t ~/Pictures/screenshots | head -1`' && play -q $shutter # Area selection
+# Screenshots using `fameshot`
+bindsym --release Print exec "flameshot gui -p  ~/Pictures/screenshots/"
 
 # Nautilus
 bindsym $mod+n exec nautilus --no-desktop /home/lord/Dropbox
