@@ -4,9 +4,14 @@
 # Source: https://git.felinn.org/snippets/1
 # Requires: https://github.com/vlevit/~/bin/notify-send.sh
 
-battery_level=`acpi -b | cut -d ' ' -f 4 | grep -o '[0-9]*'`
-battery_state=$(acpi | grep 'Battery' | sed 's/Battery\s[0-9]*: //' | sed 's/, [0-9][0-9]*\%.*//')
-battery_remaining=$(acpi | grep -oh '[0-9:]* remaining' | sed 's/:\w\w remaining$/ Minutes/'  | sed 's/00://' | sed 's/:/h /')
+# NOTE: "head -1" part takes 1st battery Otherwise some bluetooth device batteries
+# like "magic mouse" confuse this script
+battery_level=`acpi -b | cut -d ' ' -f 4 | grep -o '[0-9]*'` | head -1
+
+# NOTE: "Battery 0" is hardcoded. Otherwise some bluetooth device batteries
+# like "magic mouse" confuse this script
+battery_state=$(acpi -b| grep 'Battery 0' | sed 's/Battery\s[0-9]*: //' | sed 's/, [0-9][0-9]*\%.*//')
+battery_remaining=$(acpi -b | grep -oh '[0-9:]* remaining' | sed 's/:\w\w remaining$/ Minutes/'  | sed 's/00://' | sed 's/:/h /')
 
 if [ ! -f "/tmp/.battery" ]; then
     echo "$battery_level" > /tmp/.battery
