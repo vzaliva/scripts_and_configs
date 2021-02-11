@@ -228,6 +228,8 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
   :bind (:map haskell-mode-map
+              ("C-," . 'haskell-move-nested-left)
+              ("C-." . 'haskell-move-nested-right)
               ("C-c C-l" . 'haskell-process-load-or-reload)
               ("C-c C-c" . 'haskell-compile)  
               ("C-c C-a C-a"   . hoogle)
