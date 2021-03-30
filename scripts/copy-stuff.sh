@@ -22,6 +22,10 @@ ssh $R "curl -L https://get.oh-my.fish | fish"
 scp -pr ~/.config/fish $R:~/.config/
 ssh $R "mv ~/.config/fish/fishd.paco ~/.config/fish/fishd.`hostname -s`"
 
+# bat
+if [ -d ~/.config/bat ]; then
+    scp -pr ~/.config/bat $R:~/.config/
+fi
 
 
 
