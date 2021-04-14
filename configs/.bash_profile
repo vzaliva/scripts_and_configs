@@ -234,8 +234,17 @@ if [ -x "$(command -v ag)" ]; then
   alias ag='\ag --pager="less -XFR"'
 fi
 
+
+if [ -x "$(command -v bat)" ]; then
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+fi
+
 export PATH
 export MANPATH
 
 
 export PATH="$HOME/.cargo/bin:$PATH"
+
+if [ -f ~/.config/broot/launcher/bash/br ]; then
+    source ~/.config/broot/launcher/bash/br
+fi
