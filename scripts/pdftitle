@@ -1,0 +1,8 @@
+#!/bin/sh
+
+for i in "$@"
+do
+    t=`pdfinfo "$i" | egrep "^Title:" | sed -E "s/^Title: *//g"`
+    echo "$i: $t"
+done
+
