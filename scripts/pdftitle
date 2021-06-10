@@ -1,9 +1,28 @@
-#!/bin/sh
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+if [ -t 1 ]; then color=yes ; else color=no; fi
+
+function red {
+    if [ $color = yes ]; then printf "${RED}$@${NC}\n"; else printf "$@\n"; fi
+}
+
+function green {
+    if [ $color = yes ]; then printf "${GREEN}$@${NC}\n"; else printf "$@\n"; fi 
+}
+
+function yellow {
+    if [ $color = yes ]; then printf "${YELLOW}$@${NC}\n"; else printf "$@\n"; fi 
+}
 
 for i in "$@"
 do
     t=`exiftool --TAG -PDF:Title -S -T "$i"`
     #t=`pdfinfo "$i" | egrep "^Title:" | sed -E "s/^Title: *//g"`
-    echo "$i: $t"
+    echo $(yellow $i): $t
 done
 
