@@ -2,7 +2,8 @@
 
 for i in "$@"
 do
-    t=`pdfinfo "$i" | egrep "^Title:" | sed -E "s/^Title: *//g"`
+    t=`exiftool --TAG -PDF:Title -S -T "$i"`
+    #t=`pdfinfo "$i" | egrep "^Title:" | sed -E "s/^Title: *//g"`
     echo "$i: $t"
 done
 
