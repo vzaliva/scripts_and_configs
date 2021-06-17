@@ -54,7 +54,7 @@ battery 0 {
 }
 
 path_exists VPN {
-     path = "/proc/sys/net/ipv4/conf/tun0"
+     path = "/proc/sys/net/ipv4/conf/proton0"
 }
 
 tztime local {
