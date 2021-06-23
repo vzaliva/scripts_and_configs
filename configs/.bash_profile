@@ -237,11 +237,11 @@ fi
 
 if [ -x "$(command -v bat)" ]; then
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+    alias ag='\ag --pager="bat -p"'
 fi
 
 export PATH
 export MANPATH
-
 
 export PATH="$HOME/.cargo/bin:$PATH"
 

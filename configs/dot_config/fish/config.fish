@@ -34,3 +34,13 @@ set -g theme_display_date no
 
 function fish_right_prompt; end
 
+if type -q ag
+    alias ag 'ag --pager="less -XFR"'
+end
+
+if type -q bat
+    set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
+    alias ag 'ag --pager="bat -p"'
+end
+
+
