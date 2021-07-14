@@ -389,20 +389,12 @@
    (append org-babel-load-languages '((ein . t))))
   )
 
-;; Grammarly support with FlyMake
-(use-package flymake-grammarly
+;; Grammarly support with LSP
+(use-package lsp-grammarly
   :ensure t
-  :init
-  (setq flymake-grammarly-check-time 3.0)
-  :hook ((text-mode latex-mode org-mode markdown-mode) . flymake-grammarly-load)
-  ;; The following should enable support for paid Grammarly accounts
-  ;; with ecrypted credentials storead as described here:
-  ;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-  ;; However there is a known bug https://github.com/emacs-grammarly/grammarly/issues/5
-  ;; which prevents me from using it.
-  ;;:init (if (file-exists-p "~/.emacs.secrets.el.gpg")
-  ;;          (load-file "~/.emacs.secrets.el.gpg"))
-  )
+  :hook (text-mode . (lambda ()
+                       (require 'lsp-grammarly)
+                       (lsp))))  ; or lsp-deferred
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
