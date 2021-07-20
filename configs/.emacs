@@ -372,7 +372,6 @@
                                                "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
                                               
                                               ))
-
                 ))))
 
 ;; TODO: move inside "use-package org" section above
@@ -389,14 +388,24 @@
    (append org-babel-load-languages '((ein . t))))
   )
 
-(use-package lsp-ui) 
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;;(setq lsp-keymap-prefix "C-c l")
+  ;;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
+  ;;:hook ((org-mode . lsp))
+  :commands lsp
 
-;; Grammarly support with LSP
-(use-package lsp-grammarly
-  :ensure t
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp))))  ; or lsp-deferred
+  (use-package lsp-ui) 
+
+  ;; Grammarly support with LSP
+  (use-package lsp-grammarly
+    :ensure t
+    :hook (text-mode . (lambda ()
+                         (require 'lsp-grammarly)
+                         (lsp))))  ; or lsp-deferred
+
+  )
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
