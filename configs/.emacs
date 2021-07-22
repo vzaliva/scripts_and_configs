@@ -392,8 +392,8 @@
   :ensure t
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  ;;(setq lsp-keymap-prefix "C-c l")
-  ;;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
+  (setq lsp-keymap-prefix "C-c l")
+  (add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
   ;;:hook ((org-mode . lsp))
   :commands lsp
 
@@ -442,8 +442,15 @@
 
 (setq x-underline-at-descent-line t)
 
+;; OPAM stuff
 (if (file-exists-p "~/.emacs.d/opam-user-setup.el")
     (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+(setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
+
+(if (locate-library "ott-mode")
+    (require 'ott-mode))
 
 ;;(desktop-save-mode 1)
 
