@@ -10,5 +10,7 @@
 # Use italic text on the terminal (not supported on all terminals)
 --italic-text=always
 
-# Use C++ syntax for .ino files
-#--map-syntax "*.ino:C++"
+# Use OCaml syntax for .core files
+--map-syntax='*.core:OCaml'
+
+
