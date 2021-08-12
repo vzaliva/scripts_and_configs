@@ -213,6 +213,7 @@
                 ("\\.py$"        . python-mode)
                 ("\\.[hg]s$"     . haskell-mode)
                 ("\\.hi$"        . haskell-mode)
+                ("\\.core$"      . tuareg-mode) ;; close enough
                 ("\\.lsl$"       . lsl-mode)
                 ("\\.l[hg]s$"    . literate-haskell-mode)
                 ("\\.js\\'"      . javascript-mode)
@@ -375,7 +376,8 @@
                 )))
   :config
   (setq org-file-apps
-        (append '(("\\.ll$" . emacs)) org-file-apps))
+        (append '(("\\.ll$" . emacs)
+                  ("\\.core$" . emacs)) org-file-apps))
   )
 
 ;; TODO: move inside "use-package org" section above
