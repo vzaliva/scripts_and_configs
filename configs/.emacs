@@ -3,16 +3,16 @@
 ;;---------------------------------------------------------------
 
 (setq load-path
-      (cons "/opt/local//share/emacs/site-lisp"
+      (cons "/opt/local/share/emacs/site-lisp"
             (cons "/opt/local/share/mercurial/contrib"
                   (cons (expand-file-name "~/lisp")
                         (cons "/usr/share/emacs/site-lisp/"
                               load-path)))))
 
 ;; Load LLVM mode, if present
-(if (file-exists-p "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
-    (lambda ()
-      (load-file "/usr/share/emacs/site-lisp/llvm-6.0/llvm-mode.el")
+(if (file-exists-p "/usr/share/emacs/site-lisp/llvm/llvm-mode.el")
+    (progn
+      (load-file "/usr/share/emacs/site-lisp/llvm/llvm-mode.el")
       (require 'llvm-mode)))
 
 ;;(if (file-exists-p "~/.cask/cask.el")
@@ -372,7 +372,11 @@
                                                "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
                                               
                                               ))
-                ))))
+                )))
+  :config
+  (setq org-file-apps
+        (append '(("\\.ll$" . emacs)) org-file-apps))
+  )
 
 ;; TODO: move inside "use-package org" section above
 (require 'org-protocol)
