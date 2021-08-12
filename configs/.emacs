@@ -214,6 +214,7 @@
                 ("\\.[hg]s$"     . haskell-mode)
                 ("\\.hi$"        . haskell-mode)
                 ("\\.core$"      . tuareg-mode) ;; close enough
+                ("\\.lem$"       . tuareg-mode) ;; close enough
                 ("\\.lsl$"       . lsl-mode)
                 ("\\.l[hg]s$"    . literate-haskell-mode)
                 ("\\.js\\'"      . javascript-mode)
