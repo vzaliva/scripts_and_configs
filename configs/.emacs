@@ -356,8 +356,10 @@
                 (define-key org-mode-map [(control tab)] nil) ; release C-tab
                 (define-key org-mode-map "\C-cb" 'org-iswitchb)
                 (setq org-hide-emphasis-markers t)
-                (if (image-type-available-p 'imagemagick)
-                    (setq org-image-actual-width 500))
+                ;; The following might not work wiht older
+                ;; versions of emacs, which depend on imagemagick
+                ;; for image resizing.
+                (setq org-image-actual-width nil)
                 
                 ;; Capture templates for links to pages having [ and ]
                 ;; characters in their page titles - notably ArXiv
