@@ -322,6 +322,9 @@
 
 ;; For ML
 
+(use-package dune  :ensure t)
+(use-package dune-format  :ensure t)
+
 (use-package tuareg
   :ensure t
   :config (add-to-list 'auto-mode-alist '("\\.ml\\'" . tuareg-mode)) ;Overwrite default mode for .ml which was SLIME
@@ -512,7 +515,7 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(keytar lsp-ui flycheck-grammarly markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(dune dune-format keytar lsp-ui flycheck-grammarly markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval let
            ((default-directory
