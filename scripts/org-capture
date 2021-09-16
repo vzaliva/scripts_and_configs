@@ -1,0 +1,40 @@
+#!/usr/bin/env python3
+
+
+# Takes contents of clipboard and sends to emacs via org-capture
+#
+# Requirements:
+# 1. `xsel` https://github.com/kfish/xsel
+# 2. `emacsclient` in the path
+#
+# Testes on Ubuntu with `i3wm`
+
+import subprocess
+import urllib.parse
+
+TEMPLATE = 't'
+TITLE    = "clipboard"
+
+if __name__ == '__main__':
+    result = subprocess.run(['xsel', '-b'], capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error accessing clipboard")
+        exit(1)
+    if result.stdout is None:
+        print("The clipboard is None")
+        exit(2)
+    t = str(result.stdout)
+    if len(t) == 0:
+        print("The clipboard is empty")
+        exit(2)
+
+
+    u = "org-protocol://capture?template=%s&title=%s&body=%s" % (TEMPLATE, TITLE, urllib.parse.quote(t))
+    print(u)
+    result = subprocess.run(['emacsclient', '-n', u])
+    if result.returncode != 0:
+        print("Error invoking emacsclient")
+        exit(1)
+        
+    exit(0)
+

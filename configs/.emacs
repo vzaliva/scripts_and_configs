@@ -337,7 +337,7 @@
     (autoload 'merlin-mode "merlin" "Merlin mode" t)
     (add-hook 'tuareg-mode-hook 'merlin-mode)
     (add-hook 'caml-mode-hook 'merlin-mode)
-    (use-package company
+    (use-package merlin-company
       :ensure t
       :init
       (with-eval-after-load 'company
@@ -510,6 +510,8 @@
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
+ '(merlin-debug nil)
+ '(merlin-default-flags nil)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
