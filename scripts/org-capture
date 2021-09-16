@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 
-
-# Takes contents of clipboard and sends to emacs via org-capture
+# Takes contents of the clipboard and sends it to emacs via org-capture protocol
 #
 # Requirements:
 # 1. `xsel` https://github.com/kfish/xsel
 # 2. `emacsclient` in the path
 #
 # Testes on Ubuntu with `i3wm`
+# Recommended template:
+# (setq org-capture-templates `(
+#     ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+#      "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+#     ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+#      "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+#     ("t" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+#      "* %:description\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+#     ))
 
 import subprocess
 import urllib.parse
