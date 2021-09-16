@@ -367,6 +367,7 @@
                 ;; Capture templates for links to pages having [ and ]
                 ;; characters in their page titles - notably ArXiv
                 ;; From https://github.com/sprig/org-capture-extension
+                ;; Requires some OS-level installation (registering protocol)
                 (defun transform-square-brackets-to-round-ones(string-to-transform)
                   "Transforms [ into ( and ] into ), other chars left unchanged."
                   (concat 
@@ -377,6 +378,8 @@
                                               
                                               ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
                                                "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+                                              ("t" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+                                               "* %:description\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
                                               
                                               ))
                 )))
