@@ -12,6 +12,7 @@ general {
         output_format = i3bar        
 }
 
+order += "keyboard_layout"
 order += "volume master"
 #order += "ipv6"
 order += "path_exists VPN"
@@ -27,6 +28,7 @@ volume master {
          device = "default"
          mixer = "Master"
          mixer_idx = 0
+         on_click 1 = "exec pavucontrol"
 }
 
 wireless _first_ {
@@ -65,3 +67,6 @@ load {
         format = "📈 %1min"
 }
 
+keyboard_layout {
+   format = "🖮: {layout}"
+}
