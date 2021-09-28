@@ -21,7 +21,7 @@ order += "wireless _first_"
 order += "ethernet _first_"
 order += "battery 0"
 order += "load"
-order += "tztime local"
+order += "clock"
 
 volume master {
          format = "♪: %volume"
@@ -63,8 +63,10 @@ path_exists VPN {
 vpn_status {
 }
 
-tztime local {
-        format = "%a %Y-%m-%d %H:%M"
+clock {
+    formal = ["{Local}", "{GMT}"]
+#   format = ["{America/Los_Angeles}", "{GMT}"]
+    format_time = "%a %Y-%m-%d %H:%M {timezone} "
 }
 
 load {
@@ -74,3 +76,4 @@ load {
 keyboard_layout {
    format = "🖮: {layout}"
 }
+
