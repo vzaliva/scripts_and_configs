@@ -387,6 +387,8 @@
   (setq org-file-apps
         (append '(("\\.ll$" . emacs)
                   ("\\.core$" . emacs)) org-file-apps))
+  
+  :bind (:map org-mode-map ("C-c l" . 'org-store-link))
   )
 
 ;; TODO: move inside "use-package org" section above
