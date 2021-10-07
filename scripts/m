@@ -7,10 +7,11 @@ elif [ -f jbuild ] || [ -f dune ] ; then
    if [ -t 1 ] ; then clear; fi
    dune $*   
 else
-# from https://stackoverflow.com/questions/6481005/how-to-obtain-the-number-of-cpus-cores-in-linux-from-the-command-line
+    # from https://stackoverflow.com/questions/6481005/how-to-obtain-the-number-of-cpus-cores-in-linux-from-the-command-line
+    # but modifed to use nproc(1).
     physicalCpuCount=$([ $(uname) = 'Darwin' ] && 
                        sysctl -n hw.physicalcpu_max ||
-                       lscpu -p | egrep -v '^#' | sort -u -t, -k 2,4 | wc -l)
+                       nproc)
     
    if [ -t 1 ] ; then clear; fi
    make -j $physicalCpuCount $*
