@@ -168,6 +168,7 @@
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region   'disabled nil)
 (setq line-number-mode     1)
+(setq column-number-indicator-zero-based nil)
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
 (setq remote-shell-program "ssh")
