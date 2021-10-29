@@ -1,19 +1,47 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ -f OMakefile ]; then
-   if [ -t 1 ] ; then clear; fi
-   omake $*
-elif [ -f jbuild ] || [ -f dune ] ; then
-   if [ -t 1 ] ; then clear; fi
-   dune $*   
-else
-    # from https://stackoverflow.com/questions/6481005/how-to-obtain-the-number-of-cpus-cores-in-linux-from-the-command-line
-    # but modifed to use nproc(1).
-    physicalCpuCount=$([ $(uname) = 'Darwin' ] && 
-                       sysctl -n hw.physicalcpu_max ||
+has_jobs_param() {
+    for arg; do
+        if [[ $arg =~ ^\-j[0-9]*$ ]] || [[ $arg =~ ^\-\-jobs=[0-9]+$ ]] ; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if [ -f Makefile ] || [ -f makefile ] || [ -f GNUmakefile ]; then
+    cpuCount=$([ $(uname) = 'Darwin' ] && 
+                   sysctl -n hw.physicalcpu_max ||
                        nproc)
-    
-   if [ -t 1 ] ; then clear; fi
-   make -j $physicalCpuCount $*
+    if [ -t 1 ] ; then clear; fi
+
+    if has_jobs_param "$@"; then
+        # do not override -j flag
+        make $*
+    else
+        make -j $cpuCount $*
+    fi    
+elif [ -f OMakefile ]; then
+    if [ -t 1 ] ; then clear; fi
+    omake $*
+elif [ -f stack.yaml ] ; then
+    if [ -t 1 ] ; then clear; fi
+    # if no agrument supplied, do "build" action
+    if [ $# -eq 0 ]; then
+        stack build
+    else
+        stack $*
+    fi
+elif [ -f jbuild ] || [ -f dune ] ; then
+    if [ -t 1 ] ; then clear; fi
+    # if no agrument supplied, do "build" action
+    if [ $# -eq 0 ]; then
+        dune build
+    else
+        dune $*
+    fi
+else
+    echo "Do not know how to build here!"
+    exit 1
 fi
 
