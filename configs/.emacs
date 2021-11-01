@@ -239,8 +239,8 @@
               ("C-c s"   . haskell-mode-stylish-buffer)
               )
   :config (message "Loaded haskell-mode")
-  ;(setq haskell-process-type 'stack-ghci)
-  (setq haskell-process-type 'cabal-repl)
+  (setq haskell-process-type 'stack-ghci)
+  ;(setq haskell-process-type 'cabal-repl)
   (setq haskell-stylish-on-save t)
   (setq haskell-hoogle-url "https://www.stackage.org/lts/hoogle?q=%s")
   ;;(setq haskell-mode-stylish-haskell-path "brittany")
@@ -283,8 +283,12 @@
 ;; Merge kill-buffer and MacOS clipboard
 (setq x-select-enable-clipboard t)
 
-(if (file-exists-p "~/lisp/mathematica.el")
-    (load-file "~/lisp/mathematica.el"))
+;; Display pretty tables in org mode
+;; https://github.com/Fuco1/org-pretty-table
+(if (file-exists-p "~/lisp/org-pretty-table/org-pretty-table.el")
+    (progn
+      (load-file "~/lisp/org-pretty-table/org-pretty-table.el")
+      (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode)))))
 
 (use-package proof-general
   :ensure t
@@ -391,6 +395,9 @@
   
   :bind (:map org-mode-map ("C-c l" . 'org-store-link))
   )
+
+(if (file-exists-p "~/lisp/mathematica.el")
+    (load-file "~/lisp/mathematica.el"))
 
 ;; TODO: move inside "use-package org" section above
 (require 'org-protocol)
