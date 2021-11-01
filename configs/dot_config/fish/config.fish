@@ -46,6 +46,7 @@ end
 if type -q bat
     set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
     alias ag 'ag --pager="bat -p"'
+    alias less bat
 end
 
 if type -q exa
