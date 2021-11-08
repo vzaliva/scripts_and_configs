@@ -64,7 +64,7 @@ vpn_status {
 }
 
 clock {
-    formal = ["{Local}", "{GMT}"]
+    format = ["{Local}", "{GMT}"]
 #   format = ["{America/Los_Angeles}", "{GMT}"]
 #    format_time = "%a %Y-%m-%d %H:%M {timezone} "
     format_time = "%a %Y-%m-%d %H:%M %Z"
