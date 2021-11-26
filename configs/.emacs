@@ -185,6 +185,8 @@
 (global-set-key [backspace]      'delete-backward-char)
 
 (global-set-key "\M-?" 'help-command)
+(global-unset-key (kbd "M-SPC"))
+(global-set-key (kbd "M-SPC") 'cycle-spacing)
 
 (setq auto-mode-alist
       (append '(("\\.C$"         . c++-mode)
