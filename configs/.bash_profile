@@ -243,8 +243,13 @@ fi
 export PATH
 export MANPATH
 
+
 export PATH="$HOME/.cargo/bin:$PATH"
 
 if [ -f ~/.config/broot/launcher/bash/br ]; then
     source ~/.config/broot/launcher/bash/br
+fi
+
+if [[ $OSTYPE == 'darwin'* ]]; then
+    export BASH_SILENCE_DEPRECATION_WARNING=1
 fi

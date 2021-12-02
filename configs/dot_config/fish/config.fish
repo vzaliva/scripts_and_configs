@@ -28,7 +28,9 @@ end
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
 # fix manpath after OPAM
-set -gx MANPATH (/usr/bin/manpath -g) $MANPATH
+if [ (uname) != Darwin ]
+   set -gx MANPATH (/usr/bin/manpath -g) $MANPATH
+end
 
 set -g theme_display_date no
 #set -g theme_powerline_fonts no
