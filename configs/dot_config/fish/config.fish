@@ -1,6 +1,5 @@
 alias x exit
 alias al alias
-alias ll "ls -al"
 alias e "emacsclient -n"
 
 set -gx EDITOR 'emacsclient';
@@ -53,6 +52,9 @@ end
 
 if type -q exa
     alias ls exa
+    alias ll "exa -snew -l"
+else
+    alias ll "ls -al"
 end
 
 set NPM_PACKAGES "$HOME/.npm-packages"
