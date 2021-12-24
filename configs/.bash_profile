@@ -230,21 +230,31 @@ man() {
             man "$@"
 }
 
-if [ -x "$(command -v ag)" ]; then
+export PATH="$HOME/.cargo/bin:$PATH"
+
+if command -v ag &> /dev/null
+then
   alias ag='\ag --pager="less -XFR"'
 fi
 
-
-if [ -x "$(command -v bat)" ]; then
+if command -v exa &> /dev/null
+then
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
     alias ag='\ag --pager="bat -p"'
+    alias less="bat"
+fi
+
+if command -v exa &> /dev/null
+then
+    alias ls="exa"
+    alias ll="exa -snew -l"
+else
+    alias ll="ls -lFtr"
 fi
 
 export PATH
 export MANPATH
 
-
-export PATH="$HOME/.cargo/bin:$PATH"
 
 if [ -f ~/.config/broot/launcher/bash/br ]; then
     source ~/.config/broot/launcher/bash/br
