@@ -56,10 +56,6 @@ battery 0 {
         low_threshold = 10
 }
 
-path_exists VPN {
-     path = "/proc/sys/net/ipv4/conf/proton0"
-}
-
 vpn_status {
 }
 
