@@ -431,7 +431,7 @@
   (setq lsp-keymap-prefix "C-c l")
   
   :config
-  (add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
+  ;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
   ;;:hook ((org-mode . lsp))
   )
 
@@ -492,7 +492,10 @@
 (if (locate-library "ott-mode")
     (require 'ott-mode))
 
-;;(desktop-save-mode 1)
+(if (locate-library "ocp-indent")
+     (require 'ocp-indent))
+
+  ;;(desktop-save-mode 1)
 
 (put 'scroll-left 'disabled t)
 
@@ -538,14 +541,16 @@
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
- '(merlin-debug nil)
+ '(lsp-grammarly-dialect "british")
+ '(lsp-grammarly-domain "academic")
+ '(merlin-debug t)
  '(merlin-default-flags nil)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(helm-lsp langtool dune dune-format keytar lsp-ui flycheck-grammarly markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui flycheck-grammarly markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval let
            ((default-directory
