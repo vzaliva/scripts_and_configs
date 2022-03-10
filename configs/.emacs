@@ -350,6 +350,8 @@
       (with-eval-after-load 'company
         (add-to-list 'company-backends 'merlin-company-backend))
       (add-hook 'merlin-mode-hook 'company-mode))
+    :config
+    (setq merlin-error-on-single-line t)
     ))
 
 (use-package org
@@ -545,6 +547,7 @@
  '(lsp-grammarly-domain "academic")
  '(merlin-debug t)
  '(merlin-default-flags nil)
+ '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
