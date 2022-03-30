@@ -32,7 +32,15 @@ if command -v rustup --version &> /dev/null
 then
     echo "Updating Rust"
     rustup update
+
+    if command -v cargo --version &> /dev/null
+    then
+        echo "Updating Cargo crates"
+        cargo install cargo-update
+        cargo install-update -a 
+    fi
 fi
+
 
 #if command -v pip3 --version &> /dev/null
 #then
