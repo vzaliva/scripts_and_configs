@@ -222,7 +222,7 @@ bindsym $mod+Control+l exec "xkb-switch -s us ; i3lock -t -d -f -e --color=00000
 bindsym --release Print exec "flameshot gui -p  ~/Pictures/screenshots/"
 
 # Nautilus
-bindsym $mod+n exec nautilus --no-desktop /home/lord/Dropbox
+bindsym $mod+n exec nemo --no-desktop /home/lord/Dropbox
 
 # Presentation stuff (with multiple displays)
 # pdfpc to show notes on separate screen
