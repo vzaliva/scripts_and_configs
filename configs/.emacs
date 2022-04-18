@@ -361,6 +361,7 @@
       (add-hook 'merlin-mode-hook 'company-mode))
     :config
     (setq merlin-error-on-single-line t)
+    :bind (("M-o" . merlin-occurrences))
     ))
 
 (use-package org
@@ -451,10 +452,20 @@
   :hook (text-mode . (lambda ()
                        (require 'lsp-grammarly)
                        (lsp)))
+  :config
+  (lsp-grammarly-dialect "british")
+  (lsp-grammarly-domain "academic")
   )
 
 (use-package keytar :ensure t)
-(use-package lsp-ui :ensure t)
+(use-package lsp-ui
+  :ensure t
+  :config
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-sideline-wait-for-all-symbols nil)  
+  ;;(setq lsp-ui-sideline-update-mode 'point)
+  )
 
 ;; Does not seems to wrok
 ;;  (use-package helm-lsp
@@ -554,6 +565,7 @@
  '(line-number-mode 1)
  '(lsp-grammarly-dialect "british")
  '(lsp-grammarly-domain "academic")
+ '(lsp-ui-sideline-show-code-actions t)
  '(merlin-debug t)
  '(merlin-default-flags nil)
  '(merlin-error-on-single-line t)
@@ -599,7 +611,9 @@
  '(send-mail-function 'mailclient-send-it)
  '(show-paren-mode t)
  '(tool-bar-mode nil)
- '(transient-mark-mode 1))
+ '(transient-mark-mode 1)
+ '(warning-suppress-log-types '((comp) (comp) (comp)))
+ '(warning-suppress-types '((comp) (comp))))
 
 ;; Start in org-agenda window
 (setq initial-buffer-choice (lambda ()
