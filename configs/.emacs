@@ -441,6 +441,9 @@
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
+
+  :custom
+  (lsp-auto-execute-action nil)
   
   :config
   ;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
