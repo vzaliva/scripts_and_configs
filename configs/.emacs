@@ -452,9 +452,11 @@
   :hook (text-mode . (lambda ()
                        (require 'lsp-grammarly)
                        (lsp)))
-  :config
+  :custom
   (lsp-grammarly-dialect "british")
   (lsp-grammarly-domain "academic")
+  (lsp-grammarly-audience "expert")
+  (lsp-grammarly--show-debug-message t)
   )
 
 (use-package keytar :ensure t)
@@ -463,14 +465,18 @@
   :config
   (setq lsp-ui-doc-enable nil)
   (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-sideline-wait-for-all-symbols nil)  
+  (setq lsp-ui-sideline-wait-for-all-symbols nil)
+  (setq lsp-headerline-breadcrumb-enable nil)
   ;;(setq lsp-ui-sideline-update-mode 'point)
   )
 
 ;; Does not seems to wrok
-;;  (use-package helm-lsp
-;;    :ensure t
-;;    :commands helm-lsp-workspace-symbol)
+(use-package helm-lsp
+  :ensure t
+  :commands helm-lsp-workspace-symbol
+  :bind (:map lsp-mode-map
+              ("C-c l a a" . helm-lsp-code-actions))
+  )
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
@@ -574,7 +580,7 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui flycheck-grammarly markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval let
            ((default-directory
