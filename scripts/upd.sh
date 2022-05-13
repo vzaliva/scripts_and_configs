@@ -28,6 +28,12 @@ then
     opam update && opam upgrade
 fi
 
+if command -v npm --version &> /dev/null
+then
+    echo "Updating NPM packages"
+    npm update
+fi
+
 if command -v rustup --version &> /dev/null
 then
     echo "Updating Rust"
