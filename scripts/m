@@ -1,5 +1,14 @@
 #!/bin/bash
 
+handle_rc() {
+    status=$?
+    if command -v notify-send &> /dev/null
+    then
+        [ $status -eq 0 ] && notify-send "build successful" || notify-send "buld failed"
+    fi
+    exit $status
+}
+
 has_jobs_param() {
     for arg; do
         if [[ $arg =~ ^\-j[0-9]*$ ]] || [[ $arg =~ ^\-\-jobs=[0-9]+$ ]] ; then
@@ -20,10 +29,12 @@ if [ -f Makefile ] || [ -f makefile ] || [ -f GNUmakefile ]; then
         make $*
     else
         make -j $cpuCount $*
-    fi    
+    fi
+    handle_rc    
 elif [ -f OMakefile ]; then
     if [ -t 1 ] ; then clear; fi
     omake $*
+    handle_rc
 elif [ -f stack.yaml ] ; then
     if [ -t 1 ] ; then clear; fi
     # if no agrument supplied, do "build" action
@@ -32,6 +43,7 @@ elif [ -f stack.yaml ] ; then
     else
         stack $*
     fi
+    handle_rc
 elif [ -f jbuild ] || [ -f dune ] ; then
     if [ -t 1 ] ; then clear; fi
     # if no agrument supplied, do "build" action
@@ -40,6 +52,7 @@ elif [ -f jbuild ] || [ -f dune ] ; then
     else
         dune $*
     fi
+    handle_rc
 else
     echo "Do not know how to build here!"
     exit 1
