@@ -212,6 +212,7 @@ for_window [class="^(?i)firefox"] border none
 for_window [class="^(?i)google-chrome"] border none
 for_window [class="^(?i)emacs"] border none
 for_window [class="^(?i)rambox"] border none
+for_window [class="^(?i)hamsket"] border none
 for_window [instance="mendeleydesktop" title="^Mendeley Desktop$"] floating disable
 for_window [class="^(?i)pavucontrol"] floating enable
 
