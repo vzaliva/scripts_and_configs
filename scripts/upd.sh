@@ -32,6 +32,7 @@ if command -v npm --version &> /dev/null
 then
     echo "Updating NPM packages"
     npm update
+    rm -f package-lock.json
 fi
 
 if command -v rustup --version &> /dev/null
