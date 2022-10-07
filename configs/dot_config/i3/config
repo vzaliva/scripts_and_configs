@@ -160,8 +160,10 @@ bindsym $mod+u move workspace to output up
 # We implement switching via i3 shortcut, so we can instantly update indicator for
 # i3status bar
 bindsym Mod1+space exec "/usr/local/bin/xkb-switch -n; ~/.local/bin/py3-cmd refresh keyboard_layout"
-exec_always "setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps"
-bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps' 'setxkbmap -layout us,ua -option ctrl:nocaps' ; ~/.local/bin/py3-cmd refresh keyboard_layout"
+exec_always "setxkbmap -layout us,ua -option ctrl:nocaps"
+
+#exec_always "setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps"
+#bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps' 'setxkbmap -layout us,ua -option ctrl:nocaps' ; ~/.local/bin/py3-cmd refresh keyboard_layout"
 
 # Auto lock screen
 exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
