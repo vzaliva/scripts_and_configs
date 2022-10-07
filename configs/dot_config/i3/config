@@ -236,6 +236,7 @@ for_window [ title="^Pympress Content" ] border none floating disable
 
 # Assign some apps to dedicated workspaces
 assign [class="^(?i)rambox"]  3
+assign [class="^(?i)hamsket"]  3
 assign [class="Emacs"]   2
 assign [class="Signal"]   5
 
