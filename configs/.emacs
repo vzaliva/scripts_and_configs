@@ -530,6 +530,24 @@
 
 (put 'scroll-left 'disabled t)
 
+
+;; https://github.com/seagle0128/doom-modeline
+(use-package doom-modeline
+  :ensure t
+  :init
+  (progn
+    (doom-modeline-mode 1)
+    (setq doom-modeline-icon t)
+    (setq doom-modeline-support-imenu t)
+    (setq doom-modeline-height 1) ; optional
+    (custom-set-faces
+     '(mode-line ((t (:family "Noto Sans" :height 0.9))))
+     '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
+     '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
+    (setq doom-modeline-project-detection 'project))
+  (use-package all-the-icons  :ensure t) ;; manually run `all-the-icons-install-fonts` once after install
+  )
+
 ;; Inspired by https://www.emacswiki.org/emacs/BookmarkPlus#BulkDownloadCompileLoad 
 (defun fetch-and-load-elisp (pkg-name pkg-files base-url base-dir)
   (let ((pkg-dir (concat (file-name-as-directory base-dir) (symbol-name pkg-name))))
@@ -583,7 +601,7 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval let
            ((default-directory
