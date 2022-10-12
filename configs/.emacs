@@ -64,6 +64,15 @@
     )
   )
 
+(use-package flyspell
+  :ensure t  
+  :init
+  ;; spell checking  via hunspell
+  ;; sudo apt hunspell hunspell-en-gb hunspell-uk
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "en_GB")
+)
+
 (use-package helm-flyspell
   :ensure t  
   :bind (:map flyspell-mode-map ("C-;" . 'helm-flyspell-correct)))
