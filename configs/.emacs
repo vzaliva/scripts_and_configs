@@ -358,6 +358,7 @@
   (use-package merlin
     :ensure t
     :bind (:map merlin-mode-map ("M-." . merlin-locate))
+    :bind (:map merlin-mode-map ("M-," . merlin-pop-stack))
     :init
     (autoload 'merlin-mode "merlin" "Merlin mode" t)
     (add-hook 'tuareg-mode-hook 'merlin-mode)
