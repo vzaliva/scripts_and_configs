@@ -35,4 +35,4 @@ else
     # move workspaces 7,8 to back primary monitor
     i3-msg -q "workspace 7; move workspace to output eDP-1; workspace 8; move workspace to output eDP-1"
 fi
-pacmd set-default-sink 4    
+#pacmd set-default-sink 4    
