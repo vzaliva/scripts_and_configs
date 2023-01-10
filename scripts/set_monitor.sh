@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if `xrandr | grep -q "HDMI-1 connected 3840x2160+0+0"`; then
+if `xrandr | grep -q "HDMI-1 connected 3840x2160"`; then
     # Secondary UHD display in landscape mode
     # set it above main one
     xrandr > /dev/null
