@@ -224,11 +224,15 @@ then
   alias ag='\ag --pager="less -XFR"'
 fi
 
+if command -v bat &> /dev/null
+then
+    alias less="bat"
+fi
+
 if command -v exa &> /dev/null
 then
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
     alias ag='\ag --pager="bat -p"'
-    alias less="bat"
 else
     #colorized man pages
     man() {
