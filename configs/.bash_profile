@@ -229,6 +229,7 @@ then
     alias less="batcat"
     alias bat="batcat"
 elif command -v bat &> /dev/null
+then
     alias less="bat"
 fi
 
