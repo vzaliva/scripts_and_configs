@@ -224,8 +224,11 @@ then
   alias ag='\ag --pager="less -XFR"'
 fi
 
-if command -v bat &> /dev/null
+if command -v batcat &> /dev/null
 then
+    alias less="batcat"
+    alias bat="batcat"
+elif command -v bat &> /dev/null
     alias less="bat"
 fi
 
