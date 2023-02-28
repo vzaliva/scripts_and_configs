@@ -19,6 +19,8 @@ scp -p ~/.ssh/config $R:~/.ssh/
 
 # fish stuff
 ssh $R "curl -L https://get.oh-my.fish | fish"
+ssh $R "fish -c \"omf install bobthefish\"
+
 scp -pr ~/.config/fish $R:~/.config/
 ssh $R "mv ~/.config/fish/fishd.relic ~/.config/fish/fishd.`hostname -s`"
 
