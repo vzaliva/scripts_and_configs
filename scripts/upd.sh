@@ -55,7 +55,7 @@ then
     if command -v pip_upgrade_outdated --version &> /dev/null
     then
         echo "Installing pip_upgrade_outdated"
-        pip3 install pip-upgrade-outdated
+        pip3 install --user pip-upgrade-outdated
     fi
     pip_upgrade_outdated -3 -p -u
 fi
