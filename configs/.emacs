@@ -37,6 +37,39 @@
 
 ;; Load some handy packages 
 
+(use-package gptel
+  :ensure t
+  :custom gptel-directives
+  `(
+    (default . "You are a large language model living in Emacs
+  and a helpful assistant. Respond concisely.")
+
+    (paper . "You are my proofreader. Your job is to proofread
+    text I give you and correct grammar and spelling mistakes. Do
+    not diverge too far from original text and try to preserve as
+    much as possible of the original sentence structure. The text
+    you will be proofreading may use occasional LaTeX
+    syntax. This is an academic writing and I am using british
+    english. After showing me corrected text, also please give me
+    a summary of the changes you made.")
+    
+    (ukrainian . "You are my Ukrainian proofreader. Your job is
+to proofread text I give you and correct mistakes. The original
+text could be in any language but you should output only
+Ukrainian.")
+    
+    (email . "You are my email proofreader for my business and
+academic correspondence. I write in British English. I would like
+the style to be business but not overly formal. Please proofread
+whatever I send to you and summarize the changes you made.")
+    
+    (forums . "You are my proofreader. I write in british
+english. The posts is for general audience (like forums and
+social media) and the tone needs to be brief and not overly
+formal. Proofreead and brush up whatever I send to you and
+summarize the changes you made."))
+  )
+
 (use-package multiple-cursors
   :ensure t
   :bind (("C-S-c C-S-c" .  'mc/edit-lines))
@@ -618,9 +651,10 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(gptel ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch gnu-elpa-keyring-update helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
-   '((eval let
+   '((eval visual-line-mode t)
+     (eval let
            ((default-directory
               (locate-dominating-file buffer-file-name ".dir-locals.el")))
            (setq-local coq-prog-args
@@ -665,3 +699,4 @@
                               (delete-other-windows)
                               (get-buffer "*Org Agenda*")
                               ))
+
