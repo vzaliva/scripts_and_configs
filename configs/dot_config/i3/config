@@ -150,6 +150,11 @@ bar {
     tray_output bottom
 }
 
+bar {
+    output DP-3-3
+    tray_output bottom
+}
+
 bindsym $mod+x move workspace to output right
 bindsym $mod+u move workspace to output up
 
