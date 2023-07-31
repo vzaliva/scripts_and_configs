@@ -212,7 +212,7 @@ exec --no-startup-id redshift-gtk
 # No window tite needed for some programs 
 for_window [class="^(?i)firefox"] border none
 for_window [class="^(?i)emacs"] border none
-for_window [class="^(?i)hamsket"] border none
+for_window [class="^(?i)ferdium"] border none
 for_window [class="^(?i)pavucontrol"] floating enable
 
 # Lock screen via Ctrl+Alt+L
@@ -232,7 +232,7 @@ for_window [ title="^Pympress Content" ] border none floating disable
 # for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
 
 # Assign some apps to dedicated workspaces
-assign [class="^(?i)hamsket"]  3
+assign [class="^(?i)ferdium"]  3
 assign [class="Emacs"]   2
 assign [class="Signal"]   5
 
