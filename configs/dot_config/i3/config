@@ -183,8 +183,8 @@ bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute $mic toggle
 
 # Brightness controls
 # https://github.com/philippnormann1337/xrandr-brightness-script
-bindsym XF86MonBrightnessUp exec ~/bin/brightness.sh + eDP-1
-bindsym XF86MonBrightnessDown exec ~/bin/brightness.sh - eDP-1
+bindsym XF86MonBrightnessUp exec sudo brightnessctl set +10%
+bindsym XF86MonBrightnessDown exec sudo brightnessctl set 10%-
 
 # Search as dmenu
 bindsym XF86Favorites exec rofi -theme solarized -font "hack 14" -show run
