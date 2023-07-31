@@ -70,7 +70,7 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+b border toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+#bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -139,14 +139,15 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
 # latest version installed via PIP
-    status_command /home/lord/.local/bin/py3status
+    status_command py3status
     output primary
     tray_output primary
+    position bottom
 }
 
 bar {
-    output nonprimary
-    tray_output none
+    output DP-1-1
+    tray_output bottom
 }
 
 bindsym $mod+x move workspace to output right
@@ -159,11 +160,10 @@ bindsym $mod+u move workspace to output up
 # Instead of using "-option 'grp:alt_space_toggle'" for -option 'grp:alt_space_toggle'
 # We implement switching via i3 shortcut, so we can instantly update indicator for
 # i3status bar
-bindsym Mod1+space exec "/usr/local/bin/xkb-switch -n; ~/.local/bin/py3-cmd refresh keyboard_layout"
+bindsym Mod1+space exec "/usr/local/bin/xkb-switch -n; py3-cmd refresh keyboard_layout"
 exec_always "setxkbmap -layout us,ua -option ctrl:nocaps"
+#exec_always "setxkbmap -layout us,ua -option ctrl:nocaps -option lv3:alt_switch"
 
-#exec_always "setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps"
-#bindsym $mod+z exec "~/bin/cycle.sh /dev/shm/kbd2.txt 'setxkbmap -layout us,ru -variant ,mac -option ctrl:nocaps' 'setxkbmap -layout us,ua -option ctrl:nocaps' ; ~/.local/bin/py3-cmd refresh keyboard_layout"
 
 # Auto lock screen
 exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
@@ -173,8 +173,8 @@ set $sink @DEFAULT_SINK@
 set $mic @DEFAULT_SINK@
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume $sink +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume $sink -5%
-bindsym XF86AudioMute exec --no-startup-id "pactl set-sink-mute $sink toggle; ~/.local/bin/py3-cmd refresh volume"
-bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute $mic toggle; ~/.local/bin/py3-cmd refresh volume"
+bindsym XF86AudioMute exec --no-startup-id "pactl set-sink-mute $sink toggle; py3-cmd refresh volume"
+bindsym XF86AudioMicMute exec --no-startup-id "pactl set-source-mute $mic toggle; py3-cmd refresh volume"
 
 # Brightness controls
 # https://github.com/philippnormann1337/xrandr-brightness-script
@@ -211,11 +211,8 @@ exec --no-startup-id redshift-gtk
 
 # No window tite needed for some programs 
 for_window [class="^(?i)firefox"] border none
-for_window [class="^(?i)google-chrome"] border none
 for_window [class="^(?i)emacs"] border none
-for_window [class="^(?i)rambox"] border none
 for_window [class="^(?i)hamsket"] border none
-for_window [instance="mendeleydesktop" title="^Mendeley Desktop$"] floating disable
 for_window [class="^(?i)pavucontrol"] floating enable
 
 # Lock screen via Ctrl+Alt+L
@@ -235,11 +232,10 @@ for_window [ title="^Pympress Content" ] border none floating disable
 # for_window [ title="^pdfpc.*" window_role="presentation" ] move to output right, fullscreen
 
 # Assign some apps to dedicated workspaces
-assign [class="^(?i)rambox"]  3
 assign [class="^(?i)hamsket"]  3
 assign [class="Emacs"]   2
 assign [class="Signal"]   5
 
 # Enable touch-click on Thinkpad X1 touchpad
-exec_always --no-startup-id xinput set-prop 'SYNA8006:00 06CB:CD8B Touchpad' 'libinput Tapping Enabled' 1
+exec_always --no-startup-id xinput set-prop 'SYNA8017:00 06CB:CEB2 Touchpad' 'libinput Tapping Enabled' 1
 
