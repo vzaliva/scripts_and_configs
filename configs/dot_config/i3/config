@@ -139,6 +139,13 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
 # latest version installed via `pipx` (not `pip`!)
+# Needs dependencies:
+# pipx install py3status
+# pipx inject py3status dbus-python
+# sudo apt install libcairo2-dev libgirepository1.0-dev
+# pipx inject py3status pygobject
+# See https://github.com/ultrabug/py3status/issues/2213
+
     status_command ~/.local/bin/py3status
     output primary
     tray_output primary
