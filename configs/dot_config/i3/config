@@ -237,7 +237,7 @@ for_window [class="^(?i)pavucontrol"] floating enable
 bindsym $mod+Control+l exec "xkb-switch -s us ; i3lock -t -d -f -e --color=000000"
 
 # Screenshots using `fameshot`
-bindsym --release Print exec "flameshot gui -p  ~/Pictures/screenshots/"
+bindsym --release Print exec "flameshot gui"
 
 # Nautilus
 bindsym $mod+n exec nemo --no-desktop /home/lord/Dropbox
