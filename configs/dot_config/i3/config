@@ -224,7 +224,8 @@ bindsym XF86Display exec ~/bin/set_monitor.sh
 exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
 exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
-# autostart redshift ( https://www.matthiggins.dev/install-redshift-with-i3/ )
+# autostart redshift https://wiki.archlinux.org/title/redshift
+exec --no-startup-id /usr/libexec/geoclue-2.0/demos/agent
 exec --no-startup-id redshift-gtk
 
 # No window tite needed for some programs 
