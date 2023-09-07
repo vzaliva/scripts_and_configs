@@ -1,0 +1,9 @@
+#!/bin/bash
+
+case "$2" in
+    up|vpn-up)
+        # Reconnect ProtonVPN
+        sudo -u lord protonvpn-cli c -f
+        ;;
+esac
+
