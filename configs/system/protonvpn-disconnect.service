@@ -1,0 +1,18 @@
+[Unit]
+Description=ProtonVPN-CLI disconnect before sleep
+Before=suspend.target
+Before=hibernate.target
+Before=hybrid-sleep.target
+
+[Service]
+Type=forking
+Environment=PVPN_WAIT=300
+Environment=PVPN_DEBUG=1
+Environment=SUDO_USER=lord
+ExecStart=/usr/bin/protonvpn-cli d
+
+[Install]
+WantedBy=suspend.target
+WantedBy=hibernate.target
+WantedBy=hybrid-sleep.target
+
