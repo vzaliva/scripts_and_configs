@@ -1,9 +1,24 @@
 #!/bin/bash
+PUSER=lord
+PIFACE=wlp0s20f3
+WHITELIST="goldfinch goldfinch-guest"
+
+# Get the interface name from the first argument
+interface=$1
 
 case "$2" in
     up|vpn-up)
-        # Reconnect ProtonVPN
-        sudo -u lord protonvpn-cli c -f
+        # Check if it is the desired interface
+        if [ "$interface" = "$PIFACE" ]; then
+          # Get the SSID of the interface
+          ssid=$(/usr/sbin/iwgetid $interface -r)
+          # Check if the SSID is not in the whitelist
+          [[ ! $WHITELIST =~ (^| )$ssid($| ) ]]
+          if [ $? -eq 0 ]; then
+            # Reconnect ProtonVPN
+            sudo -u $PUSER /usr/bin/protonvpn-cli c -f
+          fi
+        fi
         ;;
 esac
 
