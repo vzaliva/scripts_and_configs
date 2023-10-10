@@ -23,6 +23,10 @@ if test -d $HOME/bin
   set PATH $HOME/bin $PATH
 end
 
+if test -d $HOME/go/bin
+  set PATH $HOME/go/bin $PATH
+end
+
 # OPAM configuration
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
@@ -62,4 +66,7 @@ set NPM_PACKAGES "$HOME/.npm-packages"
 set PATH $PATH $NPM_PACKAGES/bin
 
 set MANPATH $NPM_PACKAGES/share/man $MANPATH  
+
+alias c "cd ~/src/cerberus"
+alias h "cd ~/src/helix"
 

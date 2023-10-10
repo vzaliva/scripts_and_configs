@@ -14,7 +14,8 @@ ${HOME}/.local/bin
 /opt/local/sbin
 ${HOME}/.cabal/bin
 ${HOME}/.cask/bin
-/usr/local/Cellar/llvm/7.0.0/bin/"
+/usr/local/Cellar/llvm/7.0.0/bin/
+${HOME}/go/bin"
 
 extramanpaths="${HOME}/man
 /usr/man
@@ -217,7 +218,6 @@ then
   fi
 fi
 
-export PATH="$HOME/.cargo/bin:$PATH"
 
 if command -v ag &> /dev/null
 then
@@ -271,3 +271,6 @@ fi
 if [[ $OSTYPE == 'darwin'* ]]; then
     export BASH_SILENCE_DEPRECATION_WARNING=1
 fi
+. "$HOME/.cargo/env"
+
+source /home/lord/.config/broot/launcher/bash/br
