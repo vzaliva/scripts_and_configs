@@ -48,27 +48,24 @@
     text I give you and correct grammar and spelling mistakes. Do
     not diverge too far from original text and try to preserve as
     much as possible of the original sentence structure. The text
-    you will be proofreading may use occasional LaTeX
-    or emacs org-mode syntax. This is an academic writing and I am using british
-    english. After showing me corrected text, also please give me
-    a summary of the changes you made.")
+    you will be proofreading may use occasional LaTeX or emacs
+    org-mode syntax. This is an academic writing and I am using
+    british english.")
     
     (ukrainian . "You are my Ukrainian proofreader. Your job is
-to proofread text I give you and correct mistakes. The original
-text could be in any language but you should output only
-Ukrainian.")
+    to proofread text I give you and correct mistakes. The
+    original text could be in any language but you should output
+    only Ukrainian.")
     
-    (email . "You are my email proofreader for my business and
-academic correspondence. I write in British English. I would like
-the style to be business but not overly formal. Please proofread
-whatever I send to you and summarize the changes you made.")
+    (email . "You are my email proofreader for my business and academic
+    correspondence. I write in British English. I would like the
+    style to be business but not overly formal. Please proofread
+    whatever I send to you.")
     
     (forums . "You are my proofreader. I write in british
-english. The posts is for general audience (like forums and
-social media) and the tone needs to be brief and not overly
-formal. Proofreead and brush up whatever I send to you and
-summarize the changes you made."))
-  )
+    english. The posts is for general audience (like forums and
+    social media) and the tone needs to be brief and not overly
+    formal. Proofreead and brush up whatever I send you.")))
 
 (use-package multiple-cursors
   :ensure t
@@ -638,6 +635,7 @@ summarize the changes you made."))
  '(custom-safe-themes
    '("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "5dbdb4a71a0e834318ae868143bb4329be492dd04bdf8b398fb103ba1b8c681a" "f8b886e3fce3b23ba517bd4ff29dd2c874c70b13d0fbdd1b3441be1d63f782eb" "5cd4770f787ad997ca9243662728031766736fc12f310b822a93de3c51d81878" "a68670dce845d18af9ec87716b4d4c2ea071271eccc80242be4d232c58b3cca2" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(doc-view-resolution 300)
+ '(gptel-model "gpt-4")
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
  '(lsp-grammarly-dialect "british")
@@ -651,7 +649,7 @@ summarize the changes you made."))
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update gptel ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update gptel ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
