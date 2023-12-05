@@ -39,10 +39,11 @@
 
 (use-package gptel
   :ensure t
+  :custom gptel-default-mode 'org-mode
   :custom gptel-directives
   `(
-    (default . "You are a large language model living in Emacs
-                and a helpful assistant. Respond concisely.")
+    (default . "You are a large language model living in Emacs and a helpful
+                assistant. Respond concisely.")
 
     (paper . "You are my proofreader. Your job is to proofread the text I give
               you and correct grammar and spelling mistakes. Do
