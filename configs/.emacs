@@ -379,15 +379,20 @@
   (coq-mode . (lambda ()
                 (ws-butler-mode)
                 (helm-mode)
+                ; to display number of goals
                 (add-to-list 'global-mode-string '(" " (:eval (assq 'proof-active-buffer-fake-minor-mode minor-mode-alist))) " ")
                 )))
 
 (use-package company-coq
   :ensure t
-  :after proof-general
-  :commands company-coq-mode
-  :init (add-hook  'coq-mode-hook  #'company-coq-mode))
-
+  :custom (company-coq-live-on-the-edge t)
+  :config
+  :hook
+  (coq-mode . (lambda ()
+                (company-coq-mode)
+                ; to display the rooster
+                (add-to-list 'global-mode-string '(" " (:eval (assq 'company-coq-mode minor-mode-alist))) " ")
+                )))
 ;; SLIME
 (setq inferior-lisp-program "ccl64")
 ;;(setq inferior-lisp-program "clisp")
