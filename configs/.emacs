@@ -350,44 +350,43 @@
       (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode)))))
 
 ;; https://github.com/seagle0128/doom-modeline
+(use-package all-the-icons :ensure t) ;manually run `all-the-icons-install-fonts` once after install
 (use-package doom-modeline
   :ensure t
-  :init
-  (progn
-    (doom-modeline-mode 1)
-    (setq doom-modeline-icon t)
-    (setq doom-modeline-support-imenu t)
-    (setq doom-modeline-height 1) ; optional
-    (custom-set-faces
-     '(mode-line ((t (:family "Noto Sans" :height 0.9))))
-     '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
-     '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
-    (setq doom-modeline-project-detection 'project))
-  (use-package all-the-icons  :ensure t) ;; manually run `all-the-icons-install-fonts` once after install
-  )
+  :custom
+  (doom-modeline-icon t)
+  (doom-modeline-support-imenu t)
+  (doom-modeline-height 1) ; optional
+  (doom-modeline-project-detection 'project)
+  :config
+  (doom-modeline-mode 1)
+  (custom-set-faces
+   '(mode-line ((t (:family "Noto Sans" :height 0.9))))
+   '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
+   '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
+  :requires (all-the-icons))
 
 (use-package proof-general
   :ensure t
+  :after doom-modeline
   :mode ("\\.v\\'" . coq-mode)
-  :init 
-  (setq coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
-  (setq proof-splash-enable nil)
-  (setq coq-prog-name "coqtop")
-  (setq coq-compile-before-require nil)
-  (add-hook 'coq-mode-hook
-            (lambda ()
-              (doom-modeline-mode 1) ; to see number of goals
-              (ws-butler-mode)
-              (helm-mode)))
-  ;;(add-hook 'my-mode-hook 'imenu-add-menubar-index)
-)
+  :custom
+  (coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
+  (proof-splash-enable nil)
+  (coq-prog-name "coqtop")
+  (coq-compile-before-require nil)
+  :hook
+  (coq-mode . (lambda ()
+                (ws-butler-mode)
+                (helm-mode)
+                (add-to-list 'global-mode-string '(" " (:eval (assq 'proof-active-buffer-fake-minor-mode minor-mode-alist))) " ")
+                )))
 
 (use-package company-coq
   :ensure t
+  :after proof-general
   :commands company-coq-mode
   :init (add-hook  'coq-mode-hook  #'company-coq-mode))
-
-
 
 ;; SLIME
 (setq inferior-lisp-program "ccl64")
