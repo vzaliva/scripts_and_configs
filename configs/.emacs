@@ -35,13 +35,10 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Load some handy packages 
+;; Load some handy packages
 
-(use-package gptel
-  :ensure t
-  :custom gptel-default-mode 'org-mode
-  :custom gptel-directives
-  `(
+
+(setq my-prompts `(
     (default . "You are a large language model living in Emacs and a helpful
                 assistant. Respond concisely.")
 
@@ -66,6 +63,44 @@
               forums or social media) and the tone needs to be
               brief and informal. Proofread and brush-up whatever
               I will send to you.")))
+
+(use-package chatgpt-shell
+  :ensure t
+  :custom ((chatgpt-shell-openai-key
+            (lambda () (auth-source-pick-first-password :host "api.openai.com"))))
+  :config
+  (setq chatgpt-shell-system-prompts (append
+                                      chatgpt-shell-system-prompts
+                                      (mapcar (lambda (p)
+                                               (cons (symbol-name (car p))
+                                                     (cdr p))) my-prompts)))
+  (require 'easymenu)
+  :hook ((chatgpt-shell-mode .
+                             (lambda ()
+                               (let ((menu-items 
+                                      (cl-loop for item in chatgpt-shell-system-prompts
+                                               for i from 0 
+                                               collect (vector (car item) 
+                                                               `(lambda () (interactive) 
+                                                                  (setq-local chatgpt-shell-system-prompt ,i)
+                                                                  (chatgpt-shell--update-prompt t)
+                                                                  (chatgpt-shell-interrupt nil)
+                                                                  )))))
+                                 (easy-menu-define
+                                   chatgpt-shell-system-prompts-menu
+                                   nil
+                                   "Menu"
+                                   `("Prompt" ,@menu-items)) 
+                                 (easy-menu-add-item nil '("ChatGPT") chatgpt-shell-system-prompts-menu)))))
+
+  ;; Disabled due to https://github.com/xenodium/chatgpt-shell/issues/161
+  ;; :hook (chatgpt-shell-mode . helm-mode)
+  )
+ 
+(use-package gptel
+  :ensure t
+  :custom gptel-default-mode 'org-mode
+  :custom gptel-directives my-prompts)
 
 (use-package multiple-cursors
   :ensure t
@@ -98,7 +133,7 @@
   :ensure t  
   :init
   ;; spell checking  via hunspell
-  ;; sudo apt hunspell hunspell-en-gb hunspell-uk
+  ;; sudo apt install hunspell hunspell-en-gb hunspell-uk
   (setq ispell-program-name "hunspell")
   (setq ispell-dictionary "en_GB")
 )
@@ -263,14 +298,13 @@
                 ) auto-mode-alist))
 
 
-;; Require 'stylish-haskell' installed
+;; Require 'stylish-haskell' system package installed
 (use-package haskell-mode
   :ensure t
   :mode "\\.hs\\'"
-  :init
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-decl-scan)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+  :hook ((haskell-mode . turn-on-haskell-decl-scan)
+         (haskell-mode . turn-on-haskell-doc-mode)
+         (haskell-mode . turn-on-haskell-indentation))
   :bind (:map haskell-mode-map
               ("C-," . 'haskell-move-nested-left)
               ("C-." . 'haskell-move-nested-right)
