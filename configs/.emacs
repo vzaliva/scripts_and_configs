@@ -37,7 +37,6 @@
 
 ;; Load some handy packages
 
-
 (setq my-prompts `(
     (default . "You are a large language model living in Emacs and a helpful
                 assistant. Respond concisely.")
@@ -64,18 +63,7 @@
               brief and informal. Proofread and brush-up whatever
               I will send to you.")))
 
-(use-package chatgpt-shell
-  :ensure t
-  :custom ((chatgpt-shell-openai-key
-            (lambda () (auth-source-pick-first-password :host "api.openai.com"))))
-  :config
-  (setq chatgpt-shell-system-prompts (append
-                                      chatgpt-shell-system-prompts
-                                      (mapcar (lambda (p)
-                                               (cons (symbol-name (car p))
-                                                     (cdr p))) my-prompts)))
-  :hook (chatgpt-shell-mode . helm-mode))
- 
+
 (use-package multiple-cursors
   :ensure t
   :bind (("C-S-c C-S-c" .  'mc/edit-lines))
@@ -552,6 +540,29 @@
   :bind (:map lsp-mode-map
               ("C-c l a a" . helm-lsp-code-actions))
   )
+
+(use-package chatgpt-shell
+  :ensure t
+  :commands (chatgpt-shell chatgpt-shell-prompt-compose)
+  :custom ((chatgpt-shell-openai-key
+            (lambda () (auth-source-pick-first-password :host "api.openai.com"))))
+  :config
+  (setq chatgpt-shell-system-prompts (append
+                                      chatgpt-shell-system-prompts
+                                      (mapcar (lambda (p)
+                                               (cons (symbol-name (car p))
+                                                     (cdr p))) my-prompts
+                                                     )))
+  :bind (("C-c C-e" . chatgpt-shell-prompt-compose)
+         :map org-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)
+         :map eshell-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)
+         :map markdown-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)
+         :map emacs-lisp-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose))
+  :hook (chatgpt-shell-mode . helm-mode))
 
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
