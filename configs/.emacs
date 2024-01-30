@@ -23,6 +23,9 @@
 ;; Prevent split window on startup
 (setq inhibit-startup-screen t)
 
+;; auto-scroll compilation output
+(setq compilation-scroll-output t)
+
 ;; Boostrap package management, with MELPA repository
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -136,7 +139,7 @@
 ;; upgrade this and other built-in packages to higher releases
 ;; from GNU Elpa.
 ;; To fix this, you have to add this to your init file:
-(setq package-install-upgrade-built-in t)
+;(setq package-install-upgrade-built-in t)
 (use-package magit
   :ensure t
   :init (global-set-key (kbd "C-x g") 'magit-status))
@@ -258,7 +261,6 @@
                 ("\\.py$"        . python-mode)
                 ("\\.[hg]s$"     . haskell-mode)
                 ("\\.hi$"        . haskell-mode)
-                ("\\.core$"      . tuareg-mode) ;; close enough
                 ("\\.lem$"       . tuareg-mode) ;; close enough
                 ("\\.lsl$"       . lsl-mode)
                 ("\\.l[hg]s$"    . literate-haskell-mode)
@@ -575,9 +577,6 @@
 
 ;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
 (require 'tramp)
-(if (boundp 'aquamacs-version)
-    (setq tramp-ssh-controlmaster-options "-o ControlPath=~/tmp -o ControlMaster=auto -o ControlPersist=no"))
-;;; For tramp to find remote binaries in non-standard paths
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 ;; Remove antlr-mode as it opens .g SPIRAL files and I do not want this.
@@ -648,6 +647,37 @@
       browse-url-new-window-flag  nil
       browse-url-firefox-new-window-is-tab t)
 
+
+;; Requires emacs 29!
+;; (use-package treesit-auto
+;;   :config
+;;   (global-treesit-auto-mode)
+;;   (setq core-tsauto-config
+;;         (make-treesit-auto-recipe
+;;          :lang 'core
+;;          :ts-mode 'core-ts-mode
+;;          :url "https://github.com/vzaliva/tree-sitter-core"
+;;          :revision "main"
+;;          :source-dir "src"  
+;;          :ext "\\.core\\'"))
+;;   (add-to-list 'treesit-auto-recipe-list core-tsauto-config)
+;;   (setq treesit-auto-langs '(core))
+;;   (treesit-auto-add-to-auto-mode-alist '(core))
+;;   )
+
+;; (use-package treesit-auto
+;;   :ensure t
+;;   :config
+;;   (setq treesit-language-source-alist
+;;         '((core . ("https://github.com/vzaliva/tree-sitter-core" "main" "src"))))
+;;   (dolist (source treesit-language-source-alist)
+;;     (unless (treesit-ready-p (car source))
+;;       (treesit-install-language-grammar (car source))))
+;;   (setq treesit-auto-langs '(core))
+;;   (global-treesit-auto-mode)
+;;   (add-to-list 'auto-mode-alist '("\\.core\\'" . core-ts-mode))
+;;   )
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -680,12 +710,12 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(eglot faceup flymake jsonrpc project soap-client tramp use-package-ensure-system-package verilog-mode seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
            ((default-directory
-              (locate-dominating-file buffer-file-name ".dir-locals.el")))
+             (locate-dominating-file buffer-file-name ".dir-locals.el")))
            (setq-local coq-prog-args
                        `("-coqlib" ,(expand-file-name "..")
                          "-R" ,(expand-file-name ".")
