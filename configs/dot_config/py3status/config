@@ -60,7 +60,7 @@ vpn_status {
 }
 
 clock {
-    format = ["{Local}", "{Europe/London}", "{US/Pacific}", "{US/Eastern}", "{Europe/Kiev}", "{Asia/Tokyo}"]
+    format = ["{Local}", "{Europe/London}", "{America/Los_Angeles}", "{America/New_York}", "{Europe/Kyiv}", "{Asia/Tokyo}"]
     format_time = "%a %Y-%m-%d %H:%M %Z"
     color = "cyan"
 }
