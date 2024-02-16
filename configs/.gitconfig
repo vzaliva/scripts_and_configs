@@ -1,0 +1,15 @@
+[user]
+	email = lord@crocodile.org
+	name = Vadim Zaliva
+	signingkey = 9D98564F9E926C56D08EFA5932D2B94CA5C6D3F4
+[color]
+	ui = auto
+
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
+
+[diff]
+	algorithm = histogram
+
+[commit]
+	gpgsign = true
