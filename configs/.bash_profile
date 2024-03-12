@@ -226,36 +226,39 @@ fi
 
 if command -v batcat &> /dev/null
 then
-    alias less="batcat"
+    BAT_CMD="batcat"
     alias bat="batcat"
 elif command -v bat &> /dev/null
 then
-    alias less="bat"
-fi
-
-if command -v exa &> /dev/null
-then
-    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-    alias ag='\ag --pager="bat -p"'
+    BAT_CMD="bat"
 else
-    #colorized man pages
-    man() {
-        env \
-            LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-            LESS_TERMCAP_md=$(printf "\e[1;31m") \
-            LESS_TERMCAP_me=$(printf "\e[0m") \
-            LESS_TERMCAP_se=$(printf "\e[0m") \
-            LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-            LESS_TERMCAP_ue=$(printf "\e[0m") \
-            LESS_TERMCAP_us=$(printf "\e[1;32m") \
-            man "$@"
-    }
+    BAT_CMD=""
 fi
 
-if command -v exa &> /dev/null
+if [ -n "$BAT_CMD" ]
 then
-    alias ls="exa"
-    alias ll="exa -snew -l"
+    alias less="$BAT_CMD"
+    export MANPAGER="sh -c 'col -bx | $BAT_CMD -l man -p'"
+    export MANROFFOPT="-c"
+    alias ag='\ag --pager="$BAT_CMD -p"'
+fi
+
+if command -v eza &> /dev/null
+then
+    # Use `eza` if present https://github.com/eza-community/eza
+    LS_CMD="eza"
+elif command -v exa &> /dev/null
+then
+    # fall back to `exa` (seems to be unmaintained) https://the.exa.website/
+    LS_CMD="exa"
+else
+    LS_CMD=""
+fi
+
+if [ -n "$LS_CMD" ]
+then
+    alias ls="$LS_CMD"
+    alias ll="$LS_CMD -snew -l"
 else
     alias ll="ls -lFtr"
 fi

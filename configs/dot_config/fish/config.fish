@@ -48,17 +48,36 @@ if type -q ag
     alias ag 'ag --pager="less -XFR"'
 end
 
-if type -q bat
-    set -gx MANPAGER "sh -c 'col -bx | bat -l man -p'"
-    alias ag 'ag --pager="bat -p"'
-    alias less bat
+if type -q batcat
+    set BAT_CMD "batcat"
+else if type -q bat
+    set BAT_CMD "bat"
+else
+    set BAT_CMD ""
 end
 
-if type -q exa
-    alias ls exa
-    alias ll "exa -snew -l"
+if test -n "$BAT_CMD"
+    set -gx MANPAGER "sh -c 'col -bx | $BAT_CMD -l man -p'"
+    set -gx MANROFFOPT "-c"    
+    alias ag "ag --pager=\"$BAT_CMD -p\""
+    alias less "$BAT_CMD"
+end
+
+if type -q eza
+    # Use `eza` if present https://github.com/eza-community/eza
+    set LS_CMD "eza"
+else if type -q exa
+    # fall back to `exa` (seems to be unmaintained) https://the.exa.website/
+    set LS_CMD "exa"
 else
-    alias ll "ls -al"
+    set LS_CMD ""
+end
+
+if test -n "$LS_CMD"
+    alias ls "$LS_CMD"
+    alias ll "$LS_CMD -snew -l"
+else
+    alias ll "ls -lFtr"
 end
 
 set NPM_PACKAGES "$HOME/.npm-packages"
@@ -69,4 +88,5 @@ set MANPATH $NPM_PACKAGES/share/man $MANPATH
 
 alias c "cd ~/src/cerberus"
 alias h "cd ~/src/helix"
+alias p "cd ~/src/helix-journal-paper"
 
