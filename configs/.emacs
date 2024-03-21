@@ -89,6 +89,9 @@
   (use-package helm-ls-git :ensure t)
   (use-package helm-swoop
     :ensure t
+    :config
+    ;; Split direction.  'split-window-vertically or 'split-window-horizontally
+    (setq helm-swoop-split-direction 'split-window-horizontally)
     :bind (("M-i" . helm-swoop)
            ("M-I" . 'helm-swoop-back-to-last-point))
     )
@@ -572,6 +575,10 @@
          ("C-c C-e" . chatgpt-shell-prompt-compose))
   :hook (chatgpt-shell-mode . helm-mode))
 
+
+(use-package rust-mode
+  :ensure t)
+
 ;; Make PDFs displayed in latex-preview-pane-mode look nices
 ;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
 
@@ -649,9 +656,14 @@
 
 
 ;; Requires emacs 29!
+;; TODO: https://www.masteringemacs.org/article/lets-write-a-treesitter-major-mode
+;; (define-derived-mode core-ts-mode prog-mode "core"
+;;   "Major mode for editing Core language files."
+;;   ;; You can add mode-specific settings here.
+;;   )
 ;; (use-package treesit-auto
+;;   :ensure t
 ;;   :config
-;;   (global-treesit-auto-mode)
 ;;   (setq core-tsauto-config
 ;;         (make-treesit-auto-recipe
 ;;          :lang 'core
@@ -659,23 +671,15 @@
 ;;          :url "https://github.com/vzaliva/tree-sitter-core"
 ;;          :revision "main"
 ;;          :source-dir "src"  
-;;          :ext "\\.core\\'"))
+;;          :ext "\\.core\\'"
+;;          :cc "/snap/emacs/current/usr/bin/gcc-10"
+;;          :c++ "/snap/emacs/current/usr/bin/g++-10"
+;;          ))
 ;;   (add-to-list 'treesit-auto-recipe-list core-tsauto-config)
 ;;   (setq treesit-auto-langs '(core))
 ;;   (treesit-auto-add-to-auto-mode-alist '(core))
-;;   )
-
-;; (use-package treesit-auto
-;;   :ensure t
-;;   :config
-;;   (setq treesit-language-source-alist
-;;         '((core . ("https://github.com/vzaliva/tree-sitter-core" "main" "src"))))
-;;   (dolist (source treesit-language-source-alist)
-;;     (unless (treesit-ready-p (car source))
-;;       (treesit-install-language-grammar (car source))))
-;;   (setq treesit-auto-langs '(core))
 ;;   (global-treesit-auto-mode)
-;;   (add-to-list 'auto-mode-alist '("\\.core\\'" . core-ts-mode))
+;;   (setq-default treesit-font-lock-level 4)
 ;;   )
 
 (custom-set-faces
@@ -710,7 +714,7 @@
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(eglot faceup flymake jsonrpc project soap-client tramp use-package-ensure-system-package verilog-mode seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust rust-mode company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
+   '(rust-mode abl-mode eglot faceup flymake jsonrpc project soap-client tramp use-package-ensure-system-package verilog-mode seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists git-commit ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust company-coq magit-popup haskell-mode org-bullets academic-phrases latex-extra proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode auctex))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
