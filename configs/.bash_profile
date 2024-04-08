@@ -276,4 +276,8 @@ if [[ $OSTYPE == 'darwin'* ]]; then
 fi
 . "$HOME/.cargo/env"
 
+if [ -x "/usr/bin/wezterm" ]; then
+    export TERMINAL="/usr/bin/wezterm"
+fi
+
 source /home/lord/.config/broot/launcher/bash/br
