@@ -44,5 +44,21 @@ else
     # move workspaces 7,8 to external monitor
     i3-msg -q "workspace 7; move workspace to output $DP; workspace 8; move workspace to output $DP"
 fi
-    
-#pacmd set-default-sink 4    
+
+# List sinks and search for the desired one by name, then extract its ID
+SINK_ID=$(pactl list short sinks | grep "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.8.HiFi__hw_sofhdadsp__sink" | cut -f1)
+
+# Check if the SINK_ID was found
+if [ -n "$SINK_ID" ]; then
+    # Set the default sink to your desired sink
+    pactl set-default-sink "$SINK_ID"
+    if [ "$verbose" = true ]; then
+        echo "Default sink set to ID $SINK_ID."
+    fi
+else
+    if [ "$verbose" = true ]; then
+        echo "No sink matching criteria found."
+    fi
+fi
+
+
