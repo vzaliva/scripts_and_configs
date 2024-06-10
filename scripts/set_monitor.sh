@@ -46,7 +46,7 @@ else
 fi
 
 # List sinks and search for the desired one by name, then extract its ID
-SINK_ID=$(pactl list short sinks | grep "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.8.HiFi__hw_sofhdadsp__sink" | cut -f1)
+SINK_ID=$(pactl list short sinks | egrep "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.[0-8]+.HiFi__hw_sofhdadsp__sink" | cut -f1)
 
 # Check if the SINK_ID was found
 if [ -n "$SINK_ID" ]; then
