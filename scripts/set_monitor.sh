@@ -41,12 +41,15 @@ else
     xrandr --output $DP -s 3840x2160 --above eDP-1 --rotate normal
     xrandr --dpi 96/e-DP1
     xrandr --output eDP-1 --primary
-    # move workspaces 7,8 to external monitor
-    i3-msg -q "workspace 7; move workspace to output $DP; workspace 8; move workspace to output $DP"
+    # move workspaces to external monitor
+    workspace_numbers=(0 7 8 9)
+    for workspace in "${workspace_numbers[@]}"; do
+        i3-msg -q "workspace $workspace; move workspace to output $DP;"
+    done    
 fi
 
 # List sinks and search for the desired one by name, then extract its ID
-SINK_ID=$(pactl list short sinks | egrep "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.[0-8]+.HiFi__hw_sofhdadsp__sink" | cut -f1)
+SINK_ID=$(pactl list short sinks | egrep "alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic" | cut -f2)
 
 # Check if the SINK_ID was found
 if [ -n "$SINK_ID" ]; then
