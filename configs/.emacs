@@ -562,12 +562,15 @@
               ("C-c l a a" . helm-lsp-code-actions))
   )
 
-
-(defun chatgpt-shell-proofread-region ()
+(defun chatgpt-shell-proofread-region-inline ()
   "Proofread English from region using ChatGPT."
   (interactive)
   (let ((chatgpt-shell-prompt-query-response-style 'inline))
-    (chatgpt-shell-send-region-with-header (cdr (assoc 'paper my-prompts)))))
+    (chatgpt-shell-send-region-with-header
+     (concat
+      (cdr (assoc 'paper my-prompts))
+      "\n Please respond with corrected version only without any chatter, comments, or explanations.")
+     )))
 
 (use-package chatgpt-shell
   :ensure t
@@ -581,7 +584,7 @@
                                                (cons (symbol-name (car p))
                                                      (cdr p))) my-prompts
                                                      )))
-  :bind (("C-c p" . chatgpt-shell-proofread-region)
+  :bind (("C-c p" . chatgpt-shell-proofread-region-inline)
          :map org-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map eshell-mode-map
