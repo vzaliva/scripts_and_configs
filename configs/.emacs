@@ -565,11 +565,11 @@
 (defun chatgpt-shell-proofread-region-inline ()
   "Proofread English from region using ChatGPT."
   (interactive)
-  (let ((chatgpt-shell-prompt-query-response-style 'inline))
+  (let ((chatgpt-shell-prompt-query-response-style 'replace))
     (chatgpt-shell-send-region-with-header
      (concat
       (cdr (assoc 'paper my-prompts))
-      "\n Please respond with corrected version only without any chatter, comments, or explanations.")
+      "\n Please respond with the corrected version only without any chatter, comments, or explanations.")
      )))
 
 (use-package chatgpt-shell
