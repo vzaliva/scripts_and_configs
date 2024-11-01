@@ -692,6 +692,123 @@
 ;;   (setq-default treesit-font-lock-level 4)
 ;;   )
 
+
+;; BEGIN Iris support
+;; https://gitlab.mpi-sws.org/iris/iris/-/blob/master/docs/editor.md
+
+(use-package math-symbol-lists :ensure t)
+
+(require 'math-symbol-lists)
+; Automatically use math input method for Coq files
+(add-hook 'coq-mode-hook (lambda () (set-input-method "math")))
+; Input method for the minibuffer
+(defun my-inherit-input-method ()
+  "Inherit input method from `minibuffer-selected-window'."
+  (let* ((win (minibuffer-selected-window))
+         (buf (and win (window-buffer win))))
+    (when buf
+      (activate-input-method (buffer-local-value 'current-input-method buf)))))
+(add-hook 'minibuffer-setup-hook #'my-inherit-input-method)
+; Define the actual input method
+(quail-define-package "math" "UTF-8" "Ω" t)
+(quail-define-rules ; add whatever extra rules you want to define here...
+ ("\\fun"    ?λ)
+ ("\\mult"   ?⋅)
+ ("\\ent"    ?⊢)
+ ("\\valid"  ?✓)
+ ("\\diamond" ?◇)
+ ("\\box"    ?□)
+ ("\\bbox"   ?■)
+ ("\\later"  ?▷)
+ ("\\pred"   ?φ)
+ ("\\and"    ?∧)
+ ("\\or"     ?∨)
+ ("\\comp"   ?∘)
+ ("\\ccomp"  ?◎)
+ ("\\all"    ?∀)
+ ("\\ex"     ?∃)
+ ("\\to"     ?→)
+ ("\\sep"    ?∗)
+ ("\\lc"     ?⌜)
+ ("\\rc"     ?⌝)
+ ("\\Lc"     ?⎡)
+ ("\\Rc"     ?⎤)
+ ("\\lam"    ?λ)
+ ("\\empty"  ?∅)
+ ("\\Lam"    ?Λ)
+ ("\\Sig"    ?Σ)
+ ("\\-"      ?∖)
+ ("\\aa"     ?●)
+ ("\\af"     ?◯)
+ ("\\auth"   ?●)
+ ("\\frag"   ?◯)
+ ("\\iff"    ?↔)
+ ("\\gname"  ?γ)
+ ("\\incl"   ?≼)
+ ("\\latert" ?▶)
+ ("\\update" ?⇝)
+
+ ;; accents (for iLöb)
+ ("\\\"o" ?ö)
+
+ ;; subscripts and superscripts
+ ("^^+" ?⁺) ("__+" ?₊) ("^^-" ?⁻)
+ ("__0" ?₀) ("__1" ?₁) ("__2" ?₂) ("__3" ?₃) ("__4" ?₄)
+ ("__5" ?₅) ("__6" ?₆) ("__7" ?₇) ("__8" ?₈) ("__9" ?₉)
+
+ ("__a" ?ₐ) ("__e" ?ₑ) ("__h" ?ₕ) ("__i" ?ᵢ) ("__k" ?ₖ)
+ ("__l" ?ₗ) ("__m" ?ₘ) ("__n" ?ₙ) ("__o" ?ₒ) ("__p" ?ₚ)
+ ("__r" ?ᵣ) ("__s" ?ₛ) ("__t" ?ₜ) ("__u" ?ᵤ) ("__v" ?ᵥ) ("__x" ?ₓ)
+)
+(mapc (lambda (x)
+        (if (cddr x)
+            (quail-defrule (cadr x) (car (cddr x)))))
+      ; need to reverse since different emacs packages disagree on whether
+      ; the first or last entry should take priority...
+      ; see <https://mattermost.mpi-sws.org/iris/pl/46onxnb3tb8ndg8b6h1z1f7tny> for discussion
+      (reverse (append math-symbol-list-basic math-symbol-list-extended)))
+
+;; Fonts
+(set-face-attribute 'default nil :height 110) ; height is in 1/10pt
+(dolist (ft (fontset-list))
+  ; Main font
+  (set-fontset-font ft 'unicode (font-spec :name "Monospace"))
+  ; Fallback font
+  ; Appending to the 'unicode list makes emacs unbearably slow.
+  ;(set-fontset-font ft 'unicode (font-spec :name "DejaVu Sans Mono") nil 'append)
+  (set-fontset-font ft nil (font-spec :name "DejaVu Sans Mono"))
+)
+; Fallback-fallback font
+; If we 'append this to all fontsets, it picks Symbola even for some cases where DejaVu could
+; be used. Adding it only to the "t" table makes it Do The Right Thing (TM).
+(set-fontset-font t nil (font-spec :name "Symbola"))
+
+(setq coq-smie-user-tokens
+   '(("," . ":=")
+	("∗" . "->")
+	("-∗" . "->")
+	("∗-∗" . "->")
+	("==∗" . "->")
+	("=∗" . "->") 			;; Hack to match ={E1,E2}=∗
+	("|==>" . ":=")
+	("⊢" . "->")
+	("⊣⊢" . "->")
+	("↔" . "->")
+	("←" . "<-")
+	("→" . "->")
+	("=" . "->")
+	("==" . "->")
+	("/\\" . "->")
+	("⋅" . "->")
+	(":>" . ":=")
+	("by" . "now")
+	("forall" . "now")              ;; NB: this breaks current ∀ indentation.
+   ))
+
+
+;; END Iris support
+
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
