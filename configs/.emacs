@@ -562,16 +562,6 @@
               ("C-c l a a" . helm-lsp-code-actions))
   )
 
-(defun chatgpt-shell-proofread-region-inline ()
-  "Proofread English from region using ChatGPT."
-  (interactive)
-  (let ((chatgpt-shell-prompt-query-response-style 'replace))
-    (chatgpt-shell-send-region-with-header
-     (concat
-      (cdr (assoc 'paper my-prompts))
-      "\n Please respond with the corrected version only without any chatter, comments, or explanations.")
-     )))
-
 (use-package chatgpt-shell
   :ensure t
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
@@ -584,7 +574,7 @@
                                                (cons (symbol-name (car p))
                                                      (cdr p))) my-prompts
                                                      )))
-  :bind (("C-c p" . chatgpt-shell-proofread-region-inline)
+  :bind (("C-c p" . chatgpt-shell-proofread-region)
          :map org-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map eshell-mode-map
@@ -719,7 +709,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(chatgpt-shell-prompt-header-proofread-region
-   "You are my proofreader. Your job is to proofread the text I give you\12and correct grammar and spelling mistakes. Do not diverge too far from\12the original text and try to preserve as much as possible of the\12original sentence structure. Do not change any quoted text (inside\12quotation marks). The text you will be proofreading may occasionally\12use LaTeX syntax. This is academic writing and I am using British\12English.")
+   "You are my proofreader. Your job is to proofread the text I give you\12and correct grammar and spelling mistakes. Do not diverge too far from\12the original text and try to preserve as much as possible of the\12original sentence structure. Do not change any quoted text (inside\12quotation marks). The text you will be proofreading may occasionally\12use LaTeX syntax. This is academic writing and I am using British\12English. Output just proofread text without any intro, comments or explanations.")
  '(custom-safe-themes
    '("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "5dbdb4a71a0e834318ae868143bb4329be492dd04bdf8b398fb103ba1b8c681a" "f8b886e3fce3b23ba517bd4ff29dd2c874c70b13d0fbdd1b3441be1d63f782eb" "5cd4770f787ad997ca9243662728031766736fc12f310b822a93de3c51d81878" "a68670dce845d18af9ec87716b4d4c2ea071271eccc80242be4d232c58b3cca2" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(doc-view-resolution 300)
