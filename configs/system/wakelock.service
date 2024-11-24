@@ -9,7 +9,7 @@ Before=suspend.target
 [Service]
 User=lord
 Type=forking
-Environment=DISPLAY=:0
+Environment=DISPLAY=:1
 ExecStart=/home/lord/bin/i3exit.sh lock
 
 [Install]
