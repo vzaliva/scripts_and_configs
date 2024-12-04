@@ -231,6 +231,7 @@ exec --no-startup-id redshift-gtk
 # No window tite needed for some programs 
 for_window [class="^(?i)firefox"] border none
 for_window [class="^(?i)thunderbird"] border none
+for_window [class="^(?i)evolution"] border none
 for_window [class="^(?i)signal"] border none
 for_window [class="^(?i)emacs"] border none
 for_window [class="^(?i)ferdium"] border none
