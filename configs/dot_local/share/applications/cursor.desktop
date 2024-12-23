@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Cursor
+Exec=/home/lord/Applications/cursor.AppImage
+Terminal=false
+Type=Application
+Icon=/home/lord/.local/share/icons/cursor-icon.svg
+StartupWMClass=Cursor
+Exec=/home/lord/bin/run_cursor.sh
+#X-AppImage-name-Version=/home/lord/Applications/cursor.AppImage
+Comment=Cursor is an AI-first coding environment.
+MimeType=x-scheme-handler/cursor;
+Categories=Utility;Development
+
