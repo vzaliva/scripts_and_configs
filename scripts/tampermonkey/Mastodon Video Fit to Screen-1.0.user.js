@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Mastodon Video Fit to Screen if Needed
+// @name         Mastodon Video Fit to Screen
 // @namespace    http://tampermonkey.net/
-// @version      0.9
+// @version      1.0
 // @description  Resize videos on Mastodon if they don't fit the screen vertically
 // @author       You
-// @match        https://mastodon.in.ua/*
+// @match        https://twiukraine.com/*
 // @grant        none
 // ==/UserScript==
 
