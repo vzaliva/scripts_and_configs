@@ -4,8 +4,8 @@ After=network-online.target
 
 [Service]
 Type=notify
-ExecStart=/usr/bin/rclone mount proton: /home/lord/ProtonDrive --vfs-cache-mode=full
-ExecStop=/usr/bin/fusermount -u /home/lord/ProtonDrive
+ExecStart=/usr/bin/rclone mount proton: /home/lord/ProtonDrive --vfs-cache-mode=full --vfs-cache-max-age=1w 
+ExecStop=/usr/bin/fusermount -uz /home/lord/ProtonDrive
 Restart=on-failure
 User=lord
 Group=lord
