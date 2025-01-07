@@ -1,0 +1,15 @@
+[Unit]
+Description=Mount Proton Drive using rclone
+After=network-online.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/rclone mount proton: /home/lord/ProtonDrive --vfs-cache-mode=full
+ExecStop=/usr/bin/fusermount -u /home/lord/ProtonDrive
+Restart=on-failure
+User=lord
+Group=lord
+
+[Install]
+WantedBy=default.target
+
