@@ -1,0 +1,11 @@
+/home/lord/log/rclone-bisync.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    delaycompress
+    notifempty
+    create 644 lord lord
+    su lord lord
+}
+
