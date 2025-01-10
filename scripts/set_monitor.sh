@@ -64,4 +64,6 @@ else
     fi
 fi
 
+~/bin/set_sound.py
+
 
