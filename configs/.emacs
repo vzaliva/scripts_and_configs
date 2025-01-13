@@ -149,7 +149,7 @@ text.")
 	      (helm-mode)
               (imenu-add-menubar-index)
               (define-key LaTeX-mode-map (kbd "C-c C-,") 'helm-imenu-anywhere)
-              (define-key LaTeX-mode-map (kbd "C-c C-e") 'chatgpt-shell-prompt-compose)
+              ;(define-key LaTeX-mode-map (kbd "C-c C-e") 'chatgpt-shell-prompt-compose)
               )))
 
 ;; Temporary disabled due to https://debbugs.gnu.org/cgi/bugreport.cgi?bug=72999
