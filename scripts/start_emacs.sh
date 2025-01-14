@@ -1,5 +1,5 @@
 #!/bin/bash
-nohup emacs ~/Dropbox/Notes/*.org&
+nohup emacs ~/ProtonDrive/Notes/*.org&
 sleep 2
 disown
 rm -f nohup.out
