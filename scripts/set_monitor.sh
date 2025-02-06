@@ -17,7 +17,7 @@ xrandr_output=$(xrandr)
 while IFS= read -r line
 do
     # Use regex to find lines that match "HDMI-?" or "DP-?-?" followed by "connected"
-    if [[ $line =~ (HDMI-[0-9]+|DP-[0-9]-[0-9]+)(\ connected) ]]; then
+    if [[ $line =~ (HDMI-[0-9]+|DP-[0-9]-[0-9]+|DP-[0-9]+)(\ connected) ]]; then
         # Echo the matched name
         DP=${BASH_REMATCH[1]}
         break
