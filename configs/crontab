@@ -21,4 +21,4 @@
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
 # m h  dom mon dow   command
-*/30 * * * * /usr/bin/rclone bisync proton:/ /home/lord/ProtonDrive/ --exclude "**/.git/**" --create-empty-src-dirs --resilient --drive-skip-gdocs --log-file=/home/lord/log/rclone-bisync.log
+*/30 * * * * /usr/bin/rclone sync /home/lord/ProtonDrive/ proton:/ --exclude "**/.git/**" --create-empty-src-dirs --drive-skip-gdocs --log-file=/home/lord/log/rclone-sync.log
