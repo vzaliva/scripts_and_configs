@@ -158,6 +158,16 @@ bar {
 }
 
 bar {
+    output DP-2
+    tray_output bottom
+}
+
+bar {
+    output DP-3
+    tray_output bottom
+}
+
+bar {
     output DP-1-1
     tray_output bottom
 }
