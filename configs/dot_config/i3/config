@@ -250,6 +250,7 @@ for_window [class="^(?i)evolution"] border none
 for_window [class="^(?i)signal"] border none
 for_window [class="^(?i)emacs"] border none
 for_window [class="^(?i)ferdium"] border none
+for_window [class="^(?i)station"] border none
 for_window [class="^(?i)cursor"] border none
 for_window [class="^(?i)vscode"] border none
 
