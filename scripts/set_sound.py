@@ -9,7 +9,7 @@ import pulsectl
 from icecream import ic
 
 # preferred input sinks (in this order)
-PREF_SINKS = ["WH-1000XM4 (grey, over-ear)", "WF-1000XM5 (earbuds)", "WH-CH520 (white, over-ear)","Raptor Lake-P/U/H cAVS Speaker + Headphones", "Jabra EVOLVE 30 II Analog Stereo"]
+PREF_SINKS = ["WH-1000XM4 (grey, over-ear)", "WF-1000XM5 (earbuds)", "WH-CH520 (white, over-ear)", "Raptor Lake-P/U/H cAVS Pro", "Jabra EVOLVE 30 II Analog Stereo"]
 
 def find_sink(s,lst):
     return(next(filter((lambda x: x.description==s), lst), None))
