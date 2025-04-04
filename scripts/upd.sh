@@ -10,6 +10,11 @@ case "$OSTYPE" in
         sudo apt-get update && sudo apt-get dist-upgrade && sudo apt-get autoremove
         echo "Updating Snap packages"
         sudo snap refresh
+        if command -v flatpak --version &> /dev/null
+        then
+            echo "Updating Flatpak packages"
+            flatpak update
+        fi
         ;;
     
     darwin*)
