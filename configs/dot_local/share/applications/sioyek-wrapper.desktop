@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Sioyek Wrapper
+Comment=Open PDFs via Sioyek with google-drive support
+Exec=/home/lord/bin/sioyek-open.sh %U
+Terminal=false
+Type=Application
+MimeType=application/pdf;
