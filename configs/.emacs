@@ -459,7 +459,7 @@ text.")
   :ensure t
   :init
   (setq org-log-done 'time)
-  (setq org-directory "~/ProtonDrive/Notes/")
+  (setq org-directory "~/Dropbox/Notes/")
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
@@ -858,7 +858,7 @@ text.")
  '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
-   '("~/ProtonDrive/Notes/codeminders.org" "~/ProtonDrive/Notes/research.org" "~/ProtonDrive/Notes/personal.org"))
+   '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
    '(org-present 0xc auth-source auth-souce auto-souce auctex latex-extra 0x0 epresent 0blayout rust-mode abl-mode eglot faceup flymake jsonrpc project soap-client tramp use-package-ensure-system-package verilog-mode seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust company-coq magit-popup haskell-mode org-bullets academic-phrases proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode))
