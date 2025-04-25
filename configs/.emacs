@@ -501,6 +501,8 @@ text.")
   :bind (:map org-mode-map ("C-c l" . 'org-store-link))
   )
 
+(use-package org-tree-slide
+  :ensure t)
 
 (use-package epresent
   :ensure t
@@ -846,7 +848,14 @@ text.")
  '(chatgpt-shell-prompt-header-proofread-region
    "You are my proofreader. Your job is to proofread the text I give you\12and correct grammar and spelling mistakes. Do not diverge too far from\12the original text and try to preserve as much as possible of the\12original sentence structure. Do not change any quoted text (inside\12quotation marks). The text you will be proofreading may occasionally\12use LaTeX syntax. If theoriginal text uses LaTeX quoation marks preserve\12them. For double quotes in LaTeX, use two backticks (`) for opening and two single quotes (') for closing: ``like this''. This is academic writing and I am using British English. Output just the proofread text without any intro, comments, or explanations. If the original text was indented on the left, preserve the same amount of spacing in your response.")
  '(custom-safe-themes
-   '("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "5dbdb4a71a0e834318ae868143bb4329be492dd04bdf8b398fb103ba1b8c681a" "f8b886e3fce3b23ba517bd4ff29dd2c874c70b13d0fbdd1b3441be1d63f782eb" "5cd4770f787ad997ca9243662728031766736fc12f310b822a93de3c51d81878" "a68670dce845d18af9ec87716b4d4c2ea071271eccc80242be4d232c58b3cca2" "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
+   '("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3"
+     "5dbdb4a71a0e834318ae868143bb4329be492dd04bdf8b398fb103ba1b8c681a"
+     "f8b886e3fce3b23ba517bd4ff29dd2c874c70b13d0fbdd1b3441be1d63f782eb"
+     "5cd4770f787ad997ca9243662728031766736fc12f310b822a93de3c51d81878"
+     "a68670dce845d18af9ec87716b4d4c2ea071271eccc80242be4d232c58b3cca2"
+     "0598c6a29e13e7112cfbc2f523e31927ab7dce56ebb2016b567e1eff6dc1fd4f"
+     "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
+     default))
  '(doc-view-resolution 300)
  '(latex-preview-pane-use-frame t)
  '(line-number-mode 1)
@@ -858,42 +867,68 @@ text.")
  '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
-   '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"))
+   '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org"
+     "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(org-present 0xc auth-source auth-souce auto-souce auctex latex-extra 0x0 epresent 0blayout rust-mode abl-mode eglot faceup flymake jsonrpc project soap-client tramp use-package-ensure-system-package verilog-mode seq treesit-auto chatgpt-shell minions typescript-mode compat wfnames spinner f shrink-path request reformatter prop-menu polymode nerd-icons merlin-company magit-section lv eldoc lsp-mode grammarly lsp-grammarly lcr idris-mode flymake-grammarly anaphora deferred dante auto-complete gnu-elpa-keyring-update ac-c-headers ac-helm ac-html ac-math dockerfile-mode yaml-mode opam-switch-mode all-the-icons doom-modeline helm-file-preview graphviz-dot-mode helm-lsp langtool dune dune-format keytar lsp-ui markchars helm-swoop ein yasnippet async with-editor websocket web-server bind-key caml transient dash macrostep s popup epl pkg-info math-symbol-lists ht helm-core helm flymake-easy flycheck company company-math helm-org helm-flyspell transpose-frame multiple-cursors haskell-snippets helm-c-yasnippet dispwatch helm-ls-git helm-ls-hg helm-ls-svn imenu-anywhere tabbar cargo flycheck-rust flymake-rust ob-rust company-coq magit-popup haskell-mode org-bullets academic-phrases proof-general markdown-mode org ws-butler use-package tuareg solarized-theme slime quack python-mode osx-plist merlin markdown-preview-mode markdown-preview-eww markdown-mode+ magit latex-preview-pane iflipb highlight hi2 helm-idris helm-ag-r helm-ag flycheck-haskell facemenu+ diminish csv-mode coq-commenter bison-mode))
+   '(0blayout 0x0 0xc abl-mode ac-c-headers ac-helm ac-html ac-math
+              academic-phrases all-the-icons anaphora async auctex
+              auth-souce auth-source auto-complete auto-souce bind-key
+              bison-mode caml cargo chatgpt-shell company company-coq
+              company-math compat coq-commenter csv-mode dante dash
+              deferred diminish dispwatch dockerfile-mode
+              doom-modeline dune dune-format eglot ein eldoc epl
+              epresent f facemenu+ faceup flycheck flycheck-haskell
+              flycheck-rust flymake flymake-easy flymake-grammarly
+              flymake-rust gnu-elpa-keyring-update grammarly
+              graphviz-dot-mode haskell-mode haskell-snippets helm
+              helm-ag helm-ag-r helm-c-yasnippet helm-core
+              helm-file-preview helm-flyspell helm-idris helm-ls-git
+              helm-ls-hg helm-ls-svn helm-lsp helm-org helm-swoop hi2
+              highlight ht idris-mode iflipb imenu-anywhere jsonrpc
+              keytar langtool latex-extra latex-preview-pane lcr
+              lsp-grammarly lsp-mode lsp-ui lv macrostep magit
+              magit-popup magit-section markchars markdown-mode
+              markdown-mode+ markdown-preview-eww
+              markdown-preview-mode math-symbol-lists merlin
+              merlin-company minions multiple-cursors nerd-icons
+              ob-rust opam-switch-mode org org-bullets org-present
+              org-tree-slide osx-plist pkg-info polymode popup project
+              proof-general prop-menu python-mode quack reformatter
+              request rust-mode s seq shrink-path slime soap-client
+              solarized-theme spinner tabbar tramp transient
+              transpose-frame treesit-auto tuareg typescript-mode
+              use-package use-package-ensure-system-package
+              verilog-mode web-server websocket wfnames with-editor
+              ws-butler yaml-mode yasnippet))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
            ((default-directory
              (locate-dominating-file buffer-file-name ".dir-locals.el")))
            (setq-local coq-prog-args
-                       `("-coqlib" ,(expand-file-name "..")
-                         "-R" ,(expand-file-name ".")
-                         "Coq"))
+                       `("-coqlib" ,(expand-file-name "..") "-R"
+                         ,(expand-file-name ".") "Coq"))
            (setq-local coq-prog-name
                        (expand-file-name "../bin/coqtop")))
      (eval progn
            (let
                ((coq-root-directory
                  (when buffer-file-name
-                   (locate-dominating-file buffer-file-name ".dir-locals.el")))
+                   (locate-dominating-file buffer-file-name
+                                           ".dir-locals.el")))
                 (coq-project-find-file
-                 (and
-                  (boundp 'coq-project-find-file)
-                  coq-project-find-file)))
-             (set
-              (make-local-variable 'tags-file-name)
-              (concat coq-root-directory "TAGS"))
+                 (and (boundp 'coq-project-find-file)
+                      coq-project-find-file)))
+             (set (make-local-variable 'tags-file-name)
+                  (concat coq-root-directory "TAGS"))
              (setq camldebug-command-name
                    (concat coq-root-directory "dev/ocamldebug-coq"))
              (unless coq-project-find-file
-               (set
-                (make-local-variable 'compile-command)
-                (concat "make -C " coq-root-directory))
-               (set
-                (make-local-variable 'compilation-search-path)
-                (cons coq-root-directory nil)))
+               (set (make-local-variable 'compile-command)
+                    (concat "make -C " coq-root-directory))
+               (set (make-local-variable 'compilation-search-path)
+                    (cons coq-root-directory nil)))
              (when coq-project-find-file
                (setq default-directory coq-root-directory))))))
  '(send-mail-function 'mailclient-send-it)
