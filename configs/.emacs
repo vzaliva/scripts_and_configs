@@ -502,7 +502,10 @@ text.")
   )
 
 (use-package org-tree-slide
-  :ensure t)
+  :ensure t
+  :bind (:map org-mode-map
+              ("<f8>" . org-tree-slide-mode)) ;; bind F8 *inside* org-mode only  
+  :hook (org-tree-slide-mode . org-tree-slide-presentation-profile))
 
 (use-package epresent
   :ensure t
