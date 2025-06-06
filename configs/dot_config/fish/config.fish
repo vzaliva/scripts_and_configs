@@ -27,6 +27,10 @@ if test -d $HOME/go/bin
   set PATH $HOME/go/bin $PATH
 end
 
+if test -d $HOME/.elan/bin
+  set PATH $HOME/.elan/bin $PATH
+end
+
 # OPAM configuration
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
@@ -73,6 +77,10 @@ else
     set LS_CMD ""
 end
 
+if test -x /usr/bin/wezterm
+   set -gx TERMINAL /usr/bin/wezterm
+end
+
 if test -n "$LS_CMD"
     alias ls "$LS_CMD"
     alias ll "$LS_CMD -snew -l"
@@ -86,7 +94,7 @@ set PATH $PATH $NPM_PACKAGES/bin
 
 set MANPATH $NPM_PACKAGES/share/man $MANPATH  
 
-alias c "cd ~/src/cerberus"
+alias c "cd ~/src/vz-coop"
 alias h "cd ~/src/helix"
-alias p "cd ~/src/helix-journal-paper"
+alias p "cd ~/src/papers"
 
