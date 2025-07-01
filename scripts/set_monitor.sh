@@ -42,7 +42,7 @@ else
     xrandr --dpi 96/e-DP1
     xrandr --output eDP-1 --primary
     # move workspaces to external monitor
-    workspace_numbers=(10 7 8 9)
+    workspace_numbers=( 6 7 8 9 10 )
     for workspace in "${workspace_numbers[@]}"; do
         i3-msg -q "workspace $workspace; move workspace to output $DP;"
     done    
