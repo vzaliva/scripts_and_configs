@@ -5,7 +5,7 @@ set -e
 DEST="/Volumes/Vault/"
 
 SRC_CATALOG="$HOME/Pictures/Lightroom"
-SRC_MASTERS="$HOME/Pictures/Lightroom Masters"
+SRC_MASTERS="$HOME/Pictures/LightroomMasters"
 SRC_MOBILE_DL="$HOME/Pictures/Lightroom/Mobile Downloads.lrdata"
 
 mkdir -p "$DEST/Lightroom" "$DEST/Lightroom Masters"
@@ -27,7 +27,7 @@ fi
 if [ -d "$SRC_MASTERS" ]; then
   rsync -avh --delete \
     "$SRC_MASTERS/" \
-    "$DEST/Lightroom Masters/"
+    "$DEST/LightroomMasters/"
 fi
 
 
