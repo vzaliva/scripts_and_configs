@@ -644,7 +644,7 @@ text.")
 ;; OPAM stuff
 (if (file-exists-p "~/.emacs.d/opam-user-setup.el")
     (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
-(setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+(setq opam-share (substring (shell-command-to-string "opam var share") 0 -1))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 
 (use-package opam-switch-mode
@@ -687,6 +687,17 @@ text.")
       browse-url-new-window-flag  nil
       browse-url-firefox-new-window-is-tab t)
 
+
+;; My profile https://codestats.net/users/vzaliva
+;; machine key in ~/.authinfo
+(use-package code-stats
+  :ensure t
+  :config
+  (setq code-stats-token
+        (auth-source-pick-first-password :host "codestats.net"))
+  (add-hook 'prog-mode-hook #'code-stats-mode)
+  (run-with-idle-timer 30 t #'code-stats-sync)
+  (add-hook 'kill-emacs-hook (lambda () (code-stats-sync :wait))))
 
 ;; Requires emacs 29!
 ;; TODO: https://www.masteringemacs.org/article/lets-write-a-treesitter-major-mode
@@ -832,6 +843,21 @@ text.")
 ;; END Iris support
 
 
+;; Lean 4 support
+(add-to-list 'load-path "~/lisp/lean4-mode")
+(use-package dash :ensure t)
+(use-package flycheck :ensure t)
+(use-package lsp-mode :ensure t)
+(use-package lsp-ui :ensure t)
+
+(use-package lean4-mode
+  :load-path "~/lisp/lean4-mode"
+  :mode "\\.lean\\'"            ;; autoload when opening .lean files
+  :commands (lean4-mode)        ;; autoload when you M-x lean4-mode
+  :hook (lean4-mode . lsp-deferred))
+
+
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -841,6 +867,13 @@ text.")
  '(mode-line ((t (:family "Noto Sans" :height 0.9))))
  '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
  '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
+
+;; Start in org-agenda window
+(setq initial-buffer-choice (lambda ()
+                              (org-agenda nil "t")
+                              (delete-other-windows)
+                              (get-buffer "*Org Agenda*")
+                              ))
 
 ;; Mark theme as "safe" to avoid startup warnings
 (custom-set-variables
@@ -874,36 +907,17 @@ text.")
      "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(0blayout 0x0 0xc abl-mode ac-c-headers ac-helm ac-html ac-math
-              academic-phrases all-the-icons anaphora async auctex
-              auth-souce auth-source auto-complete auto-souce bind-key
-              bison-mode caml cargo chatgpt-shell company company-coq
-              company-math compat coq-commenter csv-mode dante dash
-              deferred diminish dispwatch dockerfile-mode
-              doom-modeline dune dune-format eglot ein eldoc epl
-              epresent f facemenu+ faceup flycheck flycheck-haskell
-              flycheck-rust flymake flymake-easy flymake-grammarly
-              flymake-rust gnu-elpa-keyring-update grammarly
-              graphviz-dot-mode haskell-mode haskell-snippets helm
-              helm-ag helm-ag-r helm-c-yasnippet helm-core
-              helm-file-preview helm-flyspell helm-idris helm-ls-git
-              helm-ls-hg helm-ls-svn helm-lsp helm-org helm-swoop hi2
-              highlight ht idris-mode iflipb imenu-anywhere jsonrpc
-              keytar langtool latex-extra latex-preview-pane lcr
-              lsp-grammarly lsp-mode lsp-ui lv macrostep magit
-              magit-popup magit-section markchars markdown-mode
-              markdown-mode+ markdown-preview-eww
-              markdown-preview-mode math-symbol-lists merlin
-              merlin-company minions multiple-cursors nerd-icons
-              ob-rust opam-switch-mode org org-bullets org-present
-              org-tree-slide osx-plist pkg-info polymode popup project
-              proof-general prop-menu python-mode quack reformatter
-              request rust-mode s seq shrink-path slime soap-client
-              solarized-theme spinner tabbar tramp transient
-              transpose-frame treesit-auto tuareg typescript-mode
-              use-package use-package-ensure-system-package
-              verilog-mode web-server websocket wfnames with-editor
-              ws-butler yaml-mode yasnippet))
+   '(0blayout 0x0 0xc abl-mode all-the-icons bison-mode chatgpt-shell
+              code-stats company-coq dante doom-modeline dune
+              dune-format ein epresent gnu-elpa-keyring-update
+              haskell-mode helm-ag helm-file-preview helm-flyspell
+              helm-ls-git helm-lsp helm-swoop iflipb imenu-anywhere
+              keytar langtool latex-extra lsp-grammarly lsp-ui magit
+              merlin-company multiple-cursors opam-switch-mode
+              org-bullets org-present org-tree-slide pkg-info popup
+              proof-general rust-mode slime solarized-theme
+              transpose-frame tree-sitter treesit-auto tuareg
+              ws-butler xterm-color))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
@@ -941,10 +955,4 @@ text.")
  '(warning-suppress-log-types '((comp) (comp) (comp)))
  '(warning-suppress-types '((comp) (comp))))
 
-;; Start in org-agenda window
-(setq initial-buffer-choice (lambda ()
-                              (org-agenda nil "t")
-                              (delete-other-windows)
-                              (get-buffer "*Org Agenda*")
-                              ))
 
