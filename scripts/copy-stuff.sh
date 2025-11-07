@@ -19,11 +19,11 @@ scp -p ~/.ssh/config $R:~/.ssh/
 
 # fish stuff
 # temporarily commented. it looks like it needs tty
-#ssh $R "curl -L https://get.oh-my.fish | fish"
+#ssh $R "curl https://raw.githubusercontent.com/oh-my-fish/oh-my-fish/master/bin/install | fish"
 #ssh $R "fish -c \"omf install bobthefish\"
 
 scp -pr ~/.config/fish $R:~/.config/
-ssh $R "mv ~/.config/fish/fishd.relic ~/.config/fish/fishd.`hostname -s`"
+ssh $R "mv ~/.config/fish/fishd.thruxton ~/.config/fish/fishd.`hostname -s`"
 
 # bat
 if [ -d ~/.config/bat ]; then
