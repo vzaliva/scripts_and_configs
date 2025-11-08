@@ -265,3 +265,6 @@ exec --no-startup-id picom --config ~/.config/picom/picom.conf
 
 exec --no-startup-id xss-lock -- i3lock -c 000000
 
+# To enable SNI tray icons (blueman, dropbox, signal)
+exec --no-startup-id /usr/local/bin/snixembed
+
