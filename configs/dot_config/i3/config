@@ -146,39 +146,19 @@ bar {
 # pipx inject py3status pygobject
 # See https://github.com/ultrabug/py3status/issues/2213
 
-    status_command ~/.local/bin/py3status
+    status_command py3status
     output primary
     tray_output primary
     position bottom
 }
 
 bar {
-    output DP-1
+    output DisplayPort-9
     tray_output bottom
 }
 
 bar {
-    output DP-2
-    tray_output bottom
-}
-
-bar {
-    output DP-3
-    tray_output bottom
-}
-
-bar {
-    output DP-1-1
-    tray_output bottom
-}
-
-bar {
-    output DP-3-3
-    tray_output bottom
-}
-
-bar {
-    output HDMI-1
+    output HDMI-A-0
     tray_output bottom
 }
 
@@ -193,7 +173,7 @@ bindsym $mod+u move workspace to output up
 # Instead of using "-option 'grp:alt_space_toggle'" for -option 'grp:alt_space_toggle'
 # We implement switching via i3 shortcut, so we can instantly update indicator for
 # i3status bar
-bindsym Mod1+space exec "/usr/local/bin/xkb-switch -n; ~/.local/bin/py3-cmd refresh keyboard_layout"
+bindsym Mod1+space exec "xkb-switch -n; py3-cmd refresh keyboard_layout"
 exec_always "setxkbmap -layout us,ua -option ctrl:nocaps"
 #exec_always "setxkbmap -layout us,ua -option ctrl:nocaps -option lv3:alt_switch"
 
@@ -240,7 +220,7 @@ exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
 exec --no-startup-id /usr/bin/dropbox start -i              # Dropbox
 # autostart redshift https://wiki.archlinux.org/title/redshift
-exec --no-startup-id /usr/libexec/geoclue-2.0/demos/agent
+#exec --no-startup-id /usr/libexec/geoclue-2.0/demos/agent
 exec --no-startup-id redshift-gtk
 
 # No window tite needed for some programs 
@@ -278,9 +258,12 @@ assign [class="Emacs"]   2
 assign [class="Signal"]   5
 
 # Enable touch-click on Thinkpad X1 touchpad
-exec_always --no-startup-id xinput set-prop 'SYNA8017:00 06CB:CEB2 Touchpad' 'libinput Tapping Enabled' 1
+exec_always --no-startup-id xinput set-prop 'ELAN0678:00 04F3:3195 Touchpad' 'libinput Tapping Enabled' 1
 
 exec_always --no-startup-id xsetroot -solid "#333333"
 
 # Requires: https://github.com/rjekker/i3-battery-popup 
 exec --no-startup-id ~/bin/i3-battery-popup -n -L 15 -I 3
+
+# To fix missed vblank/tearing causing input stalls.
+exec --no-startup-id picom --config ~/.config/picom/picom.conf

@@ -29,7 +29,7 @@ volume master {
          device = "default"
          mixer = "Master"
          mixer_idx = 0
-         on_click 1 = "exec pavucontrol"
+         on_click 1 = "exec /usr/bin/pavucontrol"
 }
 
 wireless _first_ {
