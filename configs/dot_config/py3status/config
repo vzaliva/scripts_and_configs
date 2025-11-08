@@ -73,7 +73,7 @@ load {
 power_profile {
     format = "⚡ {profile}"
     cache_timeout = 10
-    on_click 1 = "exec ~/bin/powerprofile-rofi; exec py3-cmd refresh power_profile"
+    on_click 1 = "exec ~/bin/powerprofile-rofi"
 }
 
 
