@@ -1,6 +1,4 @@
 ;;---------------------------------------------------------------
-;; $Id: .emacs,v 1.12 1999/09/27 23:11:43 lord Exp lord $
-;;---------------------------------------------------------------
 
 (setq load-path
       (cons "/opt/local/share/emacs/site-lisp"
@@ -9,17 +7,6 @@
                         (cons "/usr/share/emacs/site-lisp/"
                               load-path)))))
 
-;; Load LLVM mode, if present
-(if (file-exists-p "/usr/share/emacs/site-lisp/llvm/llvm-mode.el")
-    (progn
-      (load-file "/usr/share/emacs/site-lisp/llvm/llvm-mode.el")
-      (require 'llvm-mode)))
-
-;;(if (file-exists-p "~/.cask/cask.el")
-;;    (progn
-;;      (require 'cask "~/.cask/cask.el")
-;;      (cask-initialize)))
-      
 ;; Prevent split window on startup
 (setq inhibit-startup-screen t)
 
@@ -27,10 +14,16 @@
 (setq compilation-scroll-output t)
 
 ;; Boostrap package management, with MELPA repository
+
 (require 'package)
 (setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
+
+(setq package-archives
+      '(("gnu"   . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+        ("org"   . "https://orgmode.org/elpa/")))
+
 (package-initialize)
 
 ;; Bootstrap `use-package'
