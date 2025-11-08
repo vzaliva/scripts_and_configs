@@ -197,11 +197,6 @@ bindsym XF86MonBrightnessDown exec sudo brightnessctl set 10%-
 # Search as dmenu
 bindsym XF86Favorites exec rofi -theme solarized -font "hack 14" -show run
 
-# -- The following dows not work on Thinkpad but did work on Dell XPS --
-#bindsym XF86Search exec rofi -theme solarized -font "hack 14" -show run
-#bindsym XF86Explorer exec nautilus --no-desktop /home/lord/Dropbox
-#bindsym XF86Sleep exec --no-startup-id ~/bin/i3exit.sh suspend
-
 # -- Unused keys --
 #bindsym XF86LaunchA exec ";" 
 #bindsym XF86Tools exec ";"
@@ -267,3 +262,6 @@ exec --no-startup-id ~/bin/i3-battery-popup -n -L 15 -I 3
 
 # To fix missed vblank/tearing causing input stalls.
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
+
+exec --no-startup-id xss-lock -- i3lock -c 000000
+
