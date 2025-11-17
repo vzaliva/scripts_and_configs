@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PPCTL="$(command -v powerprofilesctl)"
+ROFI_CMD=(rofi -dmenu -theme solarized -font "hack 14" -i -p "Power profile")
+
+current="$("$PPCTL" get)"
+
+# Extract profile IDs from the left side before the colon; accept optional leading "* "
+mapfile -t profiles < <("$PPCTL" list | awk -F: '
+  /^[[:space:]]*\*?[[:space:]]*[a-z-]+:/ {
+    gsub(/^[[:space:]]*\*?[[:space:]]*/, "", $1);
+    print $1
+  }')
+
+# Build the menu (mark current)
+menu=""
+for p in "${profiles[@]}"; do
+  if [[ "$p" == "$current" ]]; then
+    menu+="$p (current)\n"
+  else
+    menu+="$p\n"
+  fi
+done
+
+# Show rofi and parse selection back to the plain ID
+choice="$(printf %b "$menu" | "${ROFI_CMD[@]}")" || exit 0
+choice="${choice% (current)}"
+[[ -z "$choice" || "$choice" == "$current" ]] && exit 0
+
+# Apply and optionally notify
+if "$PPCTL" set "$choice"; then
+  py3-cmd refresh power_profile
+  #notify-send "Power profile" "Switched to: $choice" || true
+fi
