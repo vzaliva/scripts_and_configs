@@ -208,7 +208,7 @@ bindsym XF86Favorites exec rofi -theme solarized -font "hack 14" -show run
 # F7: press when display config changed
 # For connected but disabled outputs, this will enable them using their first preferred mode.
 # For disconnected but enabled outputs, this will disable them.
-bindsym XF86Display exec ~/bin/set_monitor.sh
+bindsym XF86Display exec ~/bin/set_monitor.py
 
 # Auto-start some daemons
 exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
@@ -267,4 +267,3 @@ exec --no-startup-id xss-lock -- i3lock -c 000000
 
 # To enable SNI tray icons (blueman, dropbox, signal)
 exec --no-startup-id /usr/local/bin/snixembed
-
