@@ -257,10 +257,10 @@ exec_always --no-startup-id xsetroot -solid "#333333"
 exec --no-startup-id ~/bin/i3-battery-popup -n -L 15 -I 3
 
 # To fix missed vblank/tearing causing input stalls.
-exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec_always --no-startup-id picom --config ~/.config/picom/picom.conf
 
 # 3) xss-lock (for suspend / lid events)
-exec_always --no-startup-id xss-lock -- sh -c '$HOME/bin/i3exit.sh lock'
+exec_always --no-startup-id xss-lock -- sh -c '$HOME/bin/i3exit.sh lock-fg'
 
 # To enable SNI tray icons (blueman, dropbox, signal)
 exec --no-startup-id /usr/local/bin/snixembed
