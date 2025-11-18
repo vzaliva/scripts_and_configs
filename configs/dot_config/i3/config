@@ -177,9 +177,9 @@ bindsym Mod1+space exec "xkb-switch -n; py3-cmd refresh keyboard_layout"
 exec_always "setxkbmap -layout us,ua -option ctrl:nocaps"
 #exec_always "setxkbmap -layout us,ua -option ctrl:nocaps -option lv3:alt_switch"
 
-
 # Auto lock screen
-exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 -locker '~/bin/i3exit.sh lock' &
+exec --no-startup-id xautolock -corners -+00 -cornerdelay 1 -time 9 \
+    -locker "$HOME/bin/i3exit.sh lock"
 
 # Auto controls
 set $sink @DEFAULT_SINK@
@@ -232,13 +232,13 @@ for_window [class="^(?i)vscode"] border none
 for_window [class="^(?i)pavucontrol"] floating enable
 
 # Lock screen via Ctrl+Alt+L
-bindsym $mod+Control+l exec "xkb-switch -s us ; i3lock -t -d -f -e --color=000000"
+bindsym $mod+Control+l exec ~/bin/i3exit.sh lock
 
 # Screenshots using `fameshot`
 bindsym --release Print exec "flameshot gui"
 
 # Nautilus
-bindsym $mod+n exec nemo --no-desktop /home/lord/Dropbox
+bindsym $mod+n exec nemo --no-desktop ~/Dropbox
 
 # Presentation stuff (with multiple displays)
 # pdfpc to show notes on separate screen
@@ -263,7 +263,8 @@ exec --no-startup-id ~/bin/i3-battery-popup -n -L 15 -I 3
 # To fix missed vblank/tearing causing input stalls.
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
 
-exec --no-startup-id xss-lock -- i3lock -c 000000
+# 3) xss-lock (for suspend / lid events)
+exec_always --no-startup-id xss-lock -- sh -c '$HOME/bin/i3exit.sh lock'
 
 # To enable SNI tray icons (blueman, dropbox, signal)
 exec --no-startup-id /usr/local/bin/snixembed

@@ -1,11 +1,8 @@
 #!/bin/bash
-############################################################
-# 
-############################################################
 
-function lock {
+lock() {
     xkb-switch -s us
-    i3lock --ignore-empty-password --show-failed-attempts 
+    i3lock -t -d -f -e --color=000000
 }
 
 case "$1" in
