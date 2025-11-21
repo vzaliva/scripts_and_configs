@@ -145,15 +145,9 @@ bar {
 }
 
 bar {
-    output DisplayPort-9
+    output nonprimary
     tray_output bottom
 }
-
-bar {
-    output HDMI-A-0
-    tray_output bottom
-}
-
 
 bindsym $mod+x move workspace to output right
 bindsym $mod+u move workspace to output up
