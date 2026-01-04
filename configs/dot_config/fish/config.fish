@@ -31,6 +31,13 @@ if test -d $HOME/.elan/bin
   set PATH $HOME/.elan/bin $PATH
 end
 
+# Add ~/lib to runtime linker search path (Linux)
+if test -d "$HOME/lib"
+    if not contains "$HOME/lib" $LD_LIBRARY_PATH
+        set -x LD_LIBRARY_PATH "$HOME/lib" $LD_LIBRARY_PATH
+    end
+end
+
 # OPAM configuration
 . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
 
@@ -94,7 +101,7 @@ set PATH $PATH $NPM_PACKAGES/bin
 
 set MANPATH $NPM_PACKAGES/share/man $MANPATH  
 
-alias c "cd ~/src/vz-coop"
+alias c "cd ~/src/poison-lang"
 alias h "cd ~/src/helix"
 alias p "cd ~/src/papers"
 

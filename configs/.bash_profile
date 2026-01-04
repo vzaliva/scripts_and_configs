@@ -69,6 +69,14 @@ for i in $extramanpaths; do
 done
 unset extramanpaths
 
+# Add ~/lib to runtime linker search path for interactive shells
+if [ -d "$HOME/lib" ]; then
+  case ":${LD_LIBRARY_PATH-}:" in
+    *":$HOME/lib:"*) : ;;  # already present
+    *) export LD_LIBRARY_PATH="$HOME/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ;;
+  esac
+fi
+
 umask 007
 
 alias al=alias
@@ -284,3 +292,4 @@ fi
 
 source /home/lord/.config/broot/launcher/bash/br
 
+export PATH="$HOME/.elan/bin:$PATH"

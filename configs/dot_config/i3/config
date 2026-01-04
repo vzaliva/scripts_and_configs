@@ -159,7 +159,8 @@ bindsym $mod+u move workspace to output up
 # Instead of using "-option 'grp:alt_space_toggle'" for -option 'grp:alt_space_toggle'
 # We implement switching via i3 shortcut, so we can instantly update indicator for
 # i3status bar
-bindsym Mod1+space exec "xkb-switch -n; py3-cmd refresh keyboard_layout"
+bindsym Mod1+space exec --no-startup-id "env LD_LIBRARY_PATH=$HOME/lib:$LD_LIBRARY_PATH $HOME/bin/xkb-switch -n; py3-cmd refresh keyboard_layout"
+
 exec_always "setxkbmap -layout us,ua -option ctrl:nocaps"
 #exec_always "setxkbmap -layout us,ua -option ctrl:nocaps -option lv3:alt_switch"
 
@@ -258,3 +259,4 @@ exec_always --no-startup-id xss-lock -- sh -c '$HOME/bin/i3exit.sh lock-fg'
 
 # To enable SNI tray icons (blueman, dropbox, signal)
 exec --no-startup-id /usr/local/bin/snixembed
+
