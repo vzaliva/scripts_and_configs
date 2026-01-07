@@ -25,9 +25,9 @@ console = Console() if Console is not None else None
 # sink description or the sink name, so you can use short names like
 # "xm4", "xm5", "jabra", etc.
 PREF_SINKS = [
+    "Family",
     "WH-1000XM4",
     "jabra",
-    "family",
 ]
 
 # sinks to hide/exclude when matching PREF_SINKS.
