@@ -31,6 +31,10 @@ if test -d $HOME/.elan/bin
   set PATH $HOME/.elan/bin $PATH
 end
 
+if test -d $HOME/go/bin
+  set PATH $HOME/go/bin $PATH
+end
+
 # Add ~/lib to runtime linker search path (Linux)
 if test -d "$HOME/lib"
     if not contains "$HOME/lib" $LD_LIBRARY_PATH

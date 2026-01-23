@@ -16,7 +16,8 @@ ${HOME}/.cabal/bin
 ${HOME}/.cask/bin
 /usr/local/Cellar/llvm/7.0.0/bin/
 ${HOME}/go/bin
-${HOME}/.elan/bin"
+${HOME}/.elan/bin
+${HOME}/go/bin"
 
 
 extramanpaths="${HOME}/man

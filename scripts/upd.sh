@@ -54,6 +54,21 @@ then
 fi
 
 
+GOTOOLS=(
+  github.com/ramonvermeulen/whosthere@latest
+)
+
+if command -v go version &> /dev/null
+then
+    echo "Updating Go packages"
+    for t in "${GOTOOLS[@]}"; do
+        echo "  Updating $t"
+        go install "$t"
+    done
+fi
+
+
+
 #if command -v pip3 --version &> /dev/null
 #then
 #    echo "Updating Python3 packages"
