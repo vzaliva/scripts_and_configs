@@ -43,7 +43,9 @@ if test -d "$HOME/lib"
 end
 
 # OPAM configuration
-. ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+if test -x ~/.opam/opam-init/init.fish
+  . ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+end
 
 # fix manpath after OPAM
 if [ (uname) != Darwin ]
