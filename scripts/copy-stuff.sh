@@ -11,7 +11,7 @@ ssh-copy-id -i ~/.ssh/id_ed25519.pub $R
 ssh $R "mkdir bin src etc lib tmp"
 
 # some useful scripts
-scp ~/bin/upd.sh ~/bin/copy-stuff.sh $R:~/bin/
+scp ~/bin/upd.sh ~/bin/copy-stuff.sh ~/bin/add-keys.sh ~/bin/claude-auto-resume.sh $R:~/bin/
 
 # some config files
 scp ~/.emacs ~/.bash_profile ~/.tmux.conf $R:~/
