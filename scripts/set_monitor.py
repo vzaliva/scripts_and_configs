@@ -22,7 +22,7 @@ from rich.table import Table
 console = Console()
 
 # Workspaces that should live on the external monitor when it is present
-EXTERNAL_WORKSPACES = [6, 7, 8, 9, 10]
+EXTERNAL_WORKSPACES = [6, 10]
 
 
 def run(cmd: list[str]) -> str:
