@@ -13,6 +13,9 @@
 ;; auto-scroll compilation output
 (setq compilation-scroll-output t)
 
+;; auto-revert files changed on disk
+(global-auto-revert-mode 1)
+
 ;; Boostrap package management, with MELPA repository
 
 (require 'package)
@@ -159,7 +162,8 @@ text.")
 (use-package magit
   :ensure t
   :init (global-set-key (kbd "C-x g") 'magit-status))
-  
+
+(package-vc-install '(helm-ag :url "https://github.com/emacsattic/helm-ag"))
 (use-package helm-ag
   :ensure t
   :init
@@ -547,17 +551,17 @@ text.")
   ;;:hook ((org-mode . lsp))
   )
 
-(use-package lsp-grammarly
-  :ensure t
-  :hook (text-mode . (lambda ()
-                       (require 'lsp-grammarly)
-                       (lsp)))
-  :custom
-  (lsp-grammarly-dialect "british")
-  (lsp-grammarly-domain "academic")
-  (lsp-grammarly-audience "expert")
-  (lsp-grammarly--show-debug-message t)
-  )
+;; (use-package lsp-grammarly
+;;   :ensure t
+;;   :hook (text-mode . (lambda ()
+;;                        (require 'lsp-grammarly)
+;;                        (lsp)))
+;;   :custom
+;;   (lsp-grammarly-dialect "british")
+;;   (lsp-grammarly-domain "academic")
+;;   (lsp-grammarly-audience "expert")
+;;   (lsp-grammarly--show-debug-message t)
+;;   )
 
 (use-package keytar :ensure t)
 (use-package lsp-ui
@@ -582,7 +586,11 @@ text.")
   :ensure t
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :custom ((chatgpt-shell-openai-key
-            (lambda () (auth-source-pick-first-password :host "api.openai.com"))))
+            (lambda () (auth-source-pick-first-password :host
+                                                        "api.openai.com")))
+           (chatgpt-shell-anthropic-key
+            (lambda () (auth-source-pick-first-password :host
+                                                        "api.anthropic.com"))))  
   :config
   (setq chatgpt-shell-system-prompts (append
                                       chatgpt-shell-system-prompts
@@ -899,18 +907,8 @@ text.")
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org"
      "~/Dropbox/Notes/personal.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
- '(package-selected-packages
-   '(0blayout 0x0 0xc abl-mode all-the-icons bison-mode chatgpt-shell
-              code-stats company-coq dante doom-modeline dune
-              dune-format ein epresent gnu-elpa-keyring-update
-              haskell-mode helm-ag helm-file-preview helm-flyspell
-              helm-ls-git helm-lsp helm-swoop iflipb imenu-anywhere
-              keytar langtool latex-extra lsp-grammarly lsp-ui magit
-              merlin-company multiple-cursors opam-switch-mode
-              org-bullets org-present org-tree-slide pkg-info popup
-              proof-general rust-mode slime solarized-theme
-              transpose-frame tree-sitter treesit-auto tuareg
-              ws-butler xterm-color))
+ '(package-selected-packages nil)
+ '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
      (eval let
