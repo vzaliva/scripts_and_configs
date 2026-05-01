@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Popup wrapper for WhatCable-Linux:
+# https://github.com/vzaliva/whatcable-linux-cli
+# Expects the whatcable-linux binary to be installed in ~/bin/whatcable-linux.
+whatcable="${WHATCABLE:-/home/lord/bin/whatcable-linux}"
+title="Charging Cable"
+battery_arg="${1:-0}"
+case "$battery_arg" in
+    /*)
+        battery="$battery_arg"
+        ;;
+    BAT*)
+        battery="/sys/class/power_supply/$battery_arg"
+        ;;
+    *)
+        battery="/sys/class/power_supply/BAT${battery_arg}"
+        ;;
+esac
+
+read_sysfs_attr() {
+    local path="$1"
+    local default="$2"
+
+    if [[ -r "$path" ]]; then
+        <"$path"
+    else
+        printf '%s\n' "$default"
+    fi
+}
+
+if [[ ! -x "$whatcable" ]]; then
+    message="whatcable-linux was not found or is not executable: $whatcable"
+else
+    if command -v jq >/dev/null 2>&1 && message="$("$whatcable" --json | jq -r '
+def pdo_label:
+    "- " + (((.voltageMV // 0) / 1000) | tostring) + "V @ "
+    + (((.currentMA // 0) / 1000) | tostring) + "A - "
+    + (((.powerMW // 0) / 1000) | tostring) + "W"
+    + (if .active then " (active)" else "" end);
+
+(map(select(
+    .category == "typec"
+    and .typec.connected == true
+    and .typec.powerRole == "sink"
+)) | first) as $d
+| if $d == null then
+    "No currently charging USB-C port found."
+  else
+    [
+        ($d.headline // "USB-C charging port"),
+        ($d.subtitle // empty),
+        ($d.bullets[]? | "- " + .),
+        (if $d.cable then
+            "",
+            "Cable:",
+            (if $d.cable.type then "- Type: \($d.cable.type)" else empty end),
+            (if $d.cable.speed then "- Speed: \($d.cable.speed)" else empty end),
+            (if $d.cable.current then "- Current: \($d.cable.current)" else empty end),
+            (if $d.cable.vendorName then "- Vendor: \($d.cable.vendorName)" else empty end),
+            (if (($d.cable.maxWatts // 0) > 0) then "- Max power: \($d.cable.maxWatts)W" else empty end)
+         else empty end),
+        (if $d.charging then
+            "",
+            "Charging:",
+            (if $d.charging.summary then "- \($d.charging.summary)" else empty end),
+            (if $d.charging.detail then "- \($d.charging.detail)" else empty end)
+         else empty end),
+        (if (($d.powerDelivery.sourceCapabilities // []) | length) > 0 then
+            "",
+            "Charger profiles:",
+            ($d.powerDelivery.sourceCapabilities[] | pdo_label)
+         else empty end)
+    ] | join("\n")
+  end
+')"; then
+        :
+    else
+        message="$("$whatcable" 2>&1 | perl -pe 's/\e\[[0-?]*[ -\/]*[@-~]//g')"
+    fi
+fi
+
+if [[ -d "$battery" ]]; then
+    battery_name="$(basename "$battery")"
+    battery_status="$(read_sysfs_attr "$battery/status" "unknown")"
+    battery_capacity="$(read_sysfs_attr "$battery/capacity" "unknown")"
+    battery_power_uw="$(read_sysfs_attr "$battery/power_now" "0")"
+    battery_power_w="$(awk -v uw="$battery_power_uw" 'BEGIN { printf "%.1f", uw / 1000000 }')"
+
+    message+=$'\n\n'
+    message+="Battery now (${battery_name}):"
+    message+=$'\n'
+    message+="- Status: ${battery_status:-unknown}"
+    message+=$'\n'
+    message+="- Capacity: ${battery_capacity:-unknown}%"
+    message+=$'\n'
+    message+="- Battery charge/discharge power: ${battery_power_w}W"
+    message+=$'\n'
+    message+="  (This is what the battery is accepting or supplying now, not total USB-C wall power.)"
+else
+    message+=$'\n\n'
+    message+="Battery now:"
+    message+=$'\n'
+    message+="- Battery path not found: $battery"
+fi
+
+if command -v yad >/dev/null 2>&1; then
+    printf '%s\n' "$message" | yad \
+        --title="$title" \
+        --text-info \
+        --width=760 \
+        --height=520 \
+        --center \
+        --on-top \
+        --wrap \
+        --button=Close:0
+elif command -v zenity >/dev/null 2>&1; then
+    printf '%s\n' "$message" | zenity \
+        --text-info \
+        --title="$title" \
+        --width=760 \
+        --height=520 \
+        --ok-label=Close
+else
+    WHATCABLE_POPUP_TITLE="$title" WHATCABLE_POPUP_TEXT="$message" python3 - <<'PY'
+import os
+import tkinter as tk
+from tkinter.scrolledtext import ScrolledText
+
+root = tk.Tk()
+root.title(os.environ.get("WHATCABLE_POPUP_TITLE", "WhatCable"))
+root.geometry("760x520")
+root.attributes("-topmost", True)
+
+text = ScrolledText(root, wrap=tk.WORD, padx=12, pady=12)
+text.insert("1.0", os.environ.get("WHATCABLE_POPUP_TEXT", ""))
+text.configure(state="disabled")
+text.pack(fill=tk.BOTH, expand=True)
+
+root.bind("<Escape>", lambda _event: root.destroy())
+root.bind("<Button-1>", lambda _event: root.destroy())
+root.mainloop()
+PY
+fi

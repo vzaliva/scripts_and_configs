@@ -55,6 +55,7 @@ battery 0 {
         status_full = "☻"
         path = "/sys/class/power_supply/BAT%d/uevent"
         low_threshold = 10
+	on_click 1 = "exec --no-startup-id ~/bin/whatcable-popup 0"
 }
 
 vpn_status {
