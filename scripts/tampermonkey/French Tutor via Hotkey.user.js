@@ -14,7 +14,7 @@
     'use strict';
 
     const OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-    const OPENAI_MODEL = "gpt-5.5";
+    const OPENAI_MODEL = "gpt-5.4-mini";
 
     async function getOpenAIKey() {
         let apiKey = await GM_getValue("openai_api_key", null);
