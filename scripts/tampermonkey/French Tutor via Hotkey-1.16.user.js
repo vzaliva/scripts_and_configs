@@ -8,10 +8,13 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_deleteValue
 // ==/UserScript==
 
 (function () {
     'use strict';
+
+    // GM_setValue("openai_api_key", "your key");
 
     async function getOpenAIKey() {
         let apiKey = await GM_getValue("openai_api_key", null);
@@ -47,7 +50,7 @@ constructs. Respond in formatted HTML for display in a browser.
                     "Authorization": `Bearer ${apiKey}`
                 },
                 data: JSON.stringify({
-                    model: "gpt-4",
+                    model: "gpt-5.5",
                     messages: [
                         { role: "system", content: "You are a helpful assistant." },
                         { role: "user", content: prompt }
@@ -60,7 +63,18 @@ constructs. Respond in formatted HTML for display in a browser.
                         const cleanedContent = data.choices[0].message.content.replace(/```[a-zA-Z]*\n|```/g, "");
                         resolve(cleanedContent);
                     } else {
-                        reject("Error with ChatGPT API: " + response.statusText);
+                        let apiMessage = response.statusText || "Unknown API error";
+
+                        try {
+                            const data = JSON.parse(response.responseText);
+                            apiMessage = data?.error?.message || apiMessage;
+                        } catch (_) {
+                            if (response.responseText) {
+                                apiMessage = response.responseText;
+                            }
+                        }
+
+                        reject(`OpenAI API error ${response.status}: ${apiMessage}`);
                     }
                 },
                 onerror: function (err) {
