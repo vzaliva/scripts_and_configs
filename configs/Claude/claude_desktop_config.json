@@ -1,0 +1,51 @@
+{
+  "mcpServers": {
+    "google-docs": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@a-bonus/google-docs-mcp"
+      ],
+      "env": {
+        "SERVICE_ACCOUNT_PATH": "/home/lord/.config/google-docs-mcp/service-account.json"
+      }
+    },
+    "gmail": {
+      "command": "node",
+      "args": [
+        "/home/lord/src/gmail-mcp-multi/dist/index.js",
+        "--readonly"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--headless", "--browser", "chromium"]
+    }
+  },
+  "preferences": {
+    "menuBarEnabled": false,
+    "legacyQuickEntryEnabled": false,
+    "coworkScheduledTasksEnabled": true,
+    "ccdScheduledTasksEnabled": true,
+    "sidebarMode": "chat",
+    "coworkWebSearchEnabled": true,
+    "epitaxyPrefs": {
+      "starred-local-code-sessions": [],
+      "starred-cowork-spaces": [],
+      "starred-session-groups": [],
+      "dframe-local-slice": {
+        "pinnedOrder": [],
+        "customGroupAssignments": {},
+        "customGroupOrder": {}
+      },
+      "epitaxy-folder-permission-mode.2a137e89-52ed-4d72-92b8-3c257591047b": {
+        "/home/lord/src/gmail-mcp-multi": "auto"
+      },
+      "cc-landing-draft-permission-mode": "default",
+      "epitaxy-pr-create-mode": "create",
+      "epitaxy-perm-mode-acks.2a137e89-52ed-4d72-92b8-3c257591047b": [
+        "/home/lord/src/gmail-mcp-multi:auto"
+      ]
+    }
+  }
+}
