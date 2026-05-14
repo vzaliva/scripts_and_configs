@@ -1,40 +1,36 @@
-;;---------------------------------------------------------------
+;;; -*- lexical-binding: t; -*-
+;;; Personal .emacs
+
+;;;; Load path
 
 (setq load-path
-      (cons "/opt/local/share/emacs/site-lisp"
-            (cons "/opt/local/share/mercurial/contrib"
-                  (cons (expand-file-name "~/lisp")
-                        (cons "/usr/share/emacs/site-lisp/"
-                              load-path)))))
+      (append (list "/opt/local/share/emacs/site-lisp"
+                    "/opt/local/share/mercurial/contrib"
+                    (expand-file-name "~/lisp")
+                    "/usr/share/emacs/site-lisp/")
+              load-path))
 
-;; Prevent split window on startup
-(setq inhibit-startup-screen t)
+;;;; Basic startup behaviour
 
-;; auto-scroll compilation output
-(setq compilation-scroll-output t)
+(setq inhibit-startup-screen t)        ; no splash
+(setq compilation-scroll-output t)     ; auto-scroll *compilation*
+(global-auto-revert-mode 1)            ; refresh files changed on disk
 
-;; auto-revert files changed on disk
-(global-auto-revert-mode 1)
-
-;; Boostrap package management, with MELPA repository
+;;;; Package management (GNU ELPA, MELPA, org-mode ELPA)
 
 (require 'package)
 (setq package-enable-at-startup nil)
-
-
 (setq package-archives
       '(("gnu"   . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
         ("org"   . "https://orgmode.org/elpa/")))
-
 (package-initialize)
 
-;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Load some handy packages
+;;;; ChatGPT proofreader prompts
 
 (setq my-prompts `(
     (default . "You are a large language model living in Emacs and a helpful
@@ -81,11 +77,12 @@ text.")
     ))
 
 
+;;;; Core editing packages
+
 (use-package multiple-cursors
   :ensure t
-  :bind (("C-S-c C-S-c" .  'mc/edit-lines))
-  :config (define-key mc/keymap (kbd "<return>") nil)
-  )
+  :bind (("C-S-c C-S-c" . 'mc/edit-lines))
+  :config (define-key mc/keymap (kbd "<return>") nil))
 
 (use-package helm
   :ensure t
@@ -131,7 +128,8 @@ text.")
   (global-set-key (kbd "C-.") 'helm-imenu-anywhere))
 
 (use-package solarized-theme :ensure t) ;; https://github.com/bbatsov/solarized-emacs
-(use-package cc-mode :ensure t)
+
+;;;; LaTeX / AUCTeX
 
 (use-package tex-site
   :ensure auctex
@@ -153,17 +151,18 @@ text.")
 ;;  :ensure t
 ;;  :hook (LaTeX-mode . latex-extra-mode))
 
-;; Emergency (magit): Magit requires ‘seq’ >= 2.24,
-;; but due to bad defaults, Emacs’ package manager, refuses to
-;; upgrade this and other built-in packages to higher releases
-;; from GNU Elpa.
-;; To fix this, you have to add this to your init file:
-;(setq package-install-upgrade-built-in t)
+;; If magit complains about ‘seq’ >= 2.24 being unavailable, add this
+;; to allow Emacs' package manager to upgrade built-ins from GNU ELPA:
+;;   (setq package-install-upgrade-built-in t)
 (use-package magit
   :ensure t
   :init (global-set-key (kbd "C-x g") 'magit-status))
 
-(package-vc-install '(helm-ag :url "https://github.com/emacsattic/helm-ag"))
+;; helm-ag from emacsattic (no longer on MELPA).  Install once via
+;; package-vc; the guard avoids the yearly "Overwrite previous
+;; checkout?" prompt on every startup.
+(unless (package-installed-p 'helm-ag)
+  (package-vc-install '(helm-ag :url "https://github.com/emacsattic/helm-ag")))
 (use-package helm-ag
   :ensure t
   :init
@@ -171,7 +170,6 @@ text.")
   (global-set-key (kbd "C-S-<XF86Search>") 'helm-ag-this-file)
   (global-set-key (kbd "<f7>") 'helm-ag)
   (global-set-key (kbd "C-<f7>") 'helm-ag-this-file))
-  
 
 (use-package iflipb
   :ensure t
@@ -186,11 +184,15 @@ text.")
 
 (global-set-key "\M-BS" 'backward-kill-word)
 
+;;;; Helper commands
+
 (defun tidy-buffer ()
-  "Tidy up current buffer by re-identing and cleaning up whitespace"
+  "Tidy up current buffer by re-indenting and cleaning up whitespace."
   (interactive)
   (indent-region (point-min) (point-max))
   (whitespace-cleanup-region (point-min) (point-max)))
+
+;;;; C / C++
 
 (defun my-c-setup ()
   "C mode setup"
@@ -223,35 +225,37 @@ text.")
 (add-hook 'c-mode-hook    'my-c-setup)
 (add-hook 'c++-mode-hook  'my-c-setup)
 
-
-;; --- General ---
+;;;; General editor settings
 
 (setq make-backup-files nil)
-(setq transient-mark-mode 1)
 (setq scroll-step 1)
 (setq compile-command "make")
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region   'disabled nil)
-(setq line-number-mode     1)
 (setq column-number-indicator-zero-based nil)
 (setq-default indent-tabs-mode nil)
 (setq default-tab-width 4)
 (setq remote-shell-program "ssh")
-(delete-selection-mode 1)
 
-;; Keys
-;(global-set-key [f7]   'grep-find)
+;;;; Global key bindings
+
 (global-set-key [f8]   'next-error)
-;;(global-set-key [f9]   'tramp-compile)
 (global-set-key [f9]   'compile)
 (global-set-key [home] 'beginning-of-line)
 (global-set-key [end]  'end-of-line)
-
-(global-set-key [backspace]      'delete-backward-char)
-
+(global-set-key [backspace] 'delete-backward-char)
 (global-set-key "\M-?" 'help-command)
 (global-unset-key (kbd "M-SPC"))
 (global-set-key (kbd "M-SPC") 'cycle-spacing)
+
+;; Jumping to matching bracket
+(global-set-key [M-right] 'forward-list)
+(global-set-key [M-left]  'backward-list)
+;; Word jump
+(global-set-key [C-right] 'forward-word)
+(global-set-key [C-left]  'backward-word)
+
+;;;; File extension associations
 
 (setq auto-mode-alist
       (append '(("\\.C$"         . c++-mode)
@@ -260,8 +264,6 @@ text.")
                 ("\\.java$"      . java-mode)
                 ("\\.cc$"        . c++-mode)
                 ("\\.coo$"       . c++-mode)
-                ("\\.fs$"        . forth-mode)
-                ("\\.4th$"       . forth-mode)
                 ("\\.c\\+\\+$"   . c++-mode)
                 ("\\.C\\+\\+$"   . c++-mode)
                 ("\\.h\\+\\+$"   . c++-mode)
@@ -288,7 +290,7 @@ text.")
                 ) auto-mode-alist))
 
 
-;; Require 'stylish-haskell' system package installed
+;;;; Haskell — requires 'stylish-haskell' system package
 (use-package haskell-mode
   :ensure t
   :mode "\\.hs\\'"
@@ -324,6 +326,8 @@ text.")
   (add-hook 'haskell-mode-hook 'dante-mode)
   )
 
+;;;; Misc autoloads / minor packages
+
 (autoload 'javascript-mode "javascript" nil t)
 
 (use-package helm-file-preview
@@ -331,36 +335,25 @@ text.")
   :config
   (helm-file-preview-mode 1))
 
-(show-paren-mode t)
+;; macOS: dropping files opens them in a new frame rather than inserting
+(when (eq window-system 'ns)
+  (define-key global-map [ns-drag-file] 'ns-find-file))
 
-(if (eq window-system 'ns)
-    ;; --- Mac-specific stuff ---
-    ;; Dropping files opens then in new frame, not inserts
-    (define-key global-map [ns-drag-file] 'ns-find-file)
-  )
-
-;; Jumping to matching bracket
-(global-set-key '[M-right] 'forward-list)
-(global-set-key '[M-left]  'backward-list)
-
-;; Word jump
-(global-set-key '[C-right] 'forward-word)
-(global-set-key '[C-left]  'backward-word)
+;;;; VCS / clipboard
 
 (setq vc-cvs-stay-local nil)
-(setenv "CVS_RSH" "ssh");
+(setenv "CVS_RSH" "ssh")
 
-;; Merge kill-buffer and MacOS clipboard
+;; Merge kill-buffer and system clipboard
 (setq x-select-enable-clipboard t)
 
-;; Display pretty tables in org mode
-;; https://github.com/Fuco1/org-pretty-table
-(if (file-exists-p "~/lisp/org-pretty-table/org-pretty-table.el")
-    (progn
-      (load-file "~/lisp/org-pretty-table/org-pretty-table.el")
-      (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode)))))
+;; Pretty Unicode tables in org-mode — https://github.com/Fuco1/org-pretty-table
+(when (file-exists-p "~/lisp/org-pretty-table/org-pretty-table.el")
+  (load-file "~/lisp/org-pretty-table/org-pretty-table.el")
+  (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
 
-;; https://github.com/seagle0128/doom-modeline
+;;;; Mode line — https://github.com/seagle0128/doom-modeline
+
 (use-package all-the-icons :ensure t) ;manually run `all-the-icons-install-fonts` once after install
 (use-package doom-modeline
   :ensure t
@@ -371,18 +364,15 @@ text.")
   (doom-modeline-project-detection 'project)
   :config
   (doom-modeline-mode 1)
-  (custom-set-faces
-   '(mode-line ((t (:family "Noto Sans" :height 0.9))))
-   '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
-   '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
   :requires (all-the-icons))
+
+;;;; Coq / proof-general
 
 (use-package proof-general
   :ensure t
   :after doom-modeline
   :mode ("\\.v\\'" . coq-mode)
   :custom
-  (coq-smie-user-tokens '(("≈" . "=") ("≡" . "=")))
   (proof-splash-enable nil)
   (coq-prog-name "coqtop")
   (coq-compile-before-require nil)
@@ -404,13 +394,18 @@ text.")
                 ; to display the rooster
                 (add-to-list 'global-mode-string '(" " (:eval (assq 'company-coq-mode minor-mode-alist))) " ")
                 )))
-;; SLIME
-(setq inferior-lisp-program "ccl64")
-;;(setq inferior-lisp-program "clisp")
+
+;;;; Common Lisp (SLIME)
+
 (use-package slime
   :ensure t
-;  :config (require `slime-asdf)
+  :init
+  (setq inferior-lisp-program "ccl64")
+  ;;(setq inferior-lisp-program "clisp")
+  ;;:config (require 'slime-asdf)
   )
+
+;;;; Parser generators
 
 (use-package bison-mode
   :ensure t
@@ -419,10 +414,10 @@ text.")
                           ("\\.mly$"     . bison-mode)
                           ) auto-mode-alist)))
 
-;; For ML
+;;;; OCaml
 
-(use-package dune  :ensure t)
-(use-package dune-format  :ensure t)
+(use-package dune        :ensure t)
+(use-package dune-format :ensure t)
 
 (use-package tuareg
   :ensure t
@@ -451,6 +446,8 @@ text.")
     (setq merlin-error-on-single-line t)
     :bind (("M-o" . merlin-occurrences))
     ))
+
+;;;; Org mode
 
 (use-package org
   :ensure t
@@ -493,6 +490,7 @@ text.")
             (lambda ()
               (setq-local buffer-offer-save nil)))
   :config
+  (require 'org-protocol)
   (setq org-file-apps
         (append '(("\\.ll$" . emacs)
                   ("\\.core$" . emacs)) org-file-apps))
@@ -512,14 +510,11 @@ text.")
                      (when (bound-and-true-p lsp-mode)
                        (lsp-mode -1)))))
 
-(if (file-exists-p "~/lisp/mathematica.el")
-    (load-file "~/lisp/mathematica.el"))
+(when (file-exists-p "~/lisp/mathematica.el")
+  (load-file "~/lisp/mathematica.el"))
 
-;; TODO: move inside "use-package org" section above
-(require 'org-protocol)
+;;;; Jupyter / iPython notebooks (requires `pip3 install notebook`)
 
-;; Emacs iPython notebook
-;; Requires `pip3 install notebook`
 (use-package ein
   :ensure t
   :config
@@ -529,12 +524,15 @@ text.")
    (append org-babel-load-languages '((ein . t))))
   )
 
+;;;; LanguageTool
+
 (use-package langtool
   :ensure t
   :config
   (setq langtool-http-server-host "localhost" langtool-http-server-port 8010)
-  (setq langtool-default-language "en-GB")
-  )
+  (setq langtool-default-language "en-GB"))
+
+;;;; LSP
 
 (use-package lsp-mode
   :ensure t
@@ -583,6 +581,8 @@ text.")
               ("C-c l a a" . helm-lsp-code-actions))
   )
 
+;;;; ChatGPT shell
+
 (use-package chatgpt-shell
   :ensure t
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
@@ -611,41 +611,42 @@ text.")
   :hook (chatgpt-shell-mode . helm-mode))
 
 
-(use-package rust-mode
-  :ensure t)
+;;;; Rust
 
-;; Make PDFs displayed in latex-preview-pane-mode look nices
-;(add-hook 'doc-view-mode-hook '(setq doc-view-resolution 300))
+(use-package rust-mode :ensure t)
 
-;; To avoid tramp's "... too long for Unix domain socket" error under MacOS
+;;;; Tramp — avoid "... too long for Unix domain socket" on macOS
+
 (require 'tramp)
 (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
-;; Remove antlr-mode as it opens .g SPIRAL files and I do not want this.
+;;;; auto-mode-alist cleanup
+;; Remove antlr-mode mapping because it grabs SPIRAL .g files.
 (setq auto-mode-alist (remove (rassoc 'antlr-mode auto-mode-alist) auto-mode-alist))
 
-(tool-bar-mode -1)
+;;;; Emacs server
 
 (cd "~/")
 (load "server")
 (unless (server-running-p) (server-start))
 
-;; Save minibuffer history between launches
-(savehist-mode 1)
+;;;; Misc behaviour
 
-;; Replace on yank
-(delete-selection-mode 1)
+(savehist-mode 1)            ; save minibuffer history between launches
+(delete-selection-mode 1)    ; replace selection on yank
+(setq x-underline-at-descent-line t)
+(put 'scroll-left 'disabled t)
 
-;; Forces fixed-width font in org-mode
+;;;; Theme — fixed-width font in org-mode
+
 (setq solarized-use-variable-pitch nil
       solarized-scale-org-headlines nil)
 (load-theme 'solarized-dark t)
 
-(setq x-underline-at-descent-line t)
+;;;; OPAM
 
-;; OPAM stuff
-(if (file-exists-p "~/.emacs.d/opam-user-setup.el")
-    (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+(when (file-exists-p "~/.emacs.d/opam-user-setup.el")
+  (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
 (setq opam-share (substring (shell-command-to-string "opam var share") 0 -1))
 (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
 
@@ -654,18 +655,14 @@ text.")
   :hook
   (coq-mode . opam-switch-mode))
 
-(if (locate-library "ott-mode")
-    (require 'ott-mode))
+(when (locate-library "ott-mode")  (require 'ott-mode))
+(when (locate-library "ocp-indent") (require 'ocp-indent))
 
-(if (locate-library "ocp-indent")
-     (require 'ocp-indent))
-
-  ;;(desktop-save-mode 1)
-
-(put 'scroll-left 'disabled t)
+;;(desktop-save-mode 1)
 
 
-;; Inspired by https://www.emacswiki.org/emacs/BookmarkPlus#BulkDownloadCompileLoad 
+;;;; Ad-hoc bulk download / load of elisp packages
+;; Inspired by https://www.emacswiki.org/emacs/BookmarkPlus#BulkDownloadCompileLoad
 (defun fetch-and-load-elisp (pkg-name pkg-files base-url base-dir)
   (let ((pkg-dir (concat (file-name-as-directory base-dir) (symbol-name pkg-name))))
     (require 'url)
@@ -685,13 +682,14 @@ text.")
       (define-key ctl-x-map [(control ?=)] 'zoom-in/out)
       (define-key ctl-x-map [(control ?0)] 'zoom-in/out))
 
+;;;; Browser
+
 (setq browse-url-browser-function 'browse-url-firefox
       browse-url-new-window-flag  nil
       browse-url-firefox-new-window-is-tab t)
 
+;;;; code-stats — https://codestats.net/users/vzaliva (machine key in ~/.authinfo)
 
-;; My profile https://codestats.net/users/vzaliva
-;; machine key in ~/.authinfo
 (use-package code-stats
   :ensure t
   :config
@@ -729,8 +727,7 @@ text.")
 ;;   )
 
 
-;; BEGIN Iris support
-;; https://gitlab.mpi-sws.org/iris/iris/-/blob/master/docs/editor.md
+;;;; Iris support — https://gitlab.mpi-sws.org/iris/iris/-/blob/master/docs/editor.md
 
 (use-package math-symbol-lists :ensure t)
 
@@ -804,7 +801,8 @@ text.")
       ; see <https://mattermost.mpi-sws.org/iris/pl/46onxnb3tb8ndg8b6h1z1f7tny> for discussion
       (reverse (append math-symbol-list-basic math-symbol-list-extended)))
 
-;; Fonts
+;;;; Fonts
+
 (set-face-attribute 'default nil :height 110) ; height is in 1/10pt
 (dolist (ft (fontset-list))
   ; Main font
@@ -818,6 +816,8 @@ text.")
 ; If we 'append this to all fontsets, it picks Symbola even for some cases where DejaVu could
 ; be used. Adding it only to the "t" table makes it Do The Right Thing (TM).
 (set-fontset-font t nil (font-spec :name "Symbola"))
+
+;;;; Coq SMIE user tokens (Iris-friendly indentation)
 
 (setq coq-smie-user-tokens
    '(("," . ":=")
@@ -834,23 +834,19 @@ text.")
 	("→" . "->")
 	("=" . "->")
 	("==" . "->")
+	("≈" . "=")
+	("≡" . "=")
 	("/\\" . "->")
 	("⋅" . "->")
 	(":>" . ":=")
 	("by" . "now")
 	("forall" . "now")              ;; NB: this breaks current ∀ indentation.
-   ))
+	))
 
+;;;; Lean 4 (lsp-mode and lsp-ui are declared earlier)
 
-;; END Iris support
-
-
-;; Lean 4 support
-(add-to-list 'load-path "~/lisp/lean4-mode")
 (use-package dash :ensure t)
 (use-package flycheck :ensure t)
-(use-package lsp-mode :ensure t)
-(use-package lsp-ui :ensure t)
 
 (use-package lean4-mode
   :load-path "~/lisp/lean4-mode"
@@ -870,14 +866,15 @@ text.")
  '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
  '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
 
-;; Start in org-agenda window
+;;;; Start in org-agenda window
+
 (setq initial-buffer-choice (lambda ()
                               (org-agenda nil "t")
                               (delete-other-windows)
-                              (get-buffer "*Org Agenda*")
-                              ))
+                              (get-buffer "*Org Agenda*")))
 
-;; Mark theme as "safe" to avoid startup warnings
+;;;; Customize block — auto-managed by `M-x customize'.  Do not hand-edit.
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
