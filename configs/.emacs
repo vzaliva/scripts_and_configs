@@ -859,7 +859,7 @@
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org"
-     "~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/tech.org"))
+     "~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/tech.org" "~/Dropbox/Notes/mit.org" "~/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages nil)
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
