@@ -462,41 +462,42 @@ text.")
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
   (add-hook 'org-mode-hook
             (lambda ()
-              (progn
-                (define-key org-mode-map [(control tab)] nil) ; release C-tab
-                (define-key org-mode-map "\C-cb" 'org-iswitchb)
-                (setq org-hide-emphasis-markers t)
-                ;; The following might not work wiht older
-                ;; versions of emacs, which depend on imagemagick
-                ;; for image resizing.
-                (setq org-image-actual-width nil)
-                
-                ;; Capture templates for links to pages having [ and ]
-                ;; characters in their page titles - notably ArXiv
-                ;; From https://github.com/sprig/org-capture-extension
-                ;; Requires some OS-level installation (registering protocol)
-                (defun transform-square-brackets-to-round-ones(string-to-transform)
-                  "Transforms [ into ( and ] into ), other chars left unchanged."
-                  (concat 
-                   (mapcar #'(lambda (c) (if (equal c ?\[) ?\( (if (equal c ?\]) ?\) c))) string-to-transform)))
-                (setq org-capture-templates `(
-                                              ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                               "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
-                                              
-                                              ("p" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                               "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-                                              ("t" "Protocol" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
-                                               "* %:description\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
-                                              
-                                              ))
-                )))
+              (define-key org-mode-map [(control tab)] nil) ; release C-tab
+              (define-key org-mode-map "\C-cb" 'org-iswitchb)
+              (setq org-hide-emphasis-markers t)
+              ;; The following might not work with older versions of Emacs,
+              ;; which depend on ImageMagick for image resizing.
+              (setq org-image-actual-width nil)
+              ;; Capture templates for links to pages having [ and ]
+              ;; characters in their titles - notably ArXiv.
+              ;; From https://github.com/sprig/org-capture-extension
+              ;; Requires some OS-level installation (registering protocol).
+              (defun transform-square-brackets-to-round-ones (string-to-transform)
+                "Transforms [ into ( and ] into ), other chars left unchanged."
+                (concat
+                 (mapcar (lambda (c)
+                           (if (equal c ?\[) ?\(
+                             (if (equal c ?\]) ?\) c)))
+                         string-to-transform)))
+              (setq org-capture-templates
+                    `(("L" "Protocol Link" entry
+                       (file+headline ,(concat org-directory "notes.org") "Inbox")
+                       "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n")
+                      ("p" "Protocol" entry
+                       (file+headline ,(concat org-directory "notes.org") "Inbox")
+                       "* %^{Title}\nSource: [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+                      ("t" "Protocol" entry
+                       (file+headline ,(concat org-directory "notes.org") "Inbox")
+                       "* %:description\n#+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")))))
+  (add-hook 'org-src-mode-hook
+            (lambda ()
+              (setq-local buffer-offer-save nil)))
   :config
   (setq org-file-apps
         (append '(("\\.ll$" . emacs)
                   ("\\.core$" . emacs)) org-file-apps))
-  
-  :bind (:map org-mode-map ("C-c l" . 'org-store-link))
-  )
+  :bind (:map org-mode-map ("C-c l" . 'org-store-link)))
+
 
 (use-package org-tree-slide
   :ensure t
