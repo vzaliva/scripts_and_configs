@@ -401,11 +401,15 @@
   :init
   (setq org-log-done 'time)
   (setq org-directory "~/Dropbox/Notes/")
-  ;; Start emacs in the org-agenda "todo" window.
-  (setq initial-buffer-choice (lambda ()
-                                (org-agenda nil "t")
-                                (delete-other-windows)
-                                (get-buffer "*Org Agenda*")))
+  ;; Start emacs in the org-agenda "todo" window only.
+  ;; emacs-startup-hook runs after initial files / splash are processed, so
+  ;; delete-other-windows here reliably clobbers any extra windows that
+  ;; org-agenda's frame reorganisation or command-line file opens left behind.
+  (setq org-agenda-window-setup 'only-window)
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (org-agenda nil "t")
+              (delete-other-windows)))
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
