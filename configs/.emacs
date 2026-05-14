@@ -30,53 +30,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;;;; ChatGPT proofreader prompts
-
-(setq my-prompts `(
-    (default . "You are a large language model living in Emacs and a helpful
-                assistant. Respond concisely.")
-
-    (paper . "You are my proofreader. Your job is to proofread the text I give
-              you and correct grammar and spelling mistakes. Do
-              not diverge too far from the original text and try
-              to preserve as much as possible of the original
-              sentence structure. Do not change any quoted
-              text (inside quotation marks). The text you will be
-              proofreading may occasionally use LaTeX syntax. If
-              original text uses LaTeX quoation marks preserve
-              them. For double quotes in LaTeX, use two
-              backticks (`) for opening and two single quotes (')
-              for closing: ``like this''. This is academic writing and I am using
-              British English.")
-    
-    (ukrainian . "You are my Ukrainian proofreader. Your job is to proofread the
-                  text I give you and correct mistakes. The
-                  original text could be in any language but you
-                  should output only Ukrainian.")
-    
-    (forums . "You are my proofreader. I write in British
-              English. The post or a comment you will be
-              reviewing is intended for a general audience (like
-              forums or social media) and the tone needs to be
-              brief and informal. Proofread and brush-up whatever
-              I will send to you.")
-
-    (email-formal .
-                  "You are my proofreader. I write in British
-                   English. I would like the style of my emails to be
-                   business-like but not overly formal. Please review my reply to
-                   the email (quoted). Please brush it up. Output just my reply,
-                    without quoted text.")
-    (email-informal .
-                    "You are my proofreader. I write in British English. I would like the
-                     style of my emails to be casual and collegial and not overly
-                     formal. Minimize unnecessary pleasantries. But stay away from the slang
-                      and overly informal expressions. Please review my reply to the email
-                      (quoted). Please brush it up. Output just my reply, without quoted
-text.")
-    ))
-
-
 ;;;; Core editing packages
 
 (use-package multiple-cursors
@@ -103,17 +56,15 @@ text.")
   (use-package helm-ls-git :ensure t))
 
 (use-package flyspell
-  :ensure t  
+  :ensure t
   :init
-  ;; spell checking  via hunspell
-  ;; sudo apt install hunspell hunspell-en-gb hunspell-uk
+  ;; Spell checking via hunspell — `sudo apt install hunspell hunspell-en-gb hunspell-uk`.
   (setq ispell-program-name "hunspell")
   (setq ispell-dictionary "en_GB")
-)
-
-(use-package helm-flyspell
-  :ensure t  
-  :bind (:map flyspell-mode-map ("C-;" . 'helm-flyspell-correct)))
+  :config
+  (use-package helm-flyspell
+    :ensure t
+    :bind (:map flyspell-mode-map ("C-;" . 'helm-flyspell-correct))))
 
 (use-package imenu-anywhere
   :ensure t
@@ -186,38 +137,46 @@ text.")
   (indent-region (point-min) (point-max))
   (whitespace-cleanup-region (point-min) (point-max)))
 
-;;;; C / C++
+;;;; C / C++ (cc-mode is built-in)
 
-(defun my-c-setup ()
-  "C mode setup"
-  (setq truncate-lines t)
-  (turn-on-font-lock)
-  (c-add-style "Crocodile"
-               '(
-                 (c-basic-offset . 4)
-                 (c-comment-only-line-offset . 0)
-                 (c-offsets-alist .
-                                  ((statement-block-intro . +)
-                                   (arglist-intro         . +)
-                                   (arglist-cont          . 0)
-                                   (arglist-close         . 0)
-                                   (knr-argdecl-intro     . +)
-                                   (substatement-open     . 0)
-                                   (access-label          . -)
-                                   (label                 . -)
-                                   (statement-cont        . 0)
-                                   (statement-case-open   . 0)
-                                   (inline-open           . 0)
-                                   (defun-block-intro     . 4)
-                                   (brace-list-open       . 0)
-                                   (class-open            . 0)
-
-                                   ))))
-  (c-set-style "Crocodile")
-  )
-
-(add-hook 'c-mode-hook    'my-c-setup)
-(add-hook 'c++-mode-hook  'my-c-setup)
+(use-package cc-mode
+  :mode (("\\.C\\'"     . c++-mode)
+         ("\\.cc\\'"    . c++-mode)
+         ("\\.coo\\'"   . c++-mode)
+         ("\\.c\\+\\+\\'" . c++-mode)
+         ("\\.C\\+\\+\\'" . c++-mode)
+         ("\\.h\\+\\+\\'" . c++-mode)
+         ("\\.H\\+\\+\\'" . c++-mode)
+         ("\\.hh\\'"    . c++-mode)
+         ("\\.cxx\\'"   . c++-mode)
+         ("\\.hxx\\'"   . c++-mode)
+         ("\\.c\\'"     . c-mode)
+         ("\\.h\\'"     . c-mode))
+  :hook ((c-mode   . my-c-setup)
+         (c++-mode . my-c-setup))
+  :preface
+  (defun my-c-setup ()
+    "C/C++ buffer setup — apply the 'Crocodile' style."
+    (setq truncate-lines t)
+    (turn-on-font-lock)
+    (c-add-style "Crocodile"
+                 '((c-basic-offset . 4)
+                   (c-comment-only-line-offset . 0)
+                   (c-offsets-alist . ((statement-block-intro . +)
+                                       (arglist-intro         . +)
+                                       (arglist-cont          . 0)
+                                       (arglist-close         . 0)
+                                       (knr-argdecl-intro     . +)
+                                       (substatement-open     . 0)
+                                       (access-label          . -)
+                                       (label                 . -)
+                                       (statement-cont        . 0)
+                                       (statement-case-open   . 0)
+                                       (inline-open           . 0)
+                                       (defun-block-intro     . 4)
+                                       (brace-list-open       . 0)
+                                       (class-open            . 0)))))
+    (c-set-style "Crocodile")))
 
 ;;;; General editor settings
 
@@ -252,34 +211,18 @@ text.")
 ;;;; File extension associations
 
 (setq auto-mode-alist
-      (append '(("\\.C$"         . c++-mode)
-                ("\\.fs\\'"      . forth-mode)
+      (append '(("\\.fs\\'"      . forth-mode)
                 ("\\.4th\\'"     . forth-mode)
-                ("\\.java$"      . java-mode)
-                ("\\.cc$"        . c++-mode)
-                ("\\.coo$"       . c++-mode)
-                ("\\.c\\+\\+$"   . c++-mode)
-                ("\\.C\\+\\+$"   . c++-mode)
-                ("\\.h\\+\\+$"   . c++-mode)
-                ("\\.H\\+\\+$"   . c++-mode)
-                ("\\.hh$"        . c++-mode)
-                ("\\.cxx$"       . c++-mode)
-                ("\\.hxx$"       . c++-mode)
-                ("\\.c$"         . c-mode)
-                ("\\.h$"         . c-mode)
-                ("\\.idl$"       . idl-mode)
-                ("\\.scm$"       . scheme-mode)
-                ("\\.stk$"       . scheme-mode)
-                ("\\.stklos$"    . scheme-mode)
-                ("\\.objc$"      . objc-mode)
-                ("\\.asm$"       . asm-mode)
-                ("\\.s$"         . asm-mode)
-                ("\\.py$"        . python-mode)
-                ("\\.[hg]s$"     . haskell-mode)
-                ("\\.hi$"        . haskell-mode)
-                ("\\.lem$"       . tuareg-mode) ;; close enough
-                ("\\.lsl$"       . lsl-mode)
-                ("\\.l[hg]s$"    . literate-haskell-mode)
+                ("\\.java\\'"    . java-mode)
+                ("\\.idl\\'"     . idl-mode)
+                ("\\.scm\\'"     . scheme-mode)
+                ("\\.stk\\'"     . scheme-mode)
+                ("\\.stklos\\'"  . scheme-mode)
+                ("\\.objc\\'"    . objc-mode)
+                ("\\.asm\\'"     . asm-mode)
+                ("\\.s\\'"       . asm-mode)
+                ("\\.py\\'"      . python-mode)
+                ("\\.lsl\\'"     . lsl-mode)
                 ("\\.js\\'"      . javascript-mode)
                 ) auto-mode-alist))
 
@@ -287,7 +230,9 @@ text.")
 ;;;; Haskell — requires 'stylish-haskell' system package
 (use-package haskell-mode
   :ensure t
-  :mode "\\.hs\\'"
+  :mode (("\\.[hg]s\\'"  . haskell-mode)
+         ("\\.hi\\'"     . haskell-mode)
+         ("\\.l[hg]s\\'" . literate-haskell-mode))
   :hook ((haskell-mode . turn-on-haskell-decl-scan)
          (haskell-mode . turn-on-haskell-doc-mode)
          (haskell-mode . turn-on-haskell-indentation))
@@ -295,30 +240,25 @@ text.")
               ("C-," . 'haskell-move-nested-left)
               ("C-." . 'haskell-move-nested-right)
               ("C-c C-l" . 'haskell-process-load-or-reload)
-              ("C-c C-c" . 'haskell-compile)  
-              ("C-c C-a C-a"   . hoogle)
-              ("C-c s"   . haskell-mode-stylish-buffer)
-              )
-  :config (message "Loaded haskell-mode")
+              ("C-c C-c" . 'haskell-compile)
+              ("C-c C-a C-a" . hoogle)
+              ("C-c s"       . haskell-mode-stylish-buffer))
+  :config
   (setq haskell-process-type 'stack-ghci)
-  ;(setq haskell-process-type 'cabal-repl)
+  ;;(setq haskell-process-type 'cabal-repl)
   (setq haskell-stylish-on-save t)
   (setq haskell-hoogle-url "https://www.stackage.org/lts/hoogle?q=%s")
   ;;(setq haskell-mode-stylish-haskell-path "brittany")
-  )
-  
-(use-package dante
-  :ensure t
-  :defer t
-  :after haskell-mode
-  :commands 'dante-mode
-  :init
-  (add-hook 'haskell-mode-hook 'flycheck-mode)
-  ;; OR for flymake support:
-  ;;(add-hook 'haskell-mode-hook 'flymake-mode)
-  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
-  (add-hook 'haskell-mode-hook 'dante-mode)
-  )
+  (use-package dante
+    :ensure t
+    :defer t
+    :commands 'dante-mode
+    :init
+    (add-hook 'haskell-mode-hook 'flycheck-mode)
+    ;; OR for flymake support:
+    ;;(add-hook 'haskell-mode-hook 'flymake-mode)
+    (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+    (add-hook 'haskell-mode-hook 'dante-mode)))
 
 ;;;; Misc autoloads / minor packages
 
@@ -335,11 +275,6 @@ text.")
 
 ;; Merge kill-buffer and system clipboard
 (setq x-select-enable-clipboard t)
-
-;; Pretty Unicode tables in org-mode — https://github.com/Fuco1/org-pretty-table
-(when (file-exists-p "~/lisp/org-pretty-table/org-pretty-table.el")
-  (load-file "~/lisp/org-pretty-table/org-pretty-table.el")
-  (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
 
 ;;;; Mode line — https://github.com/seagle0128/doom-modeline
 
@@ -365,13 +300,37 @@ text.")
   (proof-splash-enable nil)
   (coq-prog-name "coqtop")
   (coq-compile-before-require nil)
+  ;; SMIE indentation hints — needed for Iris notation in Coq buffers.
+  (coq-smie-user-tokens
+   '(("," . ":=")
+     ("∗" . "->")
+     ("-∗" . "->")
+     ("∗-∗" . "->")
+     ("==∗" . "->")
+     ("=∗" . "->")                      ; Hack to match ={E1,E2}=∗
+     ("|==>" . ":=")
+     ("⊢" . "->")
+     ("⊣⊢" . "->")
+     ("↔" . "->")
+     ("←" . "<-")
+     ("→" . "->")
+     ("=" . "->")
+     ("==" . "->")
+     ("≈" . "=")
+     ("≡" . "=")
+     ("/\\" . "->")
+     ("⋅" . "->")
+     (":>" . ":=")
+     ("by" . "now")
+     ("forall" . "now")                 ; NB: this breaks current ∀ indentation.
+     ))
   :hook
   (coq-mode . (lambda ()
                 (ws-butler-mode)
                 (helm-mode)
-                ; to display number of goals
-                (add-to-list 'global-mode-string '(" " (:eval (assq 'proof-active-buffer-fake-minor-mode minor-mode-alist))) " ")
-                )))
+                (set-input-method "math") ; Iris math input method (defined later)
+                ;; show number of goals in mode line
+                (add-to-list 'global-mode-string '(" " (:eval (assq 'proof-active-buffer-fake-minor-mode minor-mode-alist))) " "))))
 
 (use-package company-coq
   :ensure t
@@ -403,20 +362,20 @@ text.")
                           ("\\.mly$"     . bison-mode)
                           ) auto-mode-alist)))
 
-;;;; OCaml
-
-(use-package dune        :ensure t)
-(use-package dune-format :ensure t)
+;;;; OCaml (tuareg + merlin + dune build tools)
 
 (use-package tuareg
   :ensure t
-  :config (add-to-list 'auto-mode-alist '("\\.ml\\'" . tuareg-mode)) ;Overwrite default mode for .ml which was SLIME
+  :mode (("\\.ml\\'"  . tuareg-mode)    ; overrides SLIME's default for .ml
+         ("\\.lem\\'" . tuareg-mode))   ; Lem files — close enough syntactically
   :init
   (add-hook 'tuareg-mode-hook `ws-butler-mode)
   (add-hook 'tuareg-mode-hook
-            (lambda()
+            (lambda ()
               (when (functionp 'prettify-symbols-mode)
                 (prettify-symbols-mode))))
+  (use-package dune        :ensure t)
+  (use-package dune-format :ensure t)
   (use-package merlin
     :ensure t
     :bind (:map merlin-mode-map ("M-." . merlin-locate))
@@ -433,8 +392,7 @@ text.")
       (add-hook 'merlin-mode-hook 'company-mode))
     :config
     (setq merlin-error-on-single-line t)
-    :bind (("M-o" . merlin-occurrences))
-    ))
+    :bind (("M-o" . merlin-occurrences))))
 
 ;;;; Org mode
 
@@ -443,9 +401,29 @@ text.")
   :init
   (setq org-log-done 'time)
   (setq org-directory "~/Dropbox/Notes/")
+  ;; Start emacs in the org-agenda "todo" window.
+  (setq initial-buffer-choice (lambda ()
+                                (org-agenda nil "t")
+                                (delete-other-windows)
+                                (get-buffer "*Org Agenda*")))
   (use-package org-bullets
     :ensure t
     :init (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  ;; Pretty Unicode tables — https://github.com/Fuco1/org-pretty-table
+  (when (file-exists-p "~/lisp/org-pretty-table/org-pretty-table.el")
+    (load-file "~/lisp/org-pretty-table/org-pretty-table.el")
+    (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
+  (use-package org-tree-slide
+    :ensure t
+    :bind (:map org-mode-map
+                ("<f8>" . org-tree-slide-mode)) ;; bind F8 *inside* org-mode only
+    :hook (org-tree-slide-mode . org-tree-slide-presentation-profile))
+  (use-package epresent
+    :ensure t
+    :hook
+    (epresent-mode . (lambda ()
+                       (when (bound-and-true-p lsp-mode)
+                         (lsp-mode -1)))))
   (add-hook 'org-mode-hook
             (lambda ()
               (define-key org-mode-map [(control tab)] nil) ; release C-tab
@@ -485,20 +463,6 @@ text.")
                   ("\\.core$" . emacs)) org-file-apps))
   :bind (:map org-mode-map ("C-c l" . 'org-store-link)))
 
-
-(use-package org-tree-slide
-  :ensure t
-  :bind (:map org-mode-map
-              ("<f8>" . org-tree-slide-mode)) ;; bind F8 *inside* org-mode only  
-  :hook (org-tree-slide-mode . org-tree-slide-presentation-profile))
-
-(use-package epresent
-  :ensure t
-  :hook
-  (epresent-mode . (lambda ()
-                     (when (bound-and-true-p lsp-mode)
-                       (lsp-mode -1)))))
-
 (when (file-exists-p "~/lisp/mathematica.el")
   (load-file "~/lisp/mathematica.el"))
 
@@ -526,18 +490,29 @@ text.")
 (use-package lsp-mode
   :ensure t
   :commands lsp
-  
   :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;; Prefix for lsp-command-keymap (alternatives: "C-l", "C-c l").
   (setq lsp-keymap-prefix "C-c l")
-
   :custom
   (lsp-auto-execute-action nil)
-  
   :config
-  ;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
+  ;;(add-to-list 'lsp-language-id-configuration '(org-mode . "plaintext"))
   ;;:hook ((org-mode . lsp))
-  )
+  (use-package keytar :ensure t)
+  (use-package lsp-ui
+    :ensure t
+    :config
+    (setq lsp-ui-doc-enable nil)
+    (setq lsp-ui-sideline-show-code-actions t)
+    (setq lsp-ui-sideline-wait-for-all-symbols nil)
+    (setq lsp-headerline-breadcrumb-enable nil)
+    ;;(setq lsp-ui-sideline-update-mode 'point)
+    )
+  (use-package helm-lsp                 ; Note: helm-lsp-code-actions doesn't reliably work
+    :ensure t
+    :commands helm-lsp-workspace-symbol
+    :bind (:map lsp-mode-map
+                ("C-c l a a" . helm-lsp-code-actions))))
 
 ;; (use-package lsp-grammarly
 ;;   :ensure t
@@ -551,25 +526,6 @@ text.")
 ;;   (lsp-grammarly--show-debug-message t)
 ;;   )
 
-(use-package keytar :ensure t)
-(use-package lsp-ui
-  :ensure t
-  :config
-  (setq lsp-ui-doc-enable nil)
-  (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-sideline-wait-for-all-symbols nil)
-  (setq lsp-headerline-breadcrumb-enable nil)
-  ;;(setq lsp-ui-sideline-update-mode 'point)
-  )
-
-;; Does not seems to wrok
-(use-package helm-lsp
-  :ensure t
-  :commands helm-lsp-workspace-symbol
-  :bind (:map lsp-mode-map
-              ("C-c l a a" . helm-lsp-code-actions))
-  )
-
 ;;;; ChatGPT shell
 
 (use-package chatgpt-shell
@@ -580,14 +536,54 @@ text.")
                                                         "api.openai.com")))
            (chatgpt-shell-anthropic-key
             (lambda () (auth-source-pick-first-password :host
-                                                        "api.anthropic.com"))))  
+                                                        "api.anthropic.com"))))
   :config
-  (setq chatgpt-shell-system-prompts (append
-                                      chatgpt-shell-system-prompts
-                                      (mapcar (lambda (p)
-                                               (cons (symbol-name (car p))
-                                                     (cdr p))) my-prompts
-                                                     )))
+  ;; Proofreader and brush-up prompts used as chatgpt-shell system prompts.
+  (let ((my-prompts
+         `((default . "You are a large language model living in Emacs and a helpful
+                       assistant. Respond concisely.")
+
+           (paper . "You are my proofreader. Your job is to proofread the text I give
+                     you and correct grammar and spelling mistakes. Do
+                     not diverge too far from the original text and try
+                     to preserve as much as possible of the original
+                     sentence structure. Do not change any quoted
+                     text (inside quotation marks). The text you will be
+                     proofreading may occasionally use LaTeX syntax. If
+                     original text uses LaTeX quoation marks preserve
+                     them. For double quotes in LaTeX, use two
+                     backticks (`) for opening and two single quotes (')
+                     for closing: ``like this''. This is academic writing and I am using
+                     British English.")
+
+           (ukrainian . "You are my Ukrainian proofreader. Your job is to proofread the
+                         text I give you and correct mistakes. The
+                         original text could be in any language but you
+                         should output only Ukrainian.")
+
+           (forums . "You are my proofreader. I write in British
+                      English. The post or a comment you will be
+                      reviewing is intended for a general audience (like
+                      forums or social media) and the tone needs to be
+                      brief and informal. Proofread and brush-up whatever
+                      I will send to you.")
+
+           (email-formal . "You are my proofreader. I write in British
+                            English. I would like the style of my emails to be
+                            business-like but not overly formal. Please review my reply to
+                            the email (quoted). Please brush it up. Output just my reply,
+                            without quoted text.")
+
+           (email-informal . "You are my proofreader. I write in British English. I would like the
+                              style of my emails to be casual and collegial and not overly
+                              formal. Minimize unnecessary pleasantries. But stay away from the slang
+                              and overly informal expressions. Please review my reply to the email
+                              (quoted). Please brush it up. Output just my reply, without quoted
+                              text."))))
+    (setq chatgpt-shell-system-prompts
+          (append chatgpt-shell-system-prompts
+                  (mapcar (lambda (p) (cons (symbol-name (car p)) (cdr p)))
+                          my-prompts))))
   :bind (("C-c p" . chatgpt-shell-proofread-region)
          :map org-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
@@ -632,19 +628,19 @@ text.")
       solarized-scale-org-headlines nil)
 (load-theme 'solarized-dark t)
 
-;;;; OPAM
-
-(when (file-exists-p "~/.emacs.d/opam-user-setup.el")
-  (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
-(setq opam-share (substring (shell-command-to-string "opam var share") 0 -1))
-(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+;;;; OPAM (sets up load-path so opam-installed elisp is discoverable)
 
 (use-package opam-switch-mode
   :ensure t
-  :hook
-  (coq-mode . opam-switch-mode))
+  :init
+  (when (file-exists-p "~/.emacs.d/opam-user-setup.el")
+    (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el"))
+  (setq opam-share (substring (shell-command-to-string "opam var share") 0 -1))
+  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+  :hook (coq-mode . opam-switch-mode))
 
-(when (locate-library "ott-mode")  (require 'ott-mode))
+;; These may be installed via opam — load only when present.
+(when (locate-library "ott-mode")   (require 'ott-mode))
 (when (locate-library "ocp-indent") (require 'ocp-indent))
 
 ;;(desktop-save-mode 1)
@@ -721,9 +717,9 @@ text.")
 (use-package math-symbol-lists :ensure t)
 
 (require 'math-symbol-lists)
-; Automatically use math input method for Coq files
-(add-hook 'coq-mode-hook (lambda () (set-input-method "math")))
-; Input method for the minibuffer
+;; The "math" input method defined below is activated for Coq buffers
+;; via proof-general's coq-mode-hook (see :hook there).
+;; Input method for the minibuffer
 (defun my-inherit-input-method ()
   "Inherit input method from `minibuffer-selected-window'."
   (let* ((win (minibuffer-selected-window))
@@ -806,32 +802,6 @@ text.")
 ; be used. Adding it only to the "t" table makes it Do The Right Thing (TM).
 (set-fontset-font t nil (font-spec :name "Symbola"))
 
-;;;; Coq SMIE user tokens (Iris-friendly indentation)
-
-(setq coq-smie-user-tokens
-   '(("," . ":=")
-	("∗" . "->")
-	("-∗" . "->")
-	("∗-∗" . "->")
-	("==∗" . "->")
-	("=∗" . "->") 			;; Hack to match ={E1,E2}=∗
-	("|==>" . ":=")
-	("⊢" . "->")
-	("⊣⊢" . "->")
-	("↔" . "->")
-	("←" . "<-")
-	("→" . "->")
-	("=" . "->")
-	("==" . "->")
-	("≈" . "=")
-	("≡" . "=")
-	("/\\" . "->")
-	("⋅" . "->")
-	(":>" . ":=")
-	("by" . "now")
-	("forall" . "now")              ;; NB: this breaks current ∀ indentation.
-	))
-
 ;;;; Lean 4 (lsp-mode and lsp-ui are declared earlier)
 
 (use-package dash :ensure t)
@@ -854,13 +824,6 @@ text.")
  '(mode-line ((t (:family "Noto Sans" :height 0.9))))
  '(mode-line-active ((t (:family "Noto Sans" :height 0.9))))
  '(mode-line-inactive ((t (:family "Noto Sans" :height 0.9)))))
-
-;;;; Start in org-agenda window
-
-(setq initial-buffer-choice (lambda ()
-                              (org-agenda nil "t")
-                              (delete-other-windows)
-                              (get-buffer "*Org Agenda*")))
 
 ;;;; Customize block — auto-managed by `M-x customize'.  Do not hand-edit.
 
