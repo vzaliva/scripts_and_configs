@@ -1,16 +1,16 @@
 {
   "mcpServers": {
-    "google-docs": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@a-bonus/google-docs-mcp"
-      ],
-      "env": {
-        "SERVICE_ACCOUNT_PATH": "/home/lord/.config/google-docs-mcp/service-account.json"
-      }
-    },
-    "gmail": {
+      "google-docs": {
+          "command": "sh",
+          "args": [
+              "-c",
+              "cd /home/lord/tmp && exec npx -y @a-bonus/google-docs-mcp"
+          ],
+          "env": {
+              "SERVICE_ACCOUNT_PATH": "/home/lord/.config/google-docs-mcp/service-account.json"
+          }
+      },
+      "gmail": {
       "command": "node",
       "args": [
         "/home/lord/src/gmail-mcp-multi/dist/index.js",
@@ -19,7 +19,13 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--headless", "--browser", "chromium"]
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--headless",
+        "--browser",
+        "chromium"
+      ]
     }
   },
   "preferences": {
@@ -29,6 +35,7 @@
     "ccdScheduledTasksEnabled": true,
     "sidebarMode": "chat",
     "coworkWebSearchEnabled": true,
+    "remoteToolsDeviceName": "katabasis",
     "epitaxyPrefs": {
       "starred-local-code-sessions": [],
       "starred-cowork-spaces": [],
@@ -47,5 +54,6 @@
         "/home/lord/src/gmail-mcp-multi:auto"
       ]
     }
-  }
+  },
+  "globalShortcut": ""
 }
