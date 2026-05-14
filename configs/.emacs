@@ -90,23 +90,17 @@ text.")
          ("C-x C-f" . helm-find-files)
          ("C-x C-b" . helm-buffers-list)
          ("C-x b" . helm-browse-project)
-         )
+         ;; helm-occur replaces the retired helm-swoop.
+         ;; Inside a helm session, C-c C-f toggles helm-follow-mode for file preview
+         ;; (replaces the retired helm-file-preview package).
+         ("M-i" . helm-occur))
   :config
   (add-hook 'helm-find-files-after-init-hook
             (lambda ()
               (define-key helm-find-files-map (kbd "C-<backspace>") 'helm-find-files-up-one-level)
               (setq helm-ff-skip-git-ignored-files t)))
   (setq helm-split-window-in-side-p t)
-  (use-package helm-ls-git :ensure t)
-  (use-package helm-swoop
-    :ensure t
-    :config
-    ;; Split direction.  'split-window-vertically or 'split-window-horizontally
-    (setq helm-swoop-split-direction 'split-window-horizontally)
-    :bind (("M-i" . helm-swoop)
-           ("M-I" . 'helm-swoop-back-to-last-point))
-    )
-  )
+  (use-package helm-ls-git :ensure t))
 
 (use-package flyspell
   :ensure t  
@@ -329,11 +323,6 @@ text.")
 ;;;; Misc autoloads / minor packages
 
 (autoload 'javascript-mode "javascript" nil t)
-
-(use-package helm-file-preview
-  :ensure t
-  :config
-  (helm-file-preview-mode 1))
 
 ;; macOS: dropping files opens them in a new frame rather than inserting
 (when (eq window-system 'ns)
