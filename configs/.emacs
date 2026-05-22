@@ -540,8 +540,16 @@
                                                         "api.openai.com")))
            (chatgpt-shell-anthropic-key
             (lambda () (auth-source-pick-first-password :host
-                                                        "api.anthropic.com"))))
+                                                        "api.anthropic.com")))
+           (chatgpt-shell-ollama-api-url-base "http://127.0.0.1:11434")
+           (chatgpt-shell-model-version "gemma3-polish"))
   :config
+  ;; Register the local Ollama proofreading backend (not in the default list).
+  (add-to-list 'chatgpt-shell-models
+               (chatgpt-shell-ollama-make-model
+                :version "gemma3-polish"
+                :token-width 3            ; ~chars/token; 3 is conservative for Cyrillic
+                :context-window 4096))    ; match Ollama's served context, not the 128k max
   ;; Proofreader and brush-up prompts used as chatgpt-shell system prompts.
   (let ((my-prompts
          `((default . "You are a large language model living in Emacs and a helpful
