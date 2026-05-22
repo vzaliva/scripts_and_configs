@@ -593,11 +593,18 @@
          ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map eshell-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)
-         :map markdown-mode-map
-         ("C-c C-e" . chatgpt-shell-prompt-compose)
          :map emacs-lisp-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose))
   :hook (chatgpt-shell-mode . helm-mode))
+
+;; Loaded after chatgpt-shell so the autoload for chatgpt-shell-prompt-compose
+;; resolves to the chatgpt-shell file (use-package's :bind would otherwise infer
+;; the wrong autoload target, "markdown-mode"). Defers until markdown-mode loads,
+;; when markdown-mode-map is defined.
+(use-package markdown-mode
+  :ensure t
+  :bind (:map markdown-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)))
 
 
 ;;;; Rust
@@ -859,9 +866,19 @@
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
    '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org"
-     "~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/tech.org" "~/Dropbox/Notes/mit.org" "~/Dropbox/Notes/travel.org"))
+     "~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/tech.org"
+     "~/Dropbox/Notes/mit.org" "~/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(all-the-icons auctex bison-mode chatgpt-shell code-stats company-coq
+                   dante doom-modeline dune dune-format ein epresent
+                   gnu-elpa-keyring-update haskell-mode helm-ag
+                   helm-flyspell helm-ls-git helm-lsp iflipb
+                   imenu-anywhere keytar langtool lsp-grammarly lsp-ui
+                   magit merlin-company multiple-cursors
+                   opam-switch-mode org-bullets org-tree-slide
+                   proof-general rust-mode slime solarized-theme
+                   tuareg ws-butler))
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
