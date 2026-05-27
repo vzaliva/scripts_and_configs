@@ -1,39 +1,40 @@
 {
-  "mcpServers": {
-      "google-docs": {
-          "command": "sh",
-          "args": [
-              "-c",
-              "cd /home/lord/tmp && exec npx -y @a-bonus/google-docs-mcp"
-          ],
-          "env": {
-              "SERVICE_ACCOUNT_PATH": "/home/lord/.config/google-docs-mcp/service-account.json"
-          }
-      },
-      "gmail": {
-      "command": "node",
-      "args": [
-        "/home/lord/src/gmail-mcp-multi/dist/index.js",
-        "--readonly"
-      ]
+    "globalShortcut": "",
+    "mcpServers": {
+        "google-docs": {
+            "command": "sh",
+            "args": [
+                "-c",
+                "cd /home/lord/.local/share/claude/workspace && exec npx -y @a-bonus/google-docs-mcp"
+            ],
+            "env": {
+                "SERVICE_ACCOUNT_PATH": "/home/lord/.config/google-docs-mcp/service-account.json"
+            }
+        },
+        "gmail": {
+            "command": "sh",
+            "args": [
+                "-c",
+                "cd /home/lord/.local/share/claude/workspace && exec node /home/lord/src/gmail-mcp-multi/dist/index.js --readonly"
+            ]
+        },
+        "playwright": {
+            "command": "sh",
+            "args": [
+                "-c",
+                "cd /home/lord/.local/share/claude/workspace && exec npx -y @playwright/mcp@latest --headless --browser chromium"
+            ]
+        }
     },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp@latest",
-        "--headless",
-        "--browser",
-        "chromium"
-      ]
-    }
-  },
-  "preferences": {
+    "preferences": {
     "menuBarEnabled": false,
     "legacyQuickEntryEnabled": false,
     "coworkScheduledTasksEnabled": true,
     "ccdScheduledTasksEnabled": true,
     "sidebarMode": "chat",
+    "bypassPermissionsGateByAccount": {
+      "2a137e89-52ed-4d72-92b8-3c257591047b": false
+    },
     "coworkWebSearchEnabled": true,
     "remoteToolsDeviceName": "katabasis",
     "epitaxyPrefs": {
@@ -55,5 +56,5 @@
       ]
     }
   },
-  "globalShortcut": ""
+  "coworkUserFilesPath": "/home/lord/Claude"
 }
