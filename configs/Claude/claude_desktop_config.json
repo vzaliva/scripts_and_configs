@@ -24,6 +24,10 @@
                 "-c",
                 "cd /home/lord/.local/share/claude/workspace && exec npx -y @playwright/mcp@latest --headless --browser chromium"
             ]
+        },
+        "flight-search": {
+            "command": "uvx",
+            "args": ["--from", "flights[mcp]", "--with", "click", "fli-mcp"]
         }
     },
     "preferences": {
