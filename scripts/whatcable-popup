@@ -83,21 +83,39 @@ fi
 
 if [[ -d "$battery" ]]; then
     battery_name="$(basename "$battery")"
-    battery_status="$(read_sysfs_attr "$battery/status" "unknown")"
-    battery_capacity="$(read_sysfs_attr "$battery/capacity" "unknown")"
-    battery_power_uw="$(read_sysfs_attr "$battery/power_now" "0")"
-    battery_power_w="$(awk -v uw="$battery_power_uw" 'BEGIN { printf "%.1f", uw / 1000000 }')"
+    upower_device="/org/freedesktop/UPower/devices/battery_${battery_name}"
+    upower_info=""
+
+    if command -v upower >/dev/null 2>&1; then
+        upower_info="$(upower -i "$upower_device" 2>/dev/null || true)"
+    fi
+
+    if [[ -n "$upower_info" ]]; then
+        battery_status="$(awk -F: '$1 ~ /^[[:space:]]*state$/ { sub(/^[[:space:]]+/, "", $2); print $2; exit }' <<<"$upower_info")"
+        battery_capacity="$(awk -F: '$1 ~ /^[[:space:]]*percentage$/ { sub(/^[[:space:]]+/, "", $2); print $2; exit }' <<<"$upower_info")"
+        battery_time_to_full="$(awk -F: '$1 ~ /^[[:space:]]*time to full$/ { sub(/^[[:space:]]+/, "", $2); print $2; exit }' <<<"$upower_info")"
+        battery_time_to_empty="$(awk -F: '$1 ~ /^[[:space:]]*time to empty$/ { sub(/^[[:space:]]+/, "", $2); print $2; exit }' <<<"$upower_info")"
+    else
+        battery_status="$(read_sysfs_attr "$battery/status" "unknown")"
+        battery_capacity="$(read_sysfs_attr "$battery/capacity" "unknown")%"
+        battery_time_to_full=""
+        battery_time_to_empty=""
+    fi
 
     message+=$'\n\n'
     message+="Battery now (${battery_name}):"
     message+=$'\n'
     message+="- Status: ${battery_status:-unknown}"
     message+=$'\n'
-    message+="- Capacity: ${battery_capacity:-unknown}%"
+    message+="- Charge: ${battery_capacity:-unknown}"
     message+=$'\n'
-    message+="- Battery charge/discharge power: ${battery_power_w}W"
-    message+=$'\n'
-    message+="  (This is what the battery is accepting or supplying now, not total USB-C wall power.)"
+    if [[ -n "$battery_time_to_full" ]]; then
+        message+="- Time to full: $battery_time_to_full"
+    elif [[ -n "$battery_time_to_empty" ]]; then
+        message+="- Time to empty: $battery_time_to_empty"
+    else
+        message+="- Time to full: unknown"
+    fi
 else
     message+=$'\n\n'
     message+="Battery now:"
