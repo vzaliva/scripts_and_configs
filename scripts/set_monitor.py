@@ -24,16 +24,20 @@ console = Console()
 # Workspaces that should live on the external monitor when it is present
 EXTERNAL_WORKSPACES = [6, 10]
 
+MAIN_EXTERNAL_OUTPUT = "DisplayPort-1"
+SIDE_EXTERNAL_OUTPUT = "DisplayPort-0"
+
 
 def run(cmd: list[str]) -> str:
     return subprocess.check_output(cmd, text=True)
 
 
-def detect_external_output(xr_output: str) -> str | None:
+def detect_external_outputs(xr_output: str) -> list[str]:
+    outputs: list[str] = []
     for line in xr_output.splitlines():
         if re.match(r"^(HDMI-[0-9]+|DisplayPort-[0-9]+(-[0-9]+)?)\s+connected", line):
-            return line.split()[0]
-    return None
+            outputs.append(line.split()[0])
+    return outputs
 
 
 def detect_internal_output(xr_output: str) -> str | None:
@@ -160,7 +164,7 @@ def configure_monitors(verbose: bool) -> None:
         console.print(f"[red]Error running xrandr:[/red] {e}", file=sys.stderr)
         raise SystemExit(1)
 
-    external = detect_external_output(xr_output)
+    externals = detect_external_outputs(xr_output)
     internal = detect_internal_output(xr_output)
 
     if not internal:
@@ -184,36 +188,63 @@ def configure_monitors(verbose: bool) -> None:
     def i3(cmd: str) -> None:
         subprocess.run(["i3-msg", "-q", cmd], check=False)
 
-    if external is None:
+    main_external = (
+        MAIN_EXTERNAL_OUTPUT
+        if MAIN_EXTERNAL_OUTPUT in externals
+        else next((output for output in externals if output != SIDE_EXTERNAL_OUTPUT), None)
+    )
+    side_external = SIDE_EXTERNAL_OUTPUT if SIDE_EXTERNAL_OUTPUT in externals else None
+
+    if not externals:
         if verbose:
             console.print("No secondary monitor found")
         subprocess.run(["xrandr", "--auto"], check=False)
         for ws in workspace_numbers:
             i3(f"workspace {ws}; move workspace to output {internal}")
     else:
-        if verbose:
-            console.print(f"Found external monitor {external}")
-        subprocess.run(["xrandr", "--output", external, "--auto"], check=False)
-        subprocess.run(
-            [
-                "xrandr",
-                "--output",
-                external,
-                "-s",
-                "3840x2160",
-                "--above",
-                internal,
-                "--rotate",
-                "normal",
-            ],
-            check=False,
-        )
+        if main_external:
+            if verbose:
+                console.print(f"Found main external monitor {main_external}")
+            subprocess.run(
+                [
+                    "xrandr",
+                    "--output",
+                    main_external,
+                    "--mode",
+                    "3840x2160",
+                    "--above",
+                    internal,
+                    "--rotate",
+                    "normal",
+                ],
+                check=False,
+            )
+
+        if side_external:
+            if verbose:
+                console.print(f"Found side monitor {side_external}")
+            subprocess.run(
+                [
+                    "xrandr",
+                    "--output",
+                    side_external,
+                    "--mode",
+                    "1920x1080",
+                    "--left-of",
+                    internal,
+                    "--rotate",
+                    "normal",
+                ],
+                check=False,
+            )
+
         subprocess.run(["xrandr", "--dpi", f"96/{internal}"], check=False)
         subprocess.run(["xrandr", "--output", internal, "--primary"], check=False)
 
+        workspace_external = main_external or side_external
         for ws in workspace_numbers:
             if ws in EXTERNAL_WORKSPACES:
-                i3(f"workspace {ws}; move workspace to output {external}")
+                i3(f"workspace {ws}; move workspace to output {workspace_external}")
             else:
                 i3(f"workspace {ws}; move workspace to output {internal}")
 
