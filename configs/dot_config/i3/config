@@ -201,6 +201,11 @@ bindsym XF86Favorites exec rofi -theme solarized -font "hack 14" -show run
 # For disconnected but enabled outputs, this will disable them.
 bindsym XF86Display exec ~/bin/set_monitor.py
 
+# Same thing at login: initialize external monitors when i3 starts.
+# `exec` (not `exec_always`) so a config reload/restart does not trigger an
+# xrandr modeset and shuffle workspaces mid-session -- use F7 for that.
+exec --no-startup-id ~/bin/set_monitor.py
+
 # Auto-start some daemons
 exec --no-startup-id /usr/bin/nm-applet --sm-disable        # Network Manager
 exec --no-startup-id /usr/bin/blueman-applet                # Bluetooth Manager
