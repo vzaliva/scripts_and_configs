@@ -541,14 +541,34 @@
             (lambda () (auth-source-pick-first-password :host
                                                         "api.anthropic.com")))
            (chatgpt-shell-ollama-api-url-base "http://127.0.0.1:11434")
-           (chatgpt-shell-model-version "gemma3-polish"))
+           (chatgpt-shell-model-version "gemma4-polish"))
   :config
   ;; Register the local Ollama proofreading backend (not in the default list).
   (add-to-list 'chatgpt-shell-models
                (chatgpt-shell-ollama-make-model
-                :version "gemma3-polish"
+                :version "gemma4-polish"
                 :token-width 3            ; ~chars/token; 3 is conservative for Cyrillic
                 :context-window 4096))    ; match Ollama's served context, not the 128k max
+
+  ;; Disable Ollama's "thinking" for every request.  Ollama turns thinking on
+  ;; by default for any model that advertises the capability (gemma4 does), and
+  ;; chatgpt-shell never sends the `think' field, so the reasoning tokens are
+  ;; pure latency: 83s vs 18s on a 1.4k-char paragraph, with no difference in
+  ;; the corrected text.  They are invisible, too -- they stream in
+  ;; `message.thinking' and `chatgpt-shell-ollama--extract-ollama-response'
+  ;; only reads `message.content', so the buffer just sits there producing
+  ;; nothing.  Sending `think: false' unconditionally is safe: Ollama rejects
+  ;; the field only when it is truthy and the model lacks the capability.
+  ;; `:false' is what `json-serialize' renders as JSON false.  Both request
+  ;; paths -- the shell's :handler and the quick-insert :payload -- go through
+  ;; this one function.
+  (defun my/ollama-disable-think (payload)
+    "Append `think: false' to an Ollama PAYLOAD."
+    (append payload '((think . :false))))
+
+  (advice-add 'chatgpt-shell-ollama-make-payload
+              :filter-return #'my/ollama-disable-think)
+
   ;; Proofreader and brush-up prompts used as chatgpt-shell system prompts.
   (let ((my-prompts
          `((default . "You are a large language model living in Emacs and a helpful
@@ -877,15 +897,15 @@
      "~/Dropbox/Notes/mit.org" "~/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
-   '(all-the-icons auctex bison-mode chatgpt-shell code-stats company-coq
-                   dante doom-modeline dune dune-format ein epresent
-                   gnu-elpa-keyring-update haskell-mode helm-ag
-                   helm-flyspell helm-ls-git helm-lsp iflipb
-                   imenu-anywhere keytar langtool lsp-grammarly lsp-ui
-                   magit merlin-company multiple-cursors
-                   opam-switch-mode org-bullets org-tree-slide
-                   proof-general rust-mode slime solarized-theme
-                   tuareg ws-butler))
+   '(0blayout ac-helm ac-math all-the-icons auctex bison-mode
+              chatgpt-shell code-stats company-coq dante doom-modeline
+              dune dune-format ein epresent gnu-elpa-keyring-update
+              haskell-mode helm-ag helm-flyspell helm-ls-git helm-lsp
+              iflipb imenu-anywhere keytar langtool lsp-grammarly
+              lsp-ui magit merlin-company multiple-cursors
+              opam-switch-mode org-bullets org-tree-slide
+              proof-general rust-mode slime solarized-theme tuareg
+              ws-butler))
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
