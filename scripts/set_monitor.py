@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from rich.console import Console
@@ -21,11 +22,9 @@ from rich.table import Table
 
 console = Console()
 
-# Workspaces that should live on the external monitor when it is present
-EXTERNAL_WORKSPACES = [6, 10]
-
-MAIN_EXTERNAL_OUTPUT = "DisplayPort-1"
-SIDE_EXTERNAL_OUTPUT = "DisplayPort-0"
+# Workspaces pinned to the laptop panel whenever an external monitor is present.
+# Everything else is left wherever it currently is, so manual placement sticks.
+INTERNAL_WORKSPACES = [1, 2, 3, 4, 5]
 
 
 def run(cmd: list[str]) -> str:
@@ -33,10 +32,16 @@ def run(cmd: list[str]) -> str:
 
 
 def detect_external_outputs(xr_output: str) -> list[str]:
+    """Every connected output that is not the built-in panel.
+
+    Driver naming varies (HDMI-A-0, DisplayPort-10, DP-1-2), so match on
+    "connected and not internal" instead of a list of port name patterns.
+    """
     outputs: list[str] = []
     for line in xr_output.splitlines():
-        if re.match(r"^(HDMI-[0-9]+|DisplayPort-[0-9]+(-[0-9]+)?)\s+connected", line):
-            outputs.append(line.split()[0])
+        m = re.match(r"^(\S+)\s+connected\b", line)
+        if m and not re.match(r"^(eDP|LVDS)", m.group(1)):
+            outputs.append(m.group(1))
     return outputs
 
 
@@ -45,6 +50,54 @@ def detect_internal_output(xr_output: str) -> str | None:
         if re.match(r"^(eDP[^ \t]*|LVDS[^ \t]*)\s+connected", line):
             return line.split()[0]
     return None
+
+
+def detect_modes(xr_output: str) -> dict[str, list[tuple[int, int, bool]]]:
+    """Map each output name to its mode list as (width, height, preferred)."""
+    modes: dict[str, list[tuple[int, int, bool]]] = {}
+    current: str | None = None
+    for line in xr_output.splitlines():
+        if re.match(r"^\S", line):
+            m = re.match(r"^(\S+)\s+(connected|disconnected)\b", line)
+            current = m.group(1) if m else None
+            if current:
+                modes.setdefault(current, [])
+            continue
+        if current is None:
+            continue
+        m = re.match(r"^\s+(\d+)x(\d+)\s+(.*)$", line)
+        if m:
+            modes[current].append((int(m.group(1)), int(m.group(2)), "+" in m.group(3)))
+    return modes
+
+
+def best_mode(modes: list[tuple[int, int, bool]]) -> tuple[int, int] | None:
+    """Preferred mode if the driver flags one, otherwise the largest by area."""
+    if not modes:
+        return None
+    preferred = [m for m in modes if m[2]]
+    pool = preferred or modes
+    w, h, _ = max(pool, key=lambda m: (m[0] * m[1], m[0]))
+    return (w, h)
+
+
+def rank_externals(
+    externals: list[str], modes: dict[str, list[tuple[int, int, bool]]]
+) -> list[tuple[str, tuple[int, int] | None]]:
+    """Order external outputs largest-panel first (stable on ties by name)."""
+    ranked = [(name, best_mode(modes.get(name, []))) for name in externals]
+    ranked.sort(key=lambda item: (-(item[1][0] * item[1][1]) if item[1] else 0, item[0]))
+    return ranked
+
+
+def detect_stale_outputs(xr_output: str) -> list[str]:
+    """Disconnected outputs that still hold a CRTC (common after a dock reshuffle)."""
+    stale: list[str] = []
+    for line in xr_output.splitlines():
+        m = re.match(r"^(\S+)\s+disconnected.*?\b\d+x\d+\+\d+\+\d+", line)
+        if m:
+            stale.append(m.group(1))
+    return stale
 
 
 def get_workspaces() -> list[dict]:
@@ -157,7 +210,7 @@ def list_outputs() -> None:
         subprocess.run([str(sound_script), "--list"], check=False)
 
 
-def configure_monitors(verbose: bool) -> None:
+def configure_monitors(verbose: bool, wake: bool = True) -> None:
     try:
         xr_output = run(["xrandr"])
     except Exception as e:
@@ -180,20 +233,29 @@ def configure_monitors(verbose: bool) -> None:
     workspace_numbers = [w["num"] for w in workspaces_before]
     focused_ws = next((w["num"] for w in workspaces_before if w.get("focused")), None)
     visible_before_by_output: dict[str, int] = {}
+    output_before_by_ws: dict[int, str] = {}
     for w in workspaces_before:
         out = w.get("output")
-        if w.get("visible") and isinstance(out, str):
-            visible_before_by_output[out] = w["num"]
+        if isinstance(out, str):
+            output_before_by_ws[w["num"]] = out
+            if w.get("visible"):
+                visible_before_by_output[out] = w["num"]
 
     def i3(cmd: str) -> None:
         subprocess.run(["i3-msg", "-q", cmd], check=False)
 
-    main_external = (
-        MAIN_EXTERNAL_OUTPUT
-        if MAIN_EXTERNAL_OUTPUT in externals
-        else next((output for output in externals if output != SIDE_EXTERNAL_OUTPUT), None)
-    )
-    side_external = SIDE_EXTERNAL_OUTPUT if SIDE_EXTERNAL_OUTPUT in externals else None
+    # Physical outputs get renumbered by the dock/MST hub between sessions, so
+    # classify by panel size rather than by name: the biggest external panel is
+    # the main one (stacked above the laptop), the next one sits to the left.
+    modes = detect_modes(xr_output)
+    ranked = rank_externals(externals, modes)
+
+    main_external, main_mode = ranked[0] if ranked else (None, None)
+    side_external, side_mode = ranked[1] if len(ranked) > 1 else (None, None)
+    extra_externals = ranked[2:]
+
+    def mode_args(mode: tuple[int, int] | None) -> list[str]:
+        return ["--mode", f"{mode[0]}x{mode[1]}"] if mode else ["--auto"]
 
     if not externals:
         if verbose:
@@ -202,51 +264,77 @@ def configure_monitors(verbose: bool) -> None:
         for ws in workspace_numbers:
             i3(f"workspace {ws}; move workspace to output {internal}")
     else:
+        if wake:
+            # A monitor that lost its stream and went to standby only relocks
+            # when the output is re-driven. X cannot see that state (it still
+            # reports the output as on), so there is nothing to test for and
+            # the cycle is unconditional. Dropping every external re-establishes
+            # the whole MST topology rather than just one branch of it.
+            if verbose:
+                console.print(f"Cycling {', '.join(externals)} to force a relock")
+            off_cmd = ["xrandr"]
+            for name in externals:
+                off_cmd += ["--output", name, "--off"]
+            subprocess.run(off_cmd, check=False)
+            time.sleep(2)
+
+        # Configure every output in a single xrandr call: relative positions are
+        # then resolved against the final layout, not a half-applied one.
+        cmd = ["xrandr", "--output", internal, "--auto", "--primary"]
+
+        for name in detect_stale_outputs(xr_output):
+            if verbose:
+                console.print(f"Switching off stale output {name}")
+            cmd += ["--output", name, "--off"]
+
         if main_external:
             if verbose:
-                console.print(f"Found main external monitor {main_external}")
-            subprocess.run(
-                [
-                    "xrandr",
-                    "--output",
-                    main_external,
-                    "--mode",
-                    "3840x2160",
-                    "--above",
-                    internal,
-                    "--rotate",
-                    "normal",
-                ],
-                check=False,
-            )
+                console.print(
+                    f"Found main external monitor {main_external} "
+                    f"({mode_args(main_mode)[-1]}), placing above {internal}"
+                )
+            cmd += [
+                "--output", main_external, *mode_args(main_mode),
+                "--rotate", "normal", "--above", internal,
+            ]
 
         if side_external:
             if verbose:
-                console.print(f"Found side monitor {side_external}")
-            subprocess.run(
-                [
-                    "xrandr",
-                    "--output",
-                    side_external,
-                    "--mode",
-                    "1920x1080",
-                    "--left-of",
-                    internal,
-                    "--rotate",
-                    "normal",
-                ],
-                check=False,
-            )
+                console.print(
+                    f"Found side monitor {side_external} "
+                    f"({mode_args(side_mode)[-1]}), placing left of {internal}"
+                )
+            cmd += [
+                "--output", side_external, *mode_args(side_mode),
+                "--rotate", "normal", "--left-of", internal,
+            ]
 
+        for name, mode in extra_externals:
+            if verbose:
+                console.print(f"Found extra monitor {name}, placing right of {internal}")
+            cmd += [
+                "--output", name, *mode_args(mode),
+                "--rotate", "normal", "--right-of", internal,
+            ]
+
+        subprocess.run(cmd, check=False)
         subprocess.run(["xrandr", "--dpi", f"96/{internal}"], check=False)
-        subprocess.run(["xrandr", "--output", internal, "--primary"], check=False)
 
-        workspace_external = main_external or side_external
-        for ws in workspace_numbers:
-            if ws in EXTERNAL_WORKSPACES:
-                i3(f"workspace {ws}; move workspace to output {workspace_external}")
-            else:
+        # Only the pinned workspaces are relocated; the rest keep whatever
+        # output they are on. Re-read the list first, because enabling an
+        # output makes i3 plant a fresh empty workspace on it and that may
+        # be one of the pinned numbers.
+        present = set(workspace_numbers) | set(get_workspace_numbers())
+        live_outputs = set(externals) | {internal}
+        for ws in sorted(present):
+            if ws in INTERNAL_WORKSPACES:
                 i3(f"workspace {ws}; move workspace to output {internal}")
+            elif wake:
+                # Blanking the outputs above dumped everything onto the laptop
+                # panel, so put manually placed workspaces back where they were.
+                out = output_before_by_ws.get(ws)
+                if out in live_outputs and out != internal:
+                    i3(f"workspace {ws}; move workspace to output {out}")
 
     # Restore visible workspace on each output where possible, and ensure
     # the originally focused workspace ends up focused again.
@@ -292,6 +380,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="List available outputs and workspace layout, then exit.",
     )
     parser.add_argument(
+        "--no-wake",
+        dest="wake",
+        action="store_false",
+        help="Skip the wake cycle. By default the external outputs are re-driven "
+        "first, to wake a monitor that dropped its DisplayPort stream and went "
+        "into standby.",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -306,7 +402,7 @@ def main(argv: list[str] | None = None) -> None:
     if args.list:
         list_outputs()
     else:
-        configure_monitors(verbose=args.verbose)
+        configure_monitors(verbose=args.verbose, wake=args.wake)
 
 
 if __name__ == "__main__":
