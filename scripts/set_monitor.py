@@ -21,6 +21,7 @@ from rich.console import Console
 from rich.table import Table
 
 console = Console()
+err_console = Console(stderr=True)
 
 # Workspaces pinned to the laptop panel whenever an external monitor is present.
 # Everything else is left wherever it currently is, so manual placement sticks.
@@ -129,7 +130,7 @@ def list_outputs() -> None:
     try:
         xr = run(["xrandr"])
     except Exception as e:
-        console.print(f"[red]Error running xrandr:[/red] {e}", file=sys.stderr)
+        err_console.print(f"[red]Error running xrandr:[/red] {e}")
         raise SystemExit(1)
 
     outputs: list[dict] = []
@@ -164,10 +165,7 @@ def list_outputs() -> None:
     disabled = [o for o in outputs if o["group"] == "disabled"]
 
     if not internal:
-        console.print(
-            "[red]Error: no internal display (eDP/LVDS) detected[/red]",
-            file=sys.stderr,
-        )
+        err_console.print("[red]Error: no internal display (eDP/LVDS) detected[/red]")
         raise SystemExit(1)
 
     workspaces = get_workspaces()
@@ -214,17 +212,14 @@ def configure_monitors(verbose: bool, wake: bool = True) -> None:
     try:
         xr_output = run(["xrandr"])
     except Exception as e:
-        console.print(f"[red]Error running xrandr:[/red] {e}", file=sys.stderr)
+        err_console.print(f"[red]Error running xrandr:[/red] {e}")
         raise SystemExit(1)
 
     externals = detect_external_outputs(xr_output)
     internal = detect_internal_output(xr_output)
 
     if not internal:
-        console.print(
-            "[red]Error: no internal display (eDP/LVDS) detected[/red]",
-            file=sys.stderr,
-        )
+        err_console.print("[red]Error: no internal display (eDP/LVDS) detected[/red]")
         raise SystemExit(1)
 
     # Snapshot current workspace state so we can restore per-output
