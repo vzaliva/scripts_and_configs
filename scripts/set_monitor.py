@@ -239,18 +239,47 @@ def configure_monitors(verbose: bool, wake: bool = True) -> None:
     def i3(cmd: str) -> None:
         subprocess.run(["i3-msg", "-q", cmd], check=False)
 
-    # Physical outputs get renumbered by the dock/MST hub between sessions, so
-    # classify by panel size rather than by name: the biggest external panel is
-    # the main one (stacked above the laptop), the next one sits to the left.
-    modes = detect_modes(xr_output)
-    ranked = rank_externals(externals, modes)
-
-    main_external, main_mode = ranked[0] if ranked else (None, None)
-    side_external, side_mode = ranked[1] if len(ranked) > 1 else (None, None)
-    extra_externals = ranked[2:]
-
     def mode_args(mode: tuple[int, int] | None) -> list[str]:
         return ["--mode", f"{mode[0]}x{mode[1]}"] if mode else ["--auto"]
+
+    # Where each external lands, biggest panel first; anything past the second
+    # is stacked to the right.
+    PLACEMENTS = [
+        ("main external monitor", "--above", "above"),
+        ("side monitor", "--left-of", "left of"),
+    ]
+    EXTRA_PLACEMENT = ("extra monitor", "--right-of", "right of")
+
+    def build_layout(xr: str, announce: bool) -> list[str]:
+        # Physical outputs get renumbered by the dock/MST hub between sessions,
+        # so classify by panel size rather than by name: the biggest external
+        # panel is the main one, the next sits beside the laptop. Rebuilt from a
+        # fresh xrandr read on every attempt, since a hotplug may have landed.
+        ranked = rank_externals(detect_external_outputs(xr), detect_modes(xr))
+
+        # Configure every output in a single xrandr call: relative positions are
+        # then resolved against the final layout, not a half-applied one.
+        cmd = ["xrandr", "--output", internal, "--auto", "--primary"]
+
+        for name in detect_stale_outputs(xr):
+            if announce:
+                console.print(f"Switching off stale output {name}")
+            cmd += ["--output", name, "--off"]
+
+        for index, (name, mode) in enumerate(ranked):
+            label, flag, where = (
+                PLACEMENTS[index] if index < len(PLACEMENTS) else EXTRA_PLACEMENT
+            )
+            if announce:
+                console.print(
+                    f"Found {label} {name} ({mode_args(mode)[-1]}), "
+                    f"placing {where} {internal}"
+                )
+            cmd += [
+                "--output", name, *mode_args(mode),
+                "--rotate", "normal", flag, internal,
+            ]
+        return cmd
 
     if not externals:
         if verbose:
@@ -273,46 +302,35 @@ def configure_monitors(verbose: bool, wake: bool = True) -> None:
             subprocess.run(off_cmd, check=False)
             time.sleep(2)
 
-        # Configure every output in a single xrandr call: relative positions are
-        # then resolved against the final layout, not a half-applied one.
-        cmd = ["xrandr", "--output", internal, "--auto", "--primary"]
+        applied = False
+        for attempt in (1, 2):
+            result = subprocess.run(
+                build_layout(xr_output, announce=verbose and attempt == 1),
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode == 0:
+                applied = True
+                break
+            # xrandr refused the modeset, which in practice means a hotplug
+            # landed between reading the mode list and asking for it. That
+            # leaves every external dark, so re-read and try once more rather
+            # than reporting success over a blank screen.
+            if result.stderr.strip():
+                print(result.stderr.strip(), file=sys.stderr)
+            if attempt == 1:
+                console.print("[yellow]xrandr refused the layout, retrying[/yellow]")
+                time.sleep(2)
+                try:
+                    xr_output = run(["xrandr"])
+                except Exception:
+                    break
 
-        for name in detect_stale_outputs(xr_output):
-            if verbose:
-                console.print(f"Switching off stale output {name}")
-            cmd += ["--output", name, "--off"]
+        if not applied:
+            err_console.print("[red]Error: could not apply the monitor layout[/red]")
 
-        if main_external:
-            if verbose:
-                console.print(
-                    f"Found main external monitor {main_external} "
-                    f"({mode_args(main_mode)[-1]}), placing above {internal}"
-                )
-            cmd += [
-                "--output", main_external, *mode_args(main_mode),
-                "--rotate", "normal", "--above", internal,
-            ]
-
-        if side_external:
-            if verbose:
-                console.print(
-                    f"Found side monitor {side_external} "
-                    f"({mode_args(side_mode)[-1]}), placing left of {internal}"
-                )
-            cmd += [
-                "--output", side_external, *mode_args(side_mode),
-                "--rotate", "normal", "--left-of", internal,
-            ]
-
-        for name, mode in extra_externals:
-            if verbose:
-                console.print(f"Found extra monitor {name}, placing right of {internal}")
-            cmd += [
-                "--output", name, *mode_args(mode),
-                "--rotate", "normal", "--right-of", internal,
-            ]
-
-        subprocess.run(cmd, check=False)
+        # A retry may have been built from a different set of outputs.
+        externals = detect_external_outputs(xr_output)
         subprocess.run(["xrandr", "--dpi", f"96/{internal}"], check=False)
 
         # Only the pinned workspaces are relocated; the rest keep whatever
