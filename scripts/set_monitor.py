@@ -242,20 +242,22 @@ def configure_monitors(verbose: bool, wake: bool = True) -> None:
     def mode_args(mode: tuple[int, int] | None) -> list[str]:
         return ["--mode", f"{mode[0]}x{mode[1]}"] if mode else ["--auto"]
 
-    # Where each external lands, biggest panel first; anything past the second
-    # is stacked to the right.
-    PLACEMENTS = [
-        ("main external monitor", "--above", "above"),
-        ("side monitor", "--left-of", "left of"),
-    ]
-    EXTRA_PLACEMENT = ("extra monitor", "--right-of", "right of")
+    # The slots an external can occupy, as (label, xrandr flag, human word).
+    SLOTS = {
+        "above": ("main external monitor", "--above", "above"),
+        "left": ("side monitor", "--left-of", "left of"),
+        "right": ("extra monitor", "--right-of", "right of"),
+    }
 
     def build_layout(xr: str, announce: bool) -> list[str]:
         # Physical outputs get renumbered by the dock/MST hub between sessions,
         # so classify by panel size rather than by name: the biggest external
         # panel is the main one, the next sits beside the laptop. Rebuilt from a
         # fresh xrandr read on every attempt, since a hotplug may have landed.
-        ranked = rank_externals(detect_external_outputs(xr), detect_modes(xr))
+        modes = detect_modes(xr)
+        ranked = rank_externals(detect_external_outputs(xr), modes)
+        internal_mode = best_mode(modes.get(internal, []))
+        internal_area = internal_mode[0] * internal_mode[1] if internal_mode else None
 
         # Configure every output in a single xrandr call: relative positions are
         # then resolved against the final layout, not a half-applied one.
@@ -266,10 +268,20 @@ def configure_monitors(verbose: bool, wake: bool = True) -> None:
                 console.print(f"Switching off stale output {name}")
             cmd += ["--output", name, "--off"]
 
-        for index, (name, mode) in enumerate(ranked):
-            label, flag, where = (
-                PLACEMENTS[index] if index < len(PLACEMENTS) else EXTRA_PLACEMENT
+        # Placement follows the panel, not how many happen to be plugged in:
+        # anything bigger than the laptop screen is stacked above it, anything
+        # smaller sits beside it. That keeps the small portable monitor on the
+        # left even when it is the only external. Where two want the same slot
+        # the larger one wins it and the other falls through in order.
+        taken: set[str] = set()
+        for name, mode in ranked:
+            bigger = (
+                internal_area is None or mode is None or mode[0] * mode[1] > internal_area
             )
+            order = ["above", "left", "right"] if bigger else ["left", "right", "above"]
+            slot = next((s for s in order if s not in taken), "right")
+            taken.add(slot)
+            label, flag, where = SLOTS[slot]
             if announce:
                 console.print(
                     f"Found {label} {name} ({mode_args(mode)[-1]}), "
