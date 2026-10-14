@@ -308,6 +308,12 @@ def main():
                 if args.verbose:
                     print(f"Sound source set to: {source.description}")
                 pulse.default_set(source)
+                # WirePlumber persists mute state per device, so a source
+                # muted once stays silent until explicitly unmuted.
+                if source.mute:
+                    if args.verbose:
+                        print(f"Unmuting source: {source.description}")
+                    pulse.mute(source, False)
                 break
 
 
