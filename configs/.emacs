@@ -892,9 +892,11 @@
  '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
-   '("~/Dropbox/Notes/codeminders.org" "~/Dropbox/Notes/research.org"
-     "~/Dropbox/Notes/personal.org" "~/Dropbox/Notes/tech.org"
-     "~/Dropbox/Notes/mit.org" "~/Dropbox/Notes/travel.org"))
+   '("/home/lord/Dropbox/Notes/research.org"
+     "/home/lord/Dropbox/Notes/personal.org"
+     "/home/lord/Dropbox/Notes/tech.org"
+     "/home/lord/Dropbox/Notes/mit.org"
+     "/home/lord/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
    '(0blayout ac-helm ac-math all-the-icons auctex bison-mode
@@ -905,7 +907,7 @@
               lsp-ui magit merlin-company multiple-cursors
               opam-switch-mode org-bullets org-tree-slide
               proof-general rust-mode slime solarized-theme tuareg
-              ws-butler))
+              ws-butler xterm-color))
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
