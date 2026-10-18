@@ -136,6 +136,78 @@
   (indent-region (point-min) (point-max))
   (whitespace-cleanup-region (point-min) (point-max)))
 
+;; Replaces the `M-x package-list-packages' / `U' / `x' routine, which only
+;; covers ELPA/MELPA packages: VC packages (helm-ag, textui, md-mode) are
+;; never upgraded that way.  `package-vc-upgrade-all' pulls them with git
+;; asynchronously and gives no useful completion signal: it prints "Done
+;; upgrading packages." immediately, before the pulls finish, and prints
+;; "VC package ... installed" even for a pull that failed (it just shows the
+;; old version).  So this command attaches to each git process itself and,
+;; when the last one exits, reports per package: old->new revision, up to
+;; date, or FAILED with git's error line.
+(defun my/package-vc-head (dir)
+  "Return the abbreviated git HEAD of the checkout in DIR, or nil."
+  (let ((default-directory dir))
+    (ignore-errors (car (process-lines "git" "rev-parse" "--short" "HEAD")))))
+
+(defun my/package-upgrade-all ()
+  "Upgrade ELPA/MELPA packages, then pull and rebuild VC (git) packages.
+`package-upgrade-all' (and `U' in `list-packages') skip VC packages, so
+those need `package-vc-upgrade-all'.  Its git pulls run asynchronously;
+when the last one finishes, a one-line report says which packages
+changed, were already current, or failed."
+  (interactive)
+  (package-upgrade-all t)               ; refreshes archives, asks first
+  (let ((old-procs (process-list))
+        (pending 0)
+        (changed nil)
+        (report nil))
+    (package-vc-upgrade-all)
+    ;; Each pull runs in its own process and buffer "*vc-git : CHECKOUT-DIR*".
+    (dolist (proc (seq-difference (process-list) old-procs))
+      (when-let* (((process-live-p proc))
+                  (buf (process-buffer proc))
+                  (dir (buffer-local-value 'default-directory buf)))
+        (let ((name (file-name-nondirectory (directory-file-name dir)))
+              (before (my/package-vc-head dir))
+              (done nil))
+          (setq pending (1+ pending))
+          (add-function
+           :after (process-sentinel proc)
+           (lambda (p _event)
+             (unless (or done (process-live-p p))
+               (setq done t)
+               (let ((after (my/package-vc-head dir)))
+                 (push (cond
+                        ((/= 0 (process-exit-status p))
+                         (format "%s FAILED (%s)" name
+                                 (or (and (buffer-live-p buf)
+                                          (with-current-buffer buf
+                                            (save-excursion
+                                              (goto-char (point-min))
+                                              (let ((case-fold-search t))
+                                                (and (re-search-forward
+                                                      "^\\(?:fatal\\|error\\):.*$" nil t)
+                                                     (match-string-no-properties 0))))))
+                                     (format "git exit %d" (process-exit-status p)))))
+                        ((equal before after) (format "%s up to date" name))
+                        (t (setq changed t)
+                           (format "%s %s→%s" name before after)))
+                       report))
+               (setq pending (1- pending))
+               (when (zerop pending)
+                 (message "Package upgrade finished: %s.%s"
+                          (string-join (nreverse report) ", ")
+                          (if changed " Restart Emacs to load the updates." "")))))))))
+    (if (zerop pending)
+        (message "No VC packages pulled (none installed? see *Messages*).")
+      (message "Pulling %d VC package(s) in the background..." pending)
+      (run-with-timer 120 nil
+                      (lambda ()
+                        (when (> pending 0)
+                          (message "Package upgrade: %d VC pull(s) still running; see M-x list-processes."
+                                   pending)))))))
+
 ;;;; C / C++ (cc-mode is built-in)
 
 (use-package cc-mode
@@ -633,6 +705,49 @@
   :bind (:map markdown-mode-map
          ("C-c C-e" . chatgpt-shell-prompt-compose)))
 
+;;;; md-mode — https://github.com/yibie/md-mode
+;;
+;; Why: Markdown major mode that styles the source in place (scaled
+;; headings, folding, tables) and toggles to a read-only rendered view in
+;; the same buffer (`C-c C-v'); editing commands follow Org (M-<left>/
+;; M-<right> promote/demote, TAB folds, `C-c |' tables, `C-c C-t' TOC).
+;; Being tried as a replacement for markdown-mode on .md files; the
+;; markdown-mode block above stays for other extensions and as a fallback
+;; (`M-x markdown-mode').  Needs Emacs 29.1+.  Math/diagram rendering uses
+;; optional external tools (latex+dvisvgm, mmdc, plantuml, dot); without
+;; them those blocks just stay as source.  If table columns look misaligned,
+;; give the `fixed-pitch' face the same family as `default'.
+;;
+;; Install: neither md-mode nor its dependency textui (>= 0.7.0) is on
+;; MELPA/GNU ELPA, so `:ensure t' can't be used.  They are installed via
+;; package-vc, textui first, since package-vc only resolves dependencies
+;; against the archives.  The `unless' guard makes this a one-time install
+;; (same pattern as helm-ag above), so copying this file to a new machine
+;; bootstraps both; it needs git.  The first install prints many byte-compile
+;; warnings from upstream's test file; they are harmless.
+;;
+;; Update: `U' in `list-packages' skips VC packages.  Use
+;; `M-x my/package-upgrade-all' (defined next to `tidy-buffer'); it reports
+;; when the pulls have finished.  Then restart Emacs.
+(dolist (spec '((textui  . "https://github.com/yibie/textui")
+                (md-mode . "https://github.com/yibie/md-mode")))
+  (unless (package-installed-p (car spec))
+    (package-vc-install (list (car spec) :url (cdr spec)))))
+
+(use-package md-mode
+  :init
+  ;; Make .md (including README.md, which markdown-mode would send to
+  ;; gfm-mode) open in md-mode.  `push', not `:mode'/`add-to-list': both
+  ;; packages' own autoloads already put .md in the alist, and add-to-list
+  ;; won't reorder an existing entry, so on a normal restart markdown-mode
+  ;; would win.  A duplicate entry is harmless.
+  (push '("\\.md\\'" . md-mode) auto-mode-alist)
+  ;; Keep the chatgpt-shell binding from the markdown-mode block (md-mode
+  ;; doesn't use `C-c C-e').  This block must stay below the chatgpt-shell
+  ;; one, otherwise :bind would autoload the command from "md-mode".
+  :bind (:map md-mode-map
+         ("C-c C-e" . chatgpt-shell-prompt-compose)))
+
 
 ;;;; Rust
 
@@ -904,10 +1019,10 @@
               dune dune-format ein epresent gnu-elpa-keyring-update
               haskell-mode helm-ag helm-flyspell helm-ls-git helm-lsp
               iflipb imenu-anywhere keytar langtool lsp-grammarly
-              lsp-ui magit merlin-company multiple-cursors
+              lsp-ui magit md-mode merlin-company multiple-cursors
               opam-switch-mode org-bullets org-tree-slide
-              proof-general rust-mode slime solarized-theme tuareg
-              ws-butler xterm-color))
+              proof-general rust-mode slime solarized-theme textui
+              tuareg ws-butler xterm-color))
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
