@@ -58,6 +58,8 @@
   :ensure t
   :init
   ;; Spell checking via hunspell — `sudo apt install hunspell hunspell-en-gb hunspell-uk`.
+  ;; macOS: `brew install hunspell`, then put the en_GB, uk_UA and ru_RU .aff/.dic
+  ;; files from https://github.com/LibreOffice/dictionaries into ~/Library/Spelling.
   (setq ispell-program-name "hunspell")
   (setq ispell-dictionary "en_GB")
   :config
@@ -1007,11 +1009,11 @@ changed, were already current, or failed."
  '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
-   '("/home/lord/Dropbox/Notes/research.org"
-     "/home/lord/Dropbox/Notes/personal.org"
-     "/home/lord/Dropbox/Notes/tech.org"
-     "/home/lord/Dropbox/Notes/mit.org"
-     "/home/lord/Dropbox/Notes/travel.org"))
+   '("~/Dropbox/Notes/research.org"
+     "~/Dropbox/Notes/personal.org"
+     "~/Dropbox/Notes/tech.org"
+     "~/Dropbox/Notes/mit.org"
+     "~/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
    '(0blayout ac-helm ac-math all-the-icons auctex bison-mode
