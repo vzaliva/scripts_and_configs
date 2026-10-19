@@ -52,11 +52,22 @@ else
     echo "Skipping OPAM: opam not found"
 fi
 
-if have npm
+# Global npm packages (tools installed with `npm install -g`), not any project's.
+# Homebrew's versioned node formulae (node@22, ...) are keg-only, i.e. not
+# linked into PATH, so if npm is missing fall back to the newest one's bin dir
+# (it must be on PATH for npm to find its node).
+npm_bin=
+if ! have npm
 then
-    echo "Updating NPM packages"
-    npm update
-    rm -f package-lock.json
+    for d in /opt/homebrew/opt/node@*/bin /usr/local/opt/node@*/bin; do
+        [ -x "$d/npm" ] && npm_bin=$d
+    done
+fi
+
+if have npm || [ -n "$npm_bin" ]
+then
+    echo "Updating global NPM packages"
+    PATH="${npm_bin:+$npm_bin:}$PATH" npm update -g
 else
     echo "Skipping NPM: npm not found"
 fi
