@@ -138,15 +138,17 @@
   (indent-region (point-min) (point-max))
   (whitespace-cleanup-region (point-min) (point-max)))
 
-;; Replaces the `M-x package-list-packages' / `U' / `x' routine, which only
-;; covers ELPA/MELPA packages: VC packages (helm-ag, textui, md-mode) are
-;; never upgraded that way.  `package-vc-upgrade-all' pulls them with git
+;; Replaces the `M-x package-list-packages' / `U' / `x' routine, which (in
+;; Emacs 31) only covers ELPA/MELPA packages: VC packages (helm-ag, textui,
+;; md-mode) are never upgraded that way; Emacs 30 pulls them uncontrolled,
+;; with popups.  `package-vc-upgrade-all' pulls them with git
 ;; asynchronously and gives no useful completion signal: it prints "Done
 ;; upgrading packages." immediately, before the pulls finish, and prints
 ;; "VC package ... installed" even for a pull that failed (it just shows the
 ;; old version).  So this command attaches to each git process itself and,
 ;; when the last one exits, reports per package: old->new revision, up to
-;; date, or FAILED with git's error line.
+;; date, or FAILED with git's error line.  It also keeps vc from popping up
+;; each pull's output buffer (often as a new frame).
 (defun my/package-vc-head (dir)
   "Return the abbreviated git HEAD of the checkout in DIR, or nil."
   (let ((default-directory dir))
@@ -154,17 +156,34 @@
 
 (defun my/package-upgrade-all ()
   "Upgrade ELPA/MELPA packages, then pull and rebuild VC (git) packages.
-`package-upgrade-all' (and `U' in `list-packages') skip VC packages, so
-those need `package-vc-upgrade-all'.  Its git pulls run asynchronously;
-when the last one finishes, a one-line report says which packages
-changed, were already current, or failed."
+VC packages are kept out of `package-upgrade-all' (Emacs 31 skips them;
+Emacs 30 would pull them uncontrolled) and are pulled once by
+`package-vc-upgrade-all'.  Its git pulls run asynchronously; when the
+last one finishes, a one-line report says which packages changed, were
+already current, or failed."
   (interactive)
-  (package-upgrade-all t)               ; refreshes archives, asks first
+  ;; Emacs 30's `package-upgrade-all' also pulls VC packages itself (Emacs 31's
+  ;; skips them), asynchronously, which would collide with the tracked pulls
+  ;; below.  Hide VC packages from it so they are pulled exactly once.
+  (advice-add 'package--upgradeable-packages :filter-return
+              (lambda (names)
+                (seq-remove (lambda (n)
+                              (let ((d (cadr (assq n package-alist))))
+                                (and d (package-vc-p d))))
+                            names))
+              '((name . my/hide-vc)))
+  (unwind-protect (package-upgrade-all t) ; refreshes archives, asks first
+    (advice-remove 'package--upgradeable-packages 'my/hide-vc))
   (let ((old-procs (process-list))
         (pending 0)
         (changed nil)
         (report nil))
-    (package-vc-upgrade-all)
+    ;; vc displays each pull's output buffer ("*vc-git : CHECKOUT-DIR*"), often
+    ;; in a new frame.  Display nothing: the buffers stay available (`C-x b'),
+    ;; and the report below says what happened, with git's error line on failure.
+    (let ((display-buffer-overriding-action
+           '(display-buffer-no-window (allow-no-window . t))))
+      (package-vc-upgrade-all))
     ;; Each pull runs in its own process and buffer "*vc-git : CHECKOUT-DIR*".
     (dolist (proc (seq-difference (process-list) old-procs))
       (when-let* (((process-live-p proc))
@@ -728,7 +747,7 @@ changed, were already current, or failed."
 ;; bootstraps both; it needs git.  The first install prints many byte-compile
 ;; warnings from upstream's test file; they are harmless.
 ;;
-;; Update: `U' in `list-packages' skips VC packages.  Use
+;; Update: `U' in `list-packages' skips VC packages (Emacs 31).  Use
 ;; `M-x my/package-upgrade-all' (defined next to `tidy-buffer'); it reports
 ;; when the pulls have finished.  Then restart Emacs.
 (dolist (spec '((textui  . "https://github.com/yibie/textui")
