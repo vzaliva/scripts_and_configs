@@ -498,8 +498,16 @@ already current, or failed."
   ;; delete-other-windows here reliably clobbers any extra windows that
   ;; org-agenda's frame reorganisation or command-line file opens left behind.
   (setq org-agenda-window-setup 'only-window)
+  ;; Visit every .org note in `org-directory' in the background.  This used to
+  ;; be done with command-line arguments (start_emacs.sh), but Emacs records
+  ;; those in `file-name-history': 12 entries per launch filled the 100-entry
+  ;; history and evicted everything else.  The regexp skips dotfiles and
+  ;; lock files (.#x.org), like the shell glob did.
   (add-hook 'emacs-startup-hook
             (lambda ()
+              (when (file-directory-p org-directory)
+                (dolist (f (directory-files org-directory t "\\`[^.#].*\\.org\\'"))
+                  (find-file-noselect f)))
               (org-agenda nil "t")
               (delete-other-windows)))
   (use-package org-bullets
@@ -809,6 +817,19 @@ already current, or failed."
 ;;;; Misc behaviour
 
 (savehist-mode 1)            ; save minibuffer history between launches
+(setq history-length 500               ; default is 100
+      history-delete-duplicates t)     ; re-visiting a file moves it up, no copies
+
+;; recentf backs Helm's "file name history" (C-c h in helm-find-files).  Turn it
+;; on here instead of letting Helm enable it lazily on first use, so files
+;; opened earlier in the session are tracked too.  recentf normally saves only
+;; at a clean exit; the autosave timer (Emacs 31+, a harmless no-op variable on
+;; older versions) bounds what a hard kill can lose to 5 minutes.
+(require 'recentf)
+(setq recentf-max-saved-items 500
+      recentf-autosave-interval 300)
+(recentf-mode 1)
+
 (delete-selection-mode 1)    ; replace selection on yank
 (setq x-underline-at-descent-line t)
 (put 'scroll-left 'disabled t)
@@ -863,17 +884,6 @@ already current, or failed."
 (setq browse-url-browser-function 'browse-url-firefox
       browse-url-new-window-flag  nil
       browse-url-firefox-new-window-is-tab t)
-
-;;;; code-stats — https://codestats.net/users/vzaliva (machine key in ~/.authinfo)
-
-(use-package code-stats
-  :ensure t
-  :config
-  (setq code-stats-token
-        (auth-source-pick-first-password :host "codestats.net"))
-  (add-hook 'prog-mode-hook #'code-stats-mode)
-  (run-with-idle-timer 30 t #'code-stats-sync)
-  (add-hook 'kill-emacs-hook (lambda () (code-stats-sync :wait))))
 
 ;; Requires emacs 29!
 ;; TODO: https://www.masteringemacs.org/article/lets-write-a-treesitter-major-mode
@@ -1051,7 +1061,7 @@ already current, or failed."
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
    '(0blayout ac-helm ac-math all-the-icons auctex bison-mode
-              chatgpt-shell code-stats company-coq dante doom-modeline
+              chatgpt-shell company-coq dante doom-modeline
               dune dune-format ein emacs-md-render epresent
               gnu-elpa-keyring-update haskell-mode helm-ag
               helm-flyspell helm-ls-git helm-lsp iflipb imenu-anywhere
