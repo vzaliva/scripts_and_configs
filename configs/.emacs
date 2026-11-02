@@ -770,6 +770,23 @@ already current, or failed."
          ("C-c C-e" . chatgpt-shell-prompt-compose)))
 
 
+;; markdown viewer
+;; package-vc names a URL-only install after the repo (`emacs-md-render'),
+;; not after the `mdview' feature, so the guard must test that name.  Testing
+;; `mdview' is never true: the install re-ran on every start and asked
+;; "Overwrite previous checkout?", and declining aborted the whole init file
+;; (theme, fonts, faces below).  A failed install is only a warning now, so
+;; it can't take the rest of the init file with it.
+(unless (package-installed-p 'emacs-md-render)
+  (condition-case err
+      (package-vc-install "https://github.com/vzaliva/emacs-md-render")
+    (error (display-warning 'mdview (format "install failed: %s"
+                                            (error-message-string err))))))
+(with-eval-after-load 'md-mode
+  (define-key md-mode-map (kbd "C-c C-v") #'mdview-toggle))
+(with-eval-after-load 'markdown-mode
+  (define-key markdown-mode-map (kbd "C-c C-v") #'mdview-toggle))
+
 ;;;; Rust
 
 (use-package rust-mode :ensure t)
@@ -1028,22 +1045,20 @@ already current, or failed."
  '(merlin-error-on-single-line t)
  '(merlin-locate-in-new-window 'never)
  '(org-agenda-files
-   '("~/Dropbox/Notes/research.org"
-     "~/Dropbox/Notes/personal.org"
-     "~/Dropbox/Notes/tech.org"
-     "~/Dropbox/Notes/mit.org"
+   '("~/Dropbox/Notes/research.org" "~/Dropbox/Notes/personal.org"
+     "~/Dropbox/Notes/tech.org" "~/Dropbox/Notes/mit.org"
      "~/Dropbox/Notes/travel.org"))
  '(org-export-backends '(ascii beamer html latex md odt))
  '(package-selected-packages
    '(0blayout ac-helm ac-math all-the-icons auctex bison-mode
               chatgpt-shell code-stats company-coq dante doom-modeline
-              dune dune-format ein epresent gnu-elpa-keyring-update
-              haskell-mode helm-ag helm-flyspell helm-ls-git helm-lsp
-              iflipb imenu-anywhere keytar langtool lsp-grammarly
-              lsp-ui magit md-mode merlin-company multiple-cursors
-              opam-switch-mode org-bullets org-tree-slide
-              proof-general rust-mode slime solarized-theme textui
-              tuareg ws-butler xterm-color))
+              dune dune-format ein emacs-md-render epresent
+              gnu-elpa-keyring-update haskell-mode helm-ag
+              helm-flyspell helm-ls-git helm-lsp iflipb imenu-anywhere
+              keytar langtool lsp-grammarly lsp-ui magit md-mode
+              merlin-company multiple-cursors opam-switch-mode
+              org-bullets org-tree-slide proof-general rust-mode slime
+              solarized-theme textui tuareg ws-butler xterm-color))
  '(package-vc-selected-packages '((helm-ag :url "https://github.com/emacsattic/helm-ag")))
  '(safe-local-variable-values
    '((eval visual-line-mode t)
