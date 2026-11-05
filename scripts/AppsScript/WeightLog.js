@@ -2,6 +2,10 @@
  * Fitbit Aria -> Google Sheets
  * Requires OAuth2 library (you added v43).
  *
+ * NOTE (2026-11-05): the legacy Fitbit Web API used here was switched off in
+ * early November 2026 (last successful sync: 2026-11-02), so this script no
+ * longer works as is. See README.md.
+ *
  * Sheet columns:
  * A: DateTime (e.g. "December 10, 2016 at 03:20PM")
  * B: Weight
@@ -144,7 +148,7 @@ function getWeightSheet_() {
   const spreadsheetId = sp.getProperty('SPREADSHEET_ID');
   if (!spreadsheetId) throw new Error('Missing SPREADSHEET_ID in Script Properties.');
 
-  const name = sp.getProperty('WEIGHT_SHEET_NAME') || 'Weght Logs';
+  const name = sp.getProperty('WEIGHT_SHEET_NAME') || 'Weight';
   const ss = SpreadsheetApp.openById(spreadsheetId);
   const sheet = ss.getSheetByName(name);
   if (!sheet) throw new Error(`Sheet "${name}" not found.`);
