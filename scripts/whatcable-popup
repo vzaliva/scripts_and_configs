@@ -24,7 +24,7 @@ read_sysfs_attr() {
     local default="$2"
 
     if [[ -r "$path" ]]; then
-        <"$path"
+        cat "$path"
     else
         printf '%s\n' "$default"
     fi
