@@ -34,8 +34,11 @@ if [[ ! -x "$whatcable" ]]; then
     message="whatcable-linux was not found or is not executable: $whatcable"
 else
     if command -v jq >/dev/null 2>&1 && message="$("$whatcable" --json | jq -r '
+def volts: ((. // 0) / 1000) | tostring;
+# PPS profiles carry a range: "3.3-21V".
 def pdo_label:
-    "- " + (((.voltageMV // 0) / 1000) | tostring) + "V @ "
+    "- " + (.voltageMV | volts)
+    + (if (.maxVoltageMV // 0) > 0 then "-" + (.maxVoltageMV | volts) else "" end) + "V @ "
     + (((.currentMA // 0) / 1000) | tostring) + "A - "
     + (((.powerMW // 0) / 1000) | tostring) + "W"
     + (if .active then " (active)" else "" end);
@@ -58,14 +61,23 @@ def pdo_label:
             (if $d.cable.type then "- Type: \($d.cable.type)" else empty end),
             (if $d.cable.speed then "- Speed: \($d.cable.speed)" else empty end),
             (if $d.cable.current then "- Current: \($d.cable.current)" else empty end),
-            (if $d.cable.vendorName then "- Vendor: \($d.cable.vendorName)" else empty end),
+            # A hex VID ("0x0000") is not a vendor name; the notes below explain it.
+            (($d.cable.vendorName // "") as $v
+             | if $v != "" and ($v | startswith("0x") | not) then "- Vendor: \($v)" else empty end),
             (if (($d.cable.maxWatts // 0) > 0) then "- Max power: \($d.cable.maxWatts)W" else empty end)
+         else empty end),
+        # Hedged notes about unusual e-marker data (never a verdict).
+        (if (($d.cable.trustNotes // []) | length) > 0 then
+            "",
+            "Cable notes:",
+            ($d.cable.trustNotes[] | ("- " + .title), ("  " + .detail))
          else empty end),
         (if $d.charging then
             "",
             "Charging:",
-            (if $d.charging.summary then "- \($d.charging.summary)" else empty end),
-            (if $d.charging.detail then "- \($d.charging.detail)" else empty end)
+            # "" is truthy in jq, so test for non-empty text.
+            (if ($d.charging.summary // "") != "" then "- \($d.charging.summary)" else empty end),
+            (if ($d.charging.detail // "") != "" then "- \($d.charging.detail)" else empty end)
          else empty end),
         (if (($d.powerDelivery.sourceCapabilities // []) | length) > 0 then
             "",
