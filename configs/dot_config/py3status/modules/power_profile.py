@@ -3,7 +3,7 @@ class Py3status:
     # user-configurable defaults
     format = "⚡ {profile}"
     cache_timeout = 10
-    command_get = "powerprofilesctl get"
+    command_get = "tlpctl get"
 
     def power_profile(self):
         # run the command and strip newline

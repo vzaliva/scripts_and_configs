@@ -1,17 +1,15 @@
 #!/usr/bin/env bash
+# Pick a TLP power profile from a rofi menu. Bound to a click on the
+# py3status power_profile module. Goes through tlp-pd (tlpctl), which
+# authorises the active session via polkit, so no sudo is needed.
 set -euo pipefail
 
-PPCTL="$(command -v powerprofilesctl)"
 ROFI_CMD=(rofi -dmenu -theme solarized -font "hack 14" -i -p "Power profile")
 
-current="$("$PPCTL" get)"
+# TLP has exactly these three profiles
+profiles=(performance balanced power-saver)
 
-# Extract profile IDs from the left side before the colon; accept optional leading "* "
-mapfile -t profiles < <("$PPCTL" list | awk -F: '
-  /^[[:space:]]*\*?[[:space:]]*[a-z-]+:/ {
-    gsub(/^[[:space:]]*\*?[[:space:]]*/, "", $1);
-    print $1
-  }')
+current="$(tlpctl get)"
 
 # Build the menu (mark current)
 menu=""
@@ -28,8 +26,12 @@ choice="$(printf %b "$menu" | "${ROFI_CMD[@]}")" || exit 0
 choice="${choice% (current)}"
 [[ -z "$choice" || "$choice" == "$current" ]] && exit 0
 
-# Apply and optionally notify
-if "$PPCTL" set "$choice"; then
-  py3-cmd refresh power_profile
-  #notify-send "Power profile" "Switched to: $choice" || true
-fi
+# Apply. tlpctl set returns before tlp-pd has applied the profile (about
+# half a second), so wait for it to report the new one; refreshing the bar
+# straight away would show the old profile until the next poll.
+tlpctl set "$choice"
+for _ in {1..50}; do
+  [[ "$(tlpctl get)" == "$choice" ]] && break
+  sleep 0.1
+done
+py3-cmd refresh power_profile
