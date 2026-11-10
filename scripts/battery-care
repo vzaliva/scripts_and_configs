@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+# Switch battery care (charge thresholds) on or off through TLP.
+#
+#   battery-care status   print "<on|off> <start> <stop>" as the battery
+#                         reports them, or "unsupported"
+#   battery-care limits   print the "<start> <stop>" that "on" sets
+#   battery-care on       charge only when below 75%, stop at 80%
+#   battery-care off      charge to 100%
+#
+# on and off rewrite /etc/tlp.d/20-battery-care.conf, so TLP applies the
+# choice again at boot, and run "tlp setcharge" to apply it now. Both need
+# root and go through "sudo -n", so they fail rather than prompt.
+#
+# off writes explicit thresholds instead of removing the file: TLP skips
+# unconfigured thresholds, and the battery keeps the last values written.
+#
+# Threshold ranges per vendor: https://linrunner.de/tlp/settings/bc-vendors.html
+set -euo pipefail
+
+battery="${BATTERY_CARE_BAT:-BAT0}"
+conf=/etc/tlp.d/20-battery-care.conf
+sysfs="/sys/class/power_supply/$battery"
+
+on_start=75
+on_stop=80
+off_start=0
+off_stop=100
+
+usage() {
+    echo "Usage: ${0##*/} {status|limits|on|off}" >&2
+    exit 2
+}
+
+supported() {
+    [[ -r "$sysfs/charge_control_start_threshold" && -r "$sysfs/charge_control_end_threshold" ]]
+}
+
+status() {
+    local start stop
+    if ! supported; then
+        echo unsupported
+        return
+    fi
+    start="$(<"$sysfs/charge_control_start_threshold")"
+    stop="$(<"$sysfs/charge_control_end_threshold")"
+    if (( stop < 100 )); then
+        echo "on $start $stop"
+    else
+        echo "off $start $stop"
+    fi
+}
+
+apply() {
+    local start="$1" stop="$2" got
+
+    if ! supported; then
+        echo "${0##*/}: $battery has no charge thresholds" >&2
+        exit 1
+    fi
+
+    sudo -n tee "$conf" >/dev/null <<EOF
+# $conf - written by ${0##*/}, changes here are overwritten
+START_CHARGE_THRESH_$battery=$start
+STOP_CHARGE_THRESH_$battery=$stop
+EOF
+    # with only a battery argument, setcharge applies the configured values
+    sudo -n tlp setcharge "$battery" >&2
+
+    got="$(status)"
+    if [[ "$got" != *" $start $stop" ]]; then
+        echo "${0##*/}: wanted $start/$stop but the battery reports: $got" >&2
+        exit 1
+    fi
+    echo "$got"
+}
+
+case "${1:-}" in
+    status) status ;;
+    limits) echo "$on_start $on_stop" ;;
+    on)     apply "$on_start" "$on_stop" ;;
+    off)    apply "$off_start" "$off_stop" ;;
+    *)      usage ;;
+esac

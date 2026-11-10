@@ -123,7 +123,132 @@ else
     message+="- Battery path not found: $battery"
 fi
 
-if command -v yad >/dev/null 2>&1; then
+# Preferred window: GTK, which can carry the battery care switch below the
+# text. The fallbacks further down only show the text.
+battery_care="${BATTERY_CARE:-$(command -v battery-care || echo "$HOME/bin/battery-care")}"
+
+if python3 -c 'import gi; gi.require_version("Gtk", "3.0"); from gi.repository import Gtk' 2>/dev/null; then
+    WHATCABLE_POPUP_TITLE="$title" WHATCABLE_POPUP_TEXT="$message" \
+    BATTERY_CARE="$battery_care" BATTERY_CARE_BAT="$(basename "$battery")" \
+    python3 - <<'PY'
+import os
+import subprocess
+import threading
+
+import gi
+
+gi.require_version("Gtk", "3.0")
+gi.require_version("Gdk", "3.0")  # else the import picks Gdk 4 and fails
+from gi.repository import Gdk, GLib, Gtk
+
+HELPER = os.environ.get("BATTERY_CARE", "")
+
+
+def helper(*args):
+    """Run battery-care; return (ok, stdout, stderr)."""
+    try:
+        p = subprocess.run([HELPER, *args], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return False, "", str(e)
+    return p.returncode == 0, p.stdout.strip(), p.stderr.strip()
+
+
+win = Gtk.Window(title=os.environ.get("WHATCABLE_POPUP_TITLE", "WhatCable"))
+win.set_default_size(760, 520)
+win.set_type_hint(Gdk.WindowTypeHint.DIALOG)  # makes i3 float it
+win.set_position(Gtk.WindowPosition.CENTER)
+win.set_keep_above(True)
+win.connect("destroy", Gtk.main_quit)
+win.connect(
+    "key-press-event",
+    lambda _w, ev: ev.keyval == Gdk.KEY_Escape and win.destroy(),
+)
+
+box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+box.set_border_width(10)
+win.add(box)
+
+text = Gtk.TextView(editable=False, cursor_visible=False, wrap_mode=Gtk.WrapMode.WORD)
+text.set_left_margin(8)
+text.set_right_margin(8)
+text.set_top_margin(8)
+text.get_buffer().set_text(os.environ.get("WHATCABLE_POPUP_TEXT", ""))
+scroll = Gtk.ScrolledWindow()
+scroll.set_shadow_type(Gtk.ShadowType.IN)
+scroll.add(text)
+box.pack_start(scroll, True, True, 0)
+
+# Battery care switch, only when the battery has charge thresholds
+ok, state, _err = helper("status")
+if ok and state.split()[:1] in (["on"], ["off"]):
+    _ok, limits, _err = helper("limits")
+    on_start, on_stop = (limits.split() + ["?", "?"])[:2]
+
+    frame = Gtk.Frame(label="Battery care")
+    inner = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+    inner.set_border_width(8)
+    frame.add(inner)
+    box.pack_start(frame, False, False, 0)
+
+    radio_off = Gtk.RadioButton.new_with_label_from_widget(None, "Off: charge to 100%")
+    radio_on = Gtk.RadioButton.new_with_label_from_widget(
+        radio_off,
+        f"On: stop charging at {on_stop}%, start again below {on_start}%",
+    )
+    note = Gtk.Label(xalign=0)
+    note.set_line_wrap(True)
+    note.set_selectable(True)
+    for w in (radio_off, radio_on, note):
+        inner.pack_start(w, False, False, 0)
+
+    def show_state(state, error=""):
+        """Point the radios at what the battery reports, without re-applying."""
+        word, start, stop = (state.split() + ["?", "?", "?"])[:3]
+        radio = radio_on if word == "on" else radio_off
+        radio.handler_block_by_func(on_toggled)
+        radio.set_active(True)
+        radio.handler_unblock_by_func(on_toggled)
+        msg = f"Battery reports: start {start}%, stop {stop}%. Kept across reboots."
+        if word == "on":
+            msg += "\nAbove the stop level the battery only stops charging; it is not discharged."
+        if error:
+            msg = f"Failed: {error}\n{msg}"
+        note.set_text(msg)
+
+    def applied(ok, out, err):
+        _ok, state, _err = helper("status")
+        show_state(state, "" if ok else (err or "battery-care failed"))
+        radio_on.set_sensitive(True)
+        radio_off.set_sensitive(True)
+        return False
+
+    def on_toggled(button):
+        # fires for both buttons of the group; act on the one switched on
+        if not button.get_active():
+            return
+        mode = "on" if button is radio_on else "off"
+        radio_on.set_sensitive(False)
+        radio_off.set_sensitive(False)
+        note.set_text("Applying…")
+        threading.Thread(
+            target=lambda: GLib.idle_add(applied, *helper(mode)),
+            daemon=True,
+        ).start()
+
+    radio_on.connect("toggled", on_toggled)
+    radio_off.connect("toggled", on_toggled)
+    show_state(state)
+
+close = Gtk.Button(label="Close")
+close.connect("clicked", lambda _b: win.destroy())
+close.set_halign(Gtk.Align.END)
+box.pack_start(close, False, False, 0)
+
+win.show_all()
+close.grab_focus()
+Gtk.main()
+PY
+elif command -v yad >/dev/null 2>&1; then
     printf '%s\n' "$message" | yad \
         --title="$title" \
         --text-info \
