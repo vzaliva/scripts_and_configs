@@ -253,8 +253,13 @@ exec_always --no-startup-id xinput set-prop 'ELAN0678:00 04F3:3195 Touchpad' 'li
 
 exec_always --no-startup-id xsetroot -solid "#333333"
 
-# Requires: https://github.com/rjekker/i3-battery-popup 
+# Requires: https://github.com/rjekker/i3-battery-popup
 exec --no-startup-id ~/bin/i3-battery-popup -n -L 15 -I 3
+
+# Refresh the bar as soon as the TLP power profile changes (charger plugged
+# or unplugged, or a profile picked elsewhere), instead of at the next poll.
+# tlp-pd announces every change on D-Bus.
+exec --no-startup-id "gdbus monitor --system --dest org.freedesktop.UPower.PowerProfiles | grep --line-buffered 'UPower.PowerProfiles.*ActiveProfile' | while read -r _; do py3-cmd refresh --all; done"
 
 # To fix missed vblank/tearing causing input stalls.
 exec_always --no-startup-id picom --config ~/.config/picom/picom.conf
