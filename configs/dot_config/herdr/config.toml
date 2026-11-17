@@ -1,0 +1,7 @@
+onboarding = false
+
+[terminal]
+# herdr starts panes with $SHELL, which is bash when the session was launched
+# from a bash login (wezterm runs fish without changing $SHELL).
+# macOS: /opt/homebrew/bin/fish
+default_shell = "/usr/bin/fish"

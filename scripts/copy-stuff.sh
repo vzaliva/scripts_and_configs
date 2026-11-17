@@ -48,3 +48,38 @@ ssh "$R" sh -c "'rm -f ~/.config/fish/fishd.*'"
 if [ -d ~/.config/bat ]; then
     scp -pr ~/.config/bat "$R":~/.config/
 fi
+
+# herdr: panes start with $SHELL, which stays bash on hosts whose login shell
+# is bash, so point default_shell at fish. The path differs per OS
+# (/usr/bin/fish vs /opt/homebrew/bin/fish), so the repo copy is only used to
+# seed a missing config and default_shell is then fixed up on the remote.
+# An existing remote config (theme etc.) is kept, and a default_shell that
+# already points at an executable is left alone.
+if [ -f ~/.config/herdr/config.toml ]; then
+    ssh "$R" 'mkdir -p ~/.config/herdr; [ -e ~/.config/herdr/config.toml ] || cat > ~/.config/herdr/config.toml' \
+        < ~/.config/herdr/config.toml
+fi
+ssh "$R" sh -s <<'EOS'
+set -e
+fish=
+for p in $(command -v fish) /opt/homebrew/bin/fish /usr/local/bin/fish /usr/bin/fish; do
+    if [ -x "$p" ]; then fish=$p; break; fi
+done
+[ -n "$fish" ] || exit 0
+c=~/.config/herdr/config.toml
+mkdir -p ~/.config/herdr
+[ -e "$c" ] || echo 'onboarding = false' > "$c"
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+if grep -q '^default_shell' "$c"; then
+    cur=$(sed -n 's/^default_shell *= *"\(.*\)".*/\1/p' "$c" | head -n 1)
+    [ -x "$cur" ] && exit 0
+    sed "s|^default_shell.*|default_shell = \"$fish\"|" "$c" > "$tmp"
+    cat "$tmp" > "$c"
+elif grep -q '^\[terminal\]' "$c"; then
+    awk -v l="default_shell = \"$fish\"" '{ print } /^\[terminal\]/ { print l }' "$c" > "$tmp"
+    cat "$tmp" > "$c"
+else
+    printf '\n[terminal]\ndefault_shell = "%s"\n' "$fish" >> "$c"
+fi
+EOS

@@ -109,8 +109,10 @@ if which vim >& /dev/null ; then
 fi
 
 if which emacsclient >& /dev/null ; then
-    export VISUAL=emacsclient 
+    export VISUAL=emacsclient
     export EDITOR=emacsclient
+    # open in the running emacs and return to the prompt at once
+    alias e='emacsclient -n'
 else
     export VISUAL=vi
     export EDITOR=vi
