@@ -1,7 +1,6 @@
 [user]
 	email = lord@crocodile.org
 	name = Vadim Zaliva
-	signingkey = 9D98564F9E926C56D08EFA5932D2B94CA5C6D3F4
 [color]
 	ui = auto
 
@@ -10,8 +9,32 @@
 
 [diff]
 	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
 
-[commit]
-	gpgsign = true
 [pull]
-	ff = only
+	rebase = true
+[rebase]
+	autoSquash = true
+	autoStash = true
+	updateRefs = true
+[tag]
+	sort = version:refname
+[push]
+	default = simple
+	followTags = true
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[rerere]
+	enabled = true
+	autoupdate = true
+# No global credential helper: the one https remote that needs a saved
+# token (ASTLean) sets `credential.helper = store` in its own .git/config.
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

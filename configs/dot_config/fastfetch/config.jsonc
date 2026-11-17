@@ -4,8 +4,6 @@
   "logo": {
     "type": "none"
   },
-
-
   "modules": [
     "title",
     "separator",
