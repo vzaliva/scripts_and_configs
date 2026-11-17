@@ -72,6 +72,16 @@ else
     echo "Skipping NPM: npm not found"
 fi
 
+# Tools installed with `uv tool install` (MCP servers and the like).
+# uv itself comes from the snap or Homebrew and is updated with them.
+if have uv
+then
+    echo "Updating uv tools"
+    uv tool upgrade --all
+else
+    echo "Skipping uv tools: uv not found"
+fi
+
 if have rustup
 then
     echo "Updating Rust"
