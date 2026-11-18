@@ -98,11 +98,14 @@ settings again, because removing an entry drops them.
   config only reaches the servers started afterwards and the older sets keep
   running with the old one. `codex app-server daemon restart` replaces them
   all, but interrupts running work.
-- Killing the process group of an agent that runs `uvx`-launched lean-lsp-mcp
-  servers can leave one behind as an orphan spinning at 100% CPU: when the
-  Codex app-server was restarted on 2026-11-18, one of its two lean-lsp
-  servers did exactly that. The copy of SIGTERM that `uv` forwards goes away
-  with the wrapper.
+- Stopping an agent that runs `uvx`-launched lean-lsp-mcp servers can leave
+  one behind as an orphan spinning at 100% CPU. When the Codex app-server was
+  restarted on 2026-11-18, the `uvx`-launched lean-lsp-mcp of the old worker
+  was left running at PPID 1 with its `uv` parent gone, and `py-spy` showed
+  the stack of oOo0oOo/lean-lsp-mcp#246. The lean-lsp-mcp started directly in
+  the same worker exited cleanly. The suspected cause is the second SIGTERM
+  that `uv` forwards, which direct launching removes; the signals were not
+  captured, so that part is not confirmed.
 - Scoping `lean-lsp` and `context7` to one project in Codex would need a
   project `.codex/config.toml`. That file would sit in the project repository,
   cannot hold the context7 key, and is not seen from git worktrees, so it is
