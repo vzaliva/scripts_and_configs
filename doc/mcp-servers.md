@@ -48,6 +48,28 @@ implicit refresh with a predictable one. A running session keeps the server it
 started with: relaunch the session to pick up a new version. `/system-health`
 reports outdated global npm packages and uv tools.
 
+## mcp-dblp index
+
+`mcp-dblp` answers from a local SQLite copy of DBLP (3.9 GB, about 8.8 million
+publications), not from dblp.org. The prebuilt index is published monthly at
+github.com/szeider/mcp-dblp-index. The first start downloads it (1.3 GB
+compressed; a tool call waits up to 40 s meanwhile), and a server checks for a
+newer release whenever it starts and installs it unless `MCP_DBLP_AUTO_UPDATE=0`.
+Papers DBLP added after the release's dump date are not found. On 2026-11-18
+the newest release is 2026-11-01, which both hosts have.
+
+| Host | Index home |
+|---|---|
+| katabasis | `~/.cache/mcp-dblp`, set with `MCP_DBLP_HOME` in both agents' configs |
+| branzino | `~/.mcp-dblp`, the default, nothing set |
+
+Every server on a host has to see the same home. A server started without the
+variable on katabasis creates an empty `~/.mcp-dblp` and, if it gets as far as
+a tool call, downloads a second 4 GB copy there. The servers open the file
+read-only and share its pages, so the index does not count once per process.
+To check a host: `MCP_DBLP_HOME=<home> mcp-dblp-index status`; `mcp-dblp-index
+update` installs a newer release by hand.
+
 ## Setting up a host
 
     npm install -g scholar-mcp @upstash/context7-mcp   # context7 only where the key exists
